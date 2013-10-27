@@ -60,7 +60,7 @@ public class CoreTransformer implements IClassTransformer {
 			}
 			
 			if (match){
-				System.out.printf("Pattern found !\n");
+				System.out.printf("Pattern found ... ");
 				return returnList;
 			}
 		}
@@ -123,23 +123,30 @@ public class CoreTransformer implements IClassTransformer {
 		
         for (MethodNode methodNode : classNode.methods){
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(WORLD_UPDATEENTITIES)){
-        		System.out.printf("Found World.updateEntities()\n");
+        		System.out.printf("Found World.updateEntities()... ");
         		InsnList instructions = methodNode.instructions;
         		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
         		
         		ArrayList<AbstractInsnNode> match = this.findPattern(methodNode, WORLD_UPDATEENTITIES_PATTERN1);
         		
-        		InsnList payload = new InsnList();
-        		for (int i = 0; i < WORLD_UPDATEENTITIES_PAYLOAD1.length; i++)
-        			payload.add(WORLD_UPDATEENTITIES_PAYLOAD1[i]);
+        		if (match != null){
         		
-        		instructions.insertBefore(match.get(0), payload);
+        			InsnList payload = new InsnList();
+        			for (int i = 0; i < WORLD_UPDATEENTITIES_PAYLOAD1.length; i++)
+        				payload.add(WORLD_UPDATEENTITIES_PAYLOAD1[i]);
+        		
+        			instructions.insertBefore(match.get(0), payload);
 
-        		payload.clear();
-        		for (int i = 0; i < WORLD_UPDATEENTITIES_PAYLOAD2.length; i++)
-        			payload.add(WORLD_UPDATEENTITIES_PAYLOAD2[i]);
+        			payload.clear();
+        			for (int i = 0; i < WORLD_UPDATEENTITIES_PAYLOAD2.length; i++)
+        				payload.add(WORLD_UPDATEENTITIES_PAYLOAD2[i]);
         		
-        		instructions.insert(match.get(match.size() - 1), payload);        		
+        			instructions.insert(match.get(match.size() - 1), payload);
+        			
+        			System.out.printf("Successful injection !\n");
+        		} else {
+        			System.out.printf("Error while injecting !\n");
+        		}
         	}
         }
         
