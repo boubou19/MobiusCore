@@ -2,12 +2,21 @@ package mcp.mobius.mobiuscore.profiler;
 
 import net.minecraft.tileentity.TileEntity;
 
-public class DummyProfiler implements IProfiler {
+public class DummyProfiler implements IProfilerTileEntity {
+	@Override
+	public void GlobalStart() {
+	}
 
 	@Override
-	public void TileEntityUpdate_Start(TileEntity te) {	}
+	public void GlobalStop() {
+	}
 
 	@Override
-	public void TileEntityUpdate_Stop(TileEntity te) { }
+	public void Start(TileEntity te) {
+	}
+
+	@Override
+	public void Stop(TileEntity te) {
+	}
 
 }

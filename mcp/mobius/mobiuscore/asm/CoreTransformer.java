@@ -27,13 +27,13 @@ public class CoreTransformer implements IClassTransformer {
 		                                                       		   new VarInsnNode(Opcodes.ALOAD, -1), 
 		                                                       		   new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "asp", "h", "()V")};
 
-	private static AbstractInsnNode[] WORLD_UPDATEENTITIES_PAYLOAD1 = {new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfiler;"),
+	private static AbstractInsnNode[] WORLD_UPDATEENTITIES_PAYLOAD1 = {new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerTileEntity;"),
         													           new VarInsnNode(Opcodes.ALOAD, 8), 
-        													           new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfiler", "TileEntityUpdate_Start", "(Lasp;)V")};	
+        													           new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Start", "(Lasp;)V")};	
 
-	private static AbstractInsnNode[] WORLD_UPDATEENTITIES_PAYLOAD2 = {new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfiler;"),
+	private static AbstractInsnNode[] WORLD_UPDATEENTITIES_PAYLOAD2 = {new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerTileEntity;"),
         															   new VarInsnNode(Opcodes.ALOAD, 8), 
-        															   new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfiler", "TileEntityUpdate_Stop", "(Lasp;)V")};		
+        															   new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Stop", "(Lasp;)V")};		
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
