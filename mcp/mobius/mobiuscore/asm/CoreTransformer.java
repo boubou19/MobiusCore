@@ -38,7 +38,9 @@ public class CoreTransformer implements IClassTransformer {
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
 		if (srgname.equals("net.minecraft.world.World"))
+		//if (name.equals("abv"))
 			return transformWorld(bytes);
+
 
 		return bytes;
 	}
