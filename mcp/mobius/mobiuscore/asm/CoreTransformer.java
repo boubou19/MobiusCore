@@ -23,24 +23,46 @@ import net.minecraft.launchwrapper.IClassTransformer;
 public class CoreTransformer implements IClassTransformer {
 
 	private static String WORLD_UPDATEENTITIES = "h ()V";
-	private static AbstractInsnNode[] WORLD_UPDATEENTITIES_PATTERN1 = {new LineNumberNode(-1, new LabelNode()), 
+	
+    //ALOAD 0
+    //ALOAD 2
+    //INVOKEVIRTUAL net/minecraft/world/World.updateEntity(Lnet/minecraft/entity/Entity;)V	
+	
+	//tileentity.updateEntity(); World:2215
+	private static AbstractInsnNode[] WORLD_UPDATE_PATTERN_TEUPDATE = {new LineNumberNode(-1, new LabelNode()), 
 		                                                       		   new VarInsnNode(Opcodes.ALOAD, -1), 
 		                                                       		   new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "asp", "h", "()V")};
 
-	private static AbstractInsnNode[] WORLD_UPDATEENTITIES_PAYLOAD1 = {new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerTileEntity;"),
-        													           new VarInsnNode(Opcodes.ALOAD, 8), 
-        													           new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Start", "(Lasp;)V")};	
+	//ProfilerRegistrar.profilerTileEntity.Start(tileentity);
+	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_START_TEUPDATE = {new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerTileEntity;"),
+        													                 new VarInsnNode(Opcodes.ALOAD, 8), 
+        													                 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Start", "(Lasp;)V")};	
 
-	private static AbstractInsnNode[] WORLD_UPDATEENTITIES_PAYLOAD2 = {new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerTileEntity;"),
-        															   new VarInsnNode(Opcodes.ALOAD, 8), 
-        															   new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Stop", "(Lasp;)V")};		
+	//ProfilerRegistrar.profilerTileEntity.Stop(tileentity);
+	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE = {new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerTileEntity;"),
+        															        new VarInsnNode(Opcodes.ALOAD, 8), 
+        															        new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Stop", "(Lasp;)V")};		
+	
+    //this.updateEntity(entity);
+	private static AbstractInsnNode[] WORLD_UPDATE_PATTERN_ENTUPDATE = {new LineNumberNode(-1, new LabelNode()), 
+		   																new VarInsnNode(Opcodes.ALOAD, -1),
+		   																new VarInsnNode(Opcodes.ALOAD, -1), 
+		   																new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "abw", "g", "(Lnn;)V")};	
+
+	//ProfilerRegistrar.profilerEntity.Start(entity);
+	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_START_ENTUPDATE = {new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
+        													                 new VarInsnNode(Opcodes.ALOAD, 2), 
+        													                 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Start", "(Lnn;)V")};	
+
+	//ProfilerRegistrar.profilerEntity.Stop(entity);
+	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE = {new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
+        															        new VarInsnNode(Opcodes.ALOAD, 2), 
+        															        new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Stop", "(Lnn;)V")};			
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
 		if (srgname.equals("net.minecraft.world.World"))
-		//if (name.equals("abv"))
 			return transformWorld(bytes);
-
 
 		return bytes;
 	}
@@ -127,23 +149,25 @@ public class CoreTransformer implements IClassTransformer {
 		
         for (MethodNode methodNode : classNode.methods){
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(WORLD_UPDATEENTITIES)){
-        		System.out.printf("Found World.updateEntities()... ");
+        		System.out.printf("Found World.updateEntities()... \n");
         		InsnList instructions = methodNode.instructions;
         		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
         		
-        		ArrayList<AbstractInsnNode> match = this.findPattern(methodNode, WORLD_UPDATEENTITIES_PATTERN1);
+        		ArrayList<AbstractInsnNode> match = this.findPattern(methodNode, WORLD_UPDATE_PATTERN_TEUPDATE);
         		
         		if (match != null){
         		
+        			System.out.printf("Trying to inject tile entity profiler... ");
+        			
         			InsnList payload = new InsnList();
-        			for (int i = 0; i < WORLD_UPDATEENTITIES_PAYLOAD1.length; i++)
-        				payload.add(WORLD_UPDATEENTITIES_PAYLOAD1[i]);
+        			for (int i = 0; i < WORLD_UPDATE_PAYLOAD_START_TEUPDATE.length; i++)
+        				payload.add(WORLD_UPDATE_PAYLOAD_START_TEUPDATE[i]);
         		
         			instructions.insertBefore(match.get(0), payload);
 
         			payload.clear();
-        			for (int i = 0; i < WORLD_UPDATEENTITIES_PAYLOAD2.length; i++)
-        				payload.add(WORLD_UPDATEENTITIES_PAYLOAD2[i]);
+        			for (int i = 0; i < WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE.length; i++)
+        				payload.add(WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE[i]);
         		
         			instructions.insert(match.get(match.size() - 1), payload);
         			
@@ -151,6 +175,31 @@ public class CoreTransformer implements IClassTransformer {
         		} else {
         			System.out.printf("Error while injecting !\n");
         		}
+        		
+        		match = this.findPattern(methodNode, WORLD_UPDATE_PATTERN_ENTUPDATE);
+
+        		if (match != null){
+            		
+        			System.out.printf("Trying to inject entity profiler... ");
+        			
+        			InsnList payload = new InsnList();
+        			for (int i = 0; i < WORLD_UPDATE_PAYLOAD_START_ENTUPDATE.length; i++)
+        				payload.add(WORLD_UPDATE_PAYLOAD_START_ENTUPDATE[i]);
+        		
+        			instructions.insertBefore(match.get(0), payload);
+
+        			payload.clear();
+        			for (int i = 0; i < WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE.length; i++)
+        				payload.add(WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE[i]);
+        		
+        			instructions.insert(match.get(match.size() - 1), payload);
+        			
+        			System.out.printf("Successful injection !\n");
+        		} else {
+        			System.out.printf("Error while injecting !\n");
+        		}        		
+        		
+        		
         	}
         }
         

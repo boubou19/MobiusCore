@@ -3,8 +3,14 @@ package mcp.mobius.mobiuscore.profiler;
 public class ProfilerRegistrar {
 
 	public static IProfilerTileEntity profilerTileEntity = new DummyProfiler();
-	public static void registerTileEntityProfiler(IProfilerTileEntity profiler){
+	public static IProfilerEntity     profilerEntity     = new DummyProfiler();
+	
+	public static void registerProfilerTileEntity(IProfilerTileEntity profiler){
 		profilerTileEntity = profiler;
 	}	
+
+	public static void registerProfilerEntity(IProfilerEntity profiler){
+		profilerEntity = profiler;
+	}		
 	
 }
