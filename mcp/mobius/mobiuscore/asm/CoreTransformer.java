@@ -59,6 +59,16 @@ public class CoreTransformer implements IClassTransformer {
         															        new VarInsnNode(Opcodes.ALOAD, 2), 
         															        new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Stop", "(Lnn;)V")};			
 	
+	//ProfilerRegistrar.profilerEntity.Start(entity);
+	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_START_ENTUPDATE_MCPC = {new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
+																			 new VarInsnNode(Opcodes.ALOAD, 4),
+        													                 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Start", "(Lnn;)V")};	
+
+	//ProfilerRegistrar.profilerEntity.Stop(entity);
+	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE_MCPC = {new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
+																			new VarInsnNode(Opcodes.ALOAD, 4),
+        															        new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Stop", "(Lnn;)V")};		
+	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
 		if (srgname.equals("net.minecraft.world.World"))
@@ -152,24 +162,14 @@ public class CoreTransformer implements IClassTransformer {
         		System.out.printf("Found World.updateEntities()... \n");
         		InsnList instructions = methodNode.instructions;
         		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
-        		
-        		ArrayList<AbstractInsnNode> match = this.findPattern(methodNode, WORLD_UPDATE_PATTERN_TEUPDATE);
-        		
+        		ArrayList<AbstractInsnNode> match;
+
+        		match = this.findPattern(methodNode, WORLD_UPDATE_PATTERN_TEUPDATE);
         		if (match != null){
-        		
         			System.out.printf("Trying to inject tile entity profiler... ");
         			
-        			InsnList payload = new InsnList();
-        			for (int i = 0; i < WORLD_UPDATE_PAYLOAD_START_TEUPDATE.length; i++)
-        				payload.add(WORLD_UPDATE_PAYLOAD_START_TEUPDATE[i]);
-        		
-        			instructions.insertBefore(match.get(0), payload);
-
-        			payload.clear();
-        			for (int i = 0; i < WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE.length; i++)
-        				payload.add(WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE[i]);
-        		
-        			instructions.insert(match.get(match.size() - 1), payload);
+        			this.applyPayloadBefore(instructions, match, WORLD_UPDATE_PAYLOAD_START_TEUPDATE);
+        			this.applyPayloadAfter(instructions, match, WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE);        			
         			
         			System.out.printf("Successful injection !\n");
         		} else {
@@ -177,22 +177,19 @@ public class CoreTransformer implements IClassTransformer {
         		}
         		
         		match = this.findPattern(methodNode, WORLD_UPDATE_PATTERN_ENTUPDATE);
-
         		if (match != null){
-            		
         			System.out.printf("Trying to inject entity profiler... ");
         			
-        			InsnList payload = new InsnList();
-        			for (int i = 0; i < WORLD_UPDATE_PAYLOAD_START_ENTUPDATE.length; i++)
-        				payload.add(WORLD_UPDATE_PAYLOAD_START_ENTUPDATE[i]);
-        		
-        			instructions.insertBefore(match.get(0), payload);
-
-        			payload.clear();
-        			for (int i = 0; i < WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE.length; i++)
-        				payload.add(WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE[i]);
-        		
-        			instructions.insert(match.get(match.size() - 1), payload);
+        			AbstractInsnNode[] PrevPayload = WORLD_UPDATE_PAYLOAD_START_ENTUPDATE;
+        			AbstractInsnNode[] NextPayload = WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE;
+        			VarInsnNode aload = (VarInsnNode)(match.get(2));
+        			if (aload.var == 4){
+        				PrevPayload = WORLD_UPDATE_PAYLOAD_START_ENTUPDATE_MCPC;
+        				NextPayload = WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE_MCPC;        				
+        			}
+        			
+        			this.applyPayloadBefore(instructions, match, PrevPayload);
+        			this.applyPayloadAfter(instructions, match, NextPayload);
         			
         			System.out.printf("Successful injection !\n");
         		} else {
@@ -207,4 +204,20 @@ public class CoreTransformer implements IClassTransformer {
         classNode.accept(writer);
         return writer.toByteArray();
 	}
+	
+	private void applyPayloadAfter(InsnList instructions, ArrayList<AbstractInsnNode> match,  AbstractInsnNode[] payload_pattern){
+		InsnList payload = new InsnList();
+		for (int i = 0; i < payload_pattern.length; i++)
+			payload.add(payload_pattern[i]);
+	
+		instructions.insert(match.get(match.size() - 1), payload);		
+	}
+	
+	private void applyPayloadBefore(InsnList instructions, ArrayList<AbstractInsnNode> match,  AbstractInsnNode[] payload_pattern){
+		InsnList payload = new InsnList();
+		for (int i = 0; i < payload_pattern.length; i++)
+			payload.add(payload_pattern[i]);
+	
+		instructions.insertBefore(match.get(0), payload);		
+	}	
 }
