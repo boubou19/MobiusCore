@@ -59,6 +59,8 @@ public class CoreTransformer implements IClassTransformer {
 				match = match && this.areInsnEqual(insnNode, pattern[i]);
 				if (match)
 					returnList.add(insnNode);
+				else
+					break;
 			}
 			
 			if (match){
