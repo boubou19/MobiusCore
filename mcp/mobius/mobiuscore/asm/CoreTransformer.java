@@ -44,20 +44,20 @@ public class CoreTransformer implements IClassTransformer {
 	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE = 
 		{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerTileEntity;"),
 		 new VarInsnNode(Opcodes.ALOAD, 8), 
-	     new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Stop", "(Lasp;)V")};		
+		 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Stop", "(Lasp;)V")};		
 	
     //this.updateEntity(entity);
 	private static AbstractInsnNode[] WORLD_UPDATE_PATTERN_ENTUPDATE = 
 		{new LineNumberNode(-1, new LabelNode()), 
 		 new VarInsnNode(Opcodes.ALOAD, -1),
-	     new VarInsnNode(Opcodes.ALOAD, -1), 
+		 new VarInsnNode(Opcodes.ALOAD, -1), 
 	     new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "abw", "g", "(Lnn;)V")};	
 
 	//ProfilerRegistrar.profilerEntity.Start(entity);
 	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_START_ENTUPDATE = 
 		{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
 		 new VarInsnNode(Opcodes.ALOAD, 2), 
-	     new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Start", "(Lnn;)V")};	
+		 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Start", "(Lnn;)V")};	
 
 	//ProfilerRegistrar.profilerEntity.Stop(entity);
 	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE = 
@@ -69,7 +69,7 @@ public class CoreTransformer implements IClassTransformer {
 	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_START_ENTUPDATE_MCPC = 
 		{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
 		 new VarInsnNode(Opcodes.ALOAD, 4),
-	     new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Start", "(Lnn;)V")};	
+		 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Start", "(Lnn;)V")};	
 
 	//ProfilerRegistrar.profilerEntity.Stop(entity);
 	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE_MCPC = 
