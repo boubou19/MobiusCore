@@ -268,8 +268,7 @@ public class TileEntityFurnace extends TileEntity implements ISidedInventory
 
         if (!this.worldObj.isRemote)
         {
-        	if (this.furnaceBurnTime == 0 && (this.furnaceItemStacks[1] == null || this.furnaceItemStacks[0] == null)) {}
-        	else{	
+        	if (!(this.furnaceBurnTime == 0 && (this.furnaceItemStacks[1] == null || this.furnaceItemStacks[0] == null))){
 	        	if (this.furnaceBurnTime == 0 && this.canSmelt())
 	            {
 	                this.currentItemBurnTime = this.furnaceBurnTime = getItemBurnTime(this.furnaceItemStacks[1]);
