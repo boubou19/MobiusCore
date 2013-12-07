@@ -26,8 +26,6 @@ public class CoreTransformer implements IClassTransformer {
 	// TileEntityFurnace => asg
 
 	TransformerWorld   transWorld   = new TransformerWorld();
-	TransformerHopper  transHopper  = new TransformerHopper();
-	TransformerFurnace transFurnace = new TransformerFurnace();	
 	
 	public CoreTransformer(){
 		super();
@@ -37,12 +35,6 @@ public class CoreTransformer implements IClassTransformer {
 	public byte[] transform(String name, String srgname, byte[] bytes) {
 		if (srgname.equals("net.minecraft.world.World"))
 			return transWorld.transform(name, srgname, bytes);
-
-		if (srgname.equals("net.minecraft.tileentity.TileEntityHopper"))
-			return transHopper.transform(name, srgname, bytes);
-
-		if (srgname.equals("net.minecraft.tileentity.TileEntityFurnace"))
-			return transFurnace.transform(name, srgname, bytes);		
 		
 		return bytes;
 	}

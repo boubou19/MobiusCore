@@ -1,6 +1,8 @@
 package mcp.mobius.mobiuscore.asm;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ListIterator;
 
 import org.objectweb.asm.ClassReader;
@@ -18,60 +20,98 @@ import org.objectweb.asm.tree.LineNumberNode;
 
 public class TransformerWorld extends TransformerBase{
 
-	private static String WORLD_UPDATEENTITIES = "h ()V";
-	
-    //ALOAD 0
-    //ALOAD 2
-    //INVOKEVIRTUAL net/minecraft/world/World.updateEntity(Lnet/minecraft/entity/Entity;)V	
+	private static String WORLD_UPDATEENTITIES;
 	
 	//tileentity.updateEntity(); World:2215
-	private static AbstractInsnNode[] WORLD_UPDATE_PATTERN_TEUPDATE = 
-		{new LineNumberNode(-1, new LabelNode()), 
-		 new VarInsnNode(Opcodes.ALOAD, -1), 
-		 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "asp", "h", "()V")};
+	private static AbstractInsnNode[] WORLD_UPDATE_PATTERN_TEUPDATE;
 
 	//ProfilerRegistrar.profilerTileEntity.Start(tileentity);
-	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_START_TEUPDATE = 
-		{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerTileEntity;"),
-		 new VarInsnNode(Opcodes.ALOAD, 8), 
-		 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Start", "(Lasp;)V")};	
+	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_START_TEUPDATE;	
 
 	//ProfilerRegistrar.profilerTileEntity.Stop(tileentity);
-	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE = 
-		{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerTileEntity;"),
-		 new VarInsnNode(Opcodes.ALOAD, 8), 
-		 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Stop", "(Lasp;)V")};		
+	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE;	
 	
     //this.updateEntity(entity);
-	private static AbstractInsnNode[] WORLD_UPDATE_PATTERN_ENTUPDATE = 
-		{new LineNumberNode(-1, new LabelNode()), 
-		 new VarInsnNode(Opcodes.ALOAD, -1),
-		 new VarInsnNode(Opcodes.ALOAD, -1), 
-	     new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "abw", "g", "(Lnn;)V")};	
+	private static AbstractInsnNode[] WORLD_UPDATE_PATTERN_ENTUPDATE;	
 
 	//ProfilerRegistrar.profilerEntity.Start(entity);
-	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_START_ENTUPDATE = 
-		{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
-		 new VarInsnNode(Opcodes.ALOAD, 2), 
-		 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Start", "(Lnn;)V")};	
+	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_START_ENTUPDATE;	
 
 	//ProfilerRegistrar.profilerEntity.Stop(entity);
-	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE = 
-		{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
-		 new VarInsnNode(Opcodes.ALOAD, 2), 
-		 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Stop", "(Lnn;)V")};			
+	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE;			
 	
 	//ProfilerRegistrar.profilerEntity.Start(entity);
-	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_START_ENTUPDATE_MCPC = 
-		{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
-		 new VarInsnNode(Opcodes.ALOAD, 4),
-		 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Start", "(Lnn;)V")};	
+	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_START_ENTUPDATE_MCPC;
 
 	//ProfilerRegistrar.profilerEntity.Stop(entity);
-	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE_MCPC = 
-		{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
-		 new VarInsnNode(Opcodes.ALOAD, 4),
-		 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Stop", "(Lnn;)V")};		
+	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE_MCPC;
+	
+	private static boolean isEclipse;
+	
+	private static HashMap<String, String> obfTable = new HashMap<String, String>();
+	
+	static{
+		isEclipse = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
+		
+		obfTable.put("h ()V"   , "updateEntities ()V");
+		obfTable.put("asp"     , "net/minecraft/tileentity/TileEntity");
+		obfTable.put("h"       , "updateEntity");
+		obfTable.put("g"       , "updateEntity");
+		obfTable.put("(Lasp;)V", "(Lnet/minecraft/tileentity/TileEntity;)V");
+		obfTable.put("(Lnn;)V" , "(Lnet/minecraft/entity/Entity;)V");
+		obfTable.put("abw"     , "net/minecraft/world/World");
+		
+		WORLD_UPDATEENTITIES = getCorrectName("h ()V");
+		
+		WORLD_UPDATE_PATTERN_TEUPDATE =	new AbstractInsnNode[] 
+			{new LineNumberNode(-1, new LabelNode()), 
+			 new VarInsnNode(Opcodes.ALOAD, -1), 
+			 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getCorrectName("asp"), getCorrectName("h"), "()V")};
+
+		WORLD_UPDATE_PAYLOAD_START_TEUPDATE = new AbstractInsnNode[]
+			{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerTileEntity;"),
+			 new VarInsnNode(Opcodes.ALOAD, 8), 
+			 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Start", getCorrectName("(Lasp;)V"))};	
+
+		WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE = new AbstractInsnNode[]
+			{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerTileEntity;"),
+			 new VarInsnNode(Opcodes.ALOAD, 8), 
+			 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Stop", getCorrectName("(Lasp;)V"))};		
+		
+		WORLD_UPDATE_PATTERN_ENTUPDATE = new AbstractInsnNode[]
+			{new LineNumberNode(-1, new LabelNode()), 
+			 new VarInsnNode(Opcodes.ALOAD, -1),
+			 new VarInsnNode(Opcodes.ALOAD, -1), 
+		     new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getCorrectName("abw"), getCorrectName("g"), getCorrectName("(Lnn;)V"))};	
+
+		WORLD_UPDATE_PAYLOAD_START_ENTUPDATE = new AbstractInsnNode[]
+			{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
+			 new VarInsnNode(Opcodes.ALOAD, 2), 
+			 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Start", getCorrectName("(Lnn;)V"))};	
+
+		WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE = new AbstractInsnNode[]
+			{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
+			 new VarInsnNode(Opcodes.ALOAD, 2), 
+			 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Stop", getCorrectName("(Lnn;)V"))};			
+		
+		WORLD_UPDATE_PAYLOAD_START_ENTUPDATE_MCPC = new AbstractInsnNode[]
+			{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
+			 new VarInsnNode(Opcodes.ALOAD, 4),
+			 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Start", getCorrectName("(Lnn;)V"))};	
+
+		WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE_MCPC = new AbstractInsnNode[]
+			{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
+			 new VarInsnNode(Opcodes.ALOAD, 4),
+			 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Stop", getCorrectName("(Lnn;)V"))};			
+		
+	}
+	
+	private static String getCorrectName(String key){
+		if (isEclipse)
+			return obfTable.get(key);
+		else
+			return key;
+	}
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes){

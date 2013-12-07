@@ -203,37 +203,42 @@ public abstract class TransformerBase {
 	 */
 	protected byte[] injectMethod(String className, MethodDescriptor methodDesc, byte[] vanillaBytes){
 		
-		byte[] coremodBytes = this.getJarClass(className);
-		
-		ClassNode   vanillaNode   = new ClassNode();
-        ClassReader vanillaReader = new ClassReader(vanillaBytes);
-		ClassNode   coremodNode   = new ClassNode();
-        ClassReader coremodReader = new ClassReader(coremodBytes);        
-        
-        vanillaReader.accept(vanillaNode, 0);
-        coremodReader.accept(coremodNode, 0);
-        
-        MethodNode coremodMethodNode = null;
-        for (MethodNode node: coremodNode.methods){
-        	try{
-        		if (node != null && node.desc.equals(methodDesc.getDescriptor()) && (node.name.equals(methodDesc.getMethodName()))){
-        			System.out.printf("Found method node %s.%s %s in Coremod. Injecting !\n", className, methodDesc.getMethodName(), methodDesc.getDescriptor());
-        			coremodMethodNode = node;
-        		}
-        	} catch (Exception e){
-        		//System.out.printf("Error while parsing %s %s\n", className, node);
-        	}
-        }        
-
-        if (coremodMethodNode == null){
-        	System.out.printf("Method node %s.%s %s not found in Coremod ! This is going to crash !.\n", className, methodDesc.getMethodName(), methodDesc.getDescriptor());
-        }        
-        
-        coremodMethodNode.accept(vanillaNode);
-        //vanillaNode.methods.add(coremodMethodNode);
-        
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-        vanillaNode.accept(writer);
-        return writer.toByteArray();		
+		try{
+			byte[] coremodBytes = this.getJarClass(className);
+			
+			ClassNode   vanillaNode   = new ClassNode();
+	        ClassReader vanillaReader = new ClassReader(vanillaBytes);
+			ClassNode   coremodNode   = new ClassNode();
+	        ClassReader coremodReader = new ClassReader(coremodBytes);        
+	        
+	        vanillaReader.accept(vanillaNode, 0);
+	        coremodReader.accept(coremodNode, 0);
+	        
+	        MethodNode coremodMethodNode = null;
+	        for (MethodNode node: coremodNode.methods){
+	        	try{
+	        		if (node != null && node.desc.equals(methodDesc.getDescriptor()) && (node.name.equals(methodDesc.getMethodName()))){
+	        			System.out.printf("Found method node %s.%s %s in Coremod. Injecting !\n", className, methodDesc.getMethodName(), methodDesc.getDescriptor());
+	        			coremodMethodNode = node;
+	        		}
+	        	} catch (Exception e){
+	        		//System.out.printf("Error while parsing %s %s\n", className, node);
+	        	}
+	        }        
+	
+	        if (coremodMethodNode == null){
+	        	System.out.printf("Method node %s.%s %s not found in Coremod ! This is going to crash !.\n", className, methodDesc.getMethodName(), methodDesc.getDescriptor());
+	        }        
+	        
+	        coremodMethodNode.accept(vanillaNode);
+	        //vanillaNode.methods.add(coremodMethodNode);
+	        
+	        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+	        vanillaNode.accept(writer);
+	        return writer.toByteArray();
+		} catch (ClassFormatError e){
+			System.out.printf("Class already injected.");
+			return vanillaBytes;
+		}		
 	}	
 }
