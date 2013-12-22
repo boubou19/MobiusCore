@@ -110,7 +110,7 @@ public abstract class TransformerBase {
 		for (int i = 0; i < payload_pattern.length; i++)
 			payload.add(payload_pattern[i]);
 	
-		instructions.insertBefore(match.get(0), payload);		
+		instructions.insertBefore(match.get(0), payload);
 	}	
 	
 	/*

@@ -25,7 +25,8 @@ public class CoreTransformer implements IClassTransformer {
 	// TileEntityHopper  => asi
 	// TileEntityFurnace => asg
 
-	TransformerWorld   transWorld   = new TransformerWorld();
+	TransformerWorld   transWorld        = new TransformerWorld();
+	TransformerFMLCommonHandler transFML = new TransformerFMLCommonHandler(); 
 	
 	public CoreTransformer(){
 		super();
@@ -35,6 +36,19 @@ public class CoreTransformer implements IClassTransformer {
 	public byte[] transform(String name, String srgname, byte[] bytes) {
 		if (srgname.equals("net.minecraft.world.World"))
 			return transWorld.transform(name, srgname, bytes);
+		
+		if (srgname.equals("cpw.mods.fml.common.FMLCommonHandler")){
+			System.out.printf("++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+			
+			/*
+			System.out.printf("FMLCH : %s\n", bytes.length);
+			for (byte b : bytes)
+				System.out.printf("%02X ", b);
+			System.out.printf("\n");			
+			*/
+			
+			return transFML.transform(name, srgname, bytes);		
+		}
 		
 		return bytes;
 	}
