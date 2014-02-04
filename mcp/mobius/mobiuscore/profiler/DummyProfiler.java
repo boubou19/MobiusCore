@@ -33,9 +33,7 @@ public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IPro
 	public void Stop(Entity ent) {}
 
 	@Override
-	public void StartTickStart(IScheduledTickHandler ticker, EnumSet<TickType> ticksToRun) {
-		System.out.printf("%s %s\n", ticker.getLabel(), ticksToRun);
-	}
+	public void StartTickStart(IScheduledTickHandler ticker, EnumSet<TickType> ticksToRun) {}
 
 	@Override
 	public void StopTickStart(IScheduledTickHandler ticker, EnumSet<TickType> ticksToRun) {}
