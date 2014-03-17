@@ -15,7 +15,9 @@ public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IPro
 	public void FullTileEntityStop() {}
 
 	@Override
-	public void Start(TileEntity te) {}
+	public void Start(TileEntity te) {
+		//System.out.printf("%s [%s %s %s]\n", te.getClass().getName(), te.xCoord, te.yCoord, te.zCoord);
+	}
 
 	@Override
 	public void Stop(TileEntity te) {}
