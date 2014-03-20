@@ -277,6 +277,7 @@ public class FMLCommonHandler
     public void onPostServerTick()
     {
         tickEnd(EnumSet.of(TickType.SERVER), Side.SERVER);
+    	ProfilerRegistrar.profilerTick.TickEnd();          
     }
 
     /**
@@ -289,6 +290,7 @@ public class FMLCommonHandler
 
     public void onPreServerTick()
     {
+    	ProfilerRegistrar.profilerTick.TickStart();
         tickStart(EnumSet.of(TickType.SERVER), Side.SERVER);
     }
 

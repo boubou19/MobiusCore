@@ -572,8 +572,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IPlay
      */
     public void tick()
     {
-    	ProfilerRegistrar.profilerTick.TickStart();
-    	
         FMLCommonHandler.instance().rescheduleTicks(Side.SERVER);
         long i = System.nanoTime();
         AxisAlignedBB.getAABBPool().cleanPool();
@@ -624,8 +622,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IPlay
         this.theProfiler.endSection();
         this.theProfiler.endSection();
         FMLCommonHandler.instance().onPostServerTick();
-        
-    	ProfilerRegistrar.profilerTick.TickEnd();        
     }
 
     public void updateTimeLightAndEntities()
@@ -660,9 +656,9 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IPlay
 
                 try
                 {
-                	ProfilerRegistrar.profilerSubtick.SubTickStart();
+                	//ProfilerRegistrar.profilerWorldTick.WorldTickStart(id);
                     worldserver.tick();
-                	ProfilerRegistrar.profilerSubtick.SubTickEnd();                    
+                	//ProfilerRegistrar.profilerWorldTick.WorldTickEnd(id);                    
                 }
                 catch (Throwable throwable)
                 {
@@ -673,7 +669,9 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IPlay
 
                 try
                 {
+                	//ProfilerRegistrar.profilerEntUpdate.EntUpdateStart(id);                	
                     worldserver.updateEntities();
+                	//ProfilerRegistrar.profilerEntUpdate.EntUpdateEnd(id);                 
                 }
                 catch (Throwable throwable1)
                 {

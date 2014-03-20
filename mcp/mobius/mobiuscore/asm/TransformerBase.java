@@ -10,6 +10,7 @@ import java.util.zip.ZipFile;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
@@ -25,27 +26,36 @@ public abstract class TransformerBase {
 	
 	public abstract byte[] transform(String name, String srgname, byte[] bytes);
 	
-	protected ArrayList<AbstractInsnNode> findPattern(MethodNode methodNode, AbstractInsnNode... pattern){
+	protected ArrayList<ArrayList<AbstractInsnNode>> findPattern(MethodNode methodNode, AbstractInsnNode... pattern){
 		InsnList instructions = methodNode.instructions;
-		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
-		ArrayList<AbstractInsnNode> returnList = new ArrayList<AbstractInsnNode>(); 
+		ArrayList<ArrayList<AbstractInsnNode>> returnList = new ArrayList<ArrayList<AbstractInsnNode>>();
 		
-		while (iterator.hasNext()){
-			boolean match = true;
-			returnList.clear();
+		//We are going to check all the intructions in the method to find pattens
+		for (int indexFirstInst = 0; indexFirstInst < instructions.size(); indexFirstInst++){	
 			
-			for (int i = 0; i < pattern.length; i++){
-				AbstractInsnNode insnNode = iterator.next();
-				match = match && this.areInsnEqual(insnNode, pattern[i]);
-				if (match)
-					returnList.add(insnNode);
-				else
-					break;
-			}
+			AbstractInsnNode currNode = instructions.get(indexFirstInst);
 			
-			if (match){
-				System.out.printf("Pattern found ... ");
-				return returnList;
+			//We found the first element of the pattern. We are starting matching all the elements
+			if (this.areInsnEqual(currNode, pattern[0]));{	
+				boolean match = true;
+				
+				//We are forward matching all the instructions to see if they are ok. By the end of this loop, match is false if at least one inst doesn't match
+				for (int indexPatternInst = 0; indexPatternInst < pattern.length; indexPatternInst++){
+					try{
+						match = match && this.areInsnEqual(instructions.get(indexFirstInst + indexPatternInst) , pattern[indexPatternInst]);
+					} catch (ArrayIndexOutOfBoundsException e){
+						return returnList;	// This can only happen if there is less than the number of pattern elements in the remaining instructions. We can return the current results directly.
+					}
+				}
+
+				// All the instructions are equal, we create a new ArrayList and add it to the return list
+				if (match){
+					ArrayList<AbstractInsnNode> matchedPattern = new ArrayList<AbstractInsnNode>();
+					for (int indexPatternInst = 0; indexPatternInst < pattern.length; indexPatternInst++){
+						matchedPattern.add(instructions.get(indexFirstInst + indexPatternInst));
+					}
+					returnList.add(matchedPattern);
+				}
 			}
 		}
 		
@@ -112,6 +122,26 @@ public abstract class TransformerBase {
 	
 		instructions.insertBefore(match.get(0), payload);
 	}	
+	
+	protected void applyPayloadFirst(InsnList instructions, AbstractInsnNode[] payload_pattern){
+		InsnList payload = new InsnList();
+		for (int i = 0; i < payload_pattern.length; i++)
+			payload.add(payload_pattern[i]);
+	
+		instructions.insertBefore(instructions.getFirst(), payload);
+	}		
+	
+	protected void applyPayloadLast(InsnList instructions, AbstractInsnNode[] payload_pattern){
+		InsnList payload = new InsnList();
+		for (int i = 0; i < payload_pattern.length; i++)
+			payload.add(payload_pattern[i]);
+	
+		for (int i = instructions.size() - 1; i >= 0; i--){
+			if (instructions.get(i).getOpcode() == Opcodes.RETURN){
+				instructions.insertBefore(instructions.get(i), payload);
+			}
+		}
+	}		
 	
 	/*
 	 * Will return a byte array of the content of the named class in the coremod jar

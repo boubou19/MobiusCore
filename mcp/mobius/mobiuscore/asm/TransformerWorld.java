@@ -127,36 +127,40 @@ public class TransformerWorld extends TransformerBase{
         		System.out.printf("Found World.updateEntities()... \n");
         		InsnList instructions = methodNode.instructions;
         		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
-        		ArrayList<AbstractInsnNode> match;
+        		ArrayList<ArrayList<AbstractInsnNode>> match;
 
         		match = this.findPattern(methodNode, WORLD_UPDATE_PATTERN_TEUPDATE);
-        		if (match != null){
-        			System.out.printf("Trying to inject tile entity profiler... ");
-        			
-        			this.applyPayloadBefore(instructions, match, WORLD_UPDATE_PAYLOAD_START_TEUPDATE);
-        			this.applyPayloadAfter(instructions, match, WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE);        			
-        			
-        			System.out.printf("Successful injection !\n");
+        		if (match.size() != 0){
+        			for (ArrayList<AbstractInsnNode> sublist : match){
+	        			System.out.printf("Trying to inject tile entity profiler... ");
+	        			
+	        			this.applyPayloadBefore(instructions, sublist, WORLD_UPDATE_PAYLOAD_START_TEUPDATE);
+	        			this.applyPayloadAfter(instructions, sublist, WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE);        			
+	        			
+	        			System.out.printf("Successful injection !\n");
+        			}
         		} else {
         			System.out.printf("Error while injecting !\n");
         		}
         		
         		match = this.findPattern(methodNode, WORLD_UPDATE_PATTERN_ENTUPDATE);
-        		if (match != null){
-        			System.out.printf("Trying to inject entity profiler... ");
-        			
-        			AbstractInsnNode[] PrevPayload = WORLD_UPDATE_PAYLOAD_START_ENTUPDATE;
-        			AbstractInsnNode[] NextPayload = WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE;
-        			VarInsnNode aload = (VarInsnNode)(match.get(2));
-        			if (aload.var == 4){
-        				PrevPayload = WORLD_UPDATE_PAYLOAD_START_ENTUPDATE_MCPC;
-        				NextPayload = WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE_MCPC;        				
+        		if (match.size() != 0){
+        			for (ArrayList<AbstractInsnNode> sublist : match){
+	        			System.out.printf("Trying to inject entity profiler... ");
+	        			
+	        			AbstractInsnNode[] PrevPayload = WORLD_UPDATE_PAYLOAD_START_ENTUPDATE;
+	        			AbstractInsnNode[] NextPayload = WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE;
+	        			VarInsnNode aload = (VarInsnNode)(sublist.get(2));
+	        			if (aload.var == 4){
+	        				PrevPayload = WORLD_UPDATE_PAYLOAD_START_ENTUPDATE_MCPC;
+	        				NextPayload = WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE_MCPC;        				
+	        			}
+	        			
+	        			this.applyPayloadBefore(instructions, sublist, PrevPayload);
+	        			this.applyPayloadAfter(instructions, sublist, NextPayload);
+	        			
+	        			System.out.printf("Successful injection !\n");
         			}
-        			
-        			this.applyPayloadBefore(instructions, match, PrevPayload);
-        			this.applyPayloadAfter(instructions, match, NextPayload);
-        			
-        			System.out.printf("Successful injection !\n");
         		} else {
         			System.out.printf("Error while injecting !\n");
         		}        		

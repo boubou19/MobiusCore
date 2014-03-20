@@ -8,13 +8,15 @@ public class ProfilerRegistrar {
 	public static IProfilerEntity     profilerEntity     = dummy;
 	public static IProfilerHandler    profilerHandler    = dummy;
 	public static IProfilerTick       profilerTick       = dummy;
-	public static IProfilerSubtick    profilerSubtick    = dummy;
+	public static IProfilerWorldTick  profilerWorldTick  = dummy;
+	public static IProfilerEntUpdate  profilerEntUpdate  = dummy;	
 
 	public static IProfilerTileEntity regProfilerTileEntity = dummy;
 	public static IProfilerEntity     regProfilerEntity     = dummy;
 	public static IProfilerHandler    regProfilerHandler    = dummy;
 	public static IProfilerTick       regProfilerTick       = dummy;	
-	public static IProfilerSubtick    regProfilerSubtick    = dummy;
+	public static IProfilerWorldTick  regProfilerWorldTick  = dummy;
+	public static IProfilerEntUpdate  regProfilerEntUpdate  = dummy;	
 	
 	public static void registerProfilerTileEntity(IProfilerTileEntity profiler){
 		regProfilerTileEntity = profiler;
@@ -28,9 +30,13 @@ public class ProfilerRegistrar {
 		regProfilerHandler = profiler;
 	}			
 
-	public static void registerProfilerSubtick(IProfilerSubtick profiler){
-		regProfilerSubtick = profiler;
+	public static void registerProfilerWorldTick(IProfilerWorldTick profiler){
+		regProfilerWorldTick = profiler;
 	}					
+	
+	public static void registerProfilerEntUpdate(IProfilerEntUpdate profiler){
+		regProfilerEntUpdate = profiler;
+	}	
 	
 	public static void registerProfilerTick(IProfilerTick profiler){
 		profilerTick    = profiler;		
@@ -41,14 +47,16 @@ public class ProfilerRegistrar {
 		profilerTileEntity = regProfilerTileEntity;
 		profilerEntity     = regProfilerEntity;
 		profilerHandler    = regProfilerHandler;
-		profilerSubtick    = regProfilerSubtick;
+		profilerWorldTick  = regProfilerWorldTick;
+		profilerEntUpdate  = regProfilerEntUpdate;
 	}
 	
 	public static void turnOff(){
 		profilerTileEntity = dummy;
 		profilerEntity     = dummy;
 		profilerHandler    = dummy;		
-		profilerSubtick    = dummy;
+		profilerWorldTick  = dummy;
+		profilerEntUpdate  = dummy;
 	}
 	
 }

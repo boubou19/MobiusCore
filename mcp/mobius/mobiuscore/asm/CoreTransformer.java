@@ -25,8 +25,10 @@ public class CoreTransformer implements IClassTransformer {
 	// TileEntityHopper  => asi
 	// TileEntityFurnace => asg
 
-	TransformerWorld   transWorld        = new TransformerWorld();
-	TransformerFMLCommonHandler transFML = new TransformerFMLCommonHandler(); 
+	TransformerWorld            transWorld = new TransformerWorld();
+	TransformerFMLCommonHandler transFML   = new TransformerFMLCommonHandler(); 
+	TransformerMinecraftServer  transMCS   = new TransformerMinecraftServer();
+	TransformerWorldServer      transWorldServer   = new TransformerWorldServer();
 	
 	public CoreTransformer(){
 		super();
@@ -49,6 +51,14 @@ public class CoreTransformer implements IClassTransformer {
 			
 			return transFML.transform(name, srgname, bytes);		
 		}
+
+		//if (srgname.equals("net.minecraft.server.MinecraftServer")){
+		//	return transMCS.transform(name, srgname, bytes);
+		//}
+		
+		if (srgname.equals("net.minecraft.world.WorldServer")){
+			return transWorldServer.transform(name, srgname, bytes);
+		}		
 		
 		return bytes;
 	}

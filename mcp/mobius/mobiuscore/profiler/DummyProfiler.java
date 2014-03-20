@@ -7,7 +7,8 @@ import cpw.mods.fml.common.TickType;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
-public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IProfilerHandler, IProfilerTick, IProfilerSubtick {
+public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IProfilerHandler, 
+                                      IProfilerTick, IProfilerWorldTick, IProfilerEntUpdate {
 	@Override
 	public void FullTileEntityStart() {}
 
@@ -53,9 +54,15 @@ public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IPro
 	public void TickEnd() {}
 
 	@Override
-	public void SubTickStart() {}
+	public void WorldTickStart(int id) {}
 
 	@Override
-	public void SubTickEnd() {}
+	public void WorldTickEnd(int id) {}
+
+	@Override
+	public void EntUpdateStart(int id) {}
+
+	@Override
+	public void EntUpdateEnd(int id) {}
 
 }
