@@ -26,7 +26,7 @@ public class DeadManSwitch implements Runnable{
 		this.server    = server;
 		this.maxTimer  = maxTimer;
 		this.sleepTime = sleepTime;
-		this.serverThread = serverThread;
+		this.serverThread = serverThread; 
 		
 	}
 	
