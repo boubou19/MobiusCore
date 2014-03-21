@@ -29,6 +29,7 @@ public class CoreTransformer implements IClassTransformer {
 	TransformerFMLCommonHandler transFML   = new TransformerFMLCommonHandler(); 
 	TransformerMinecraftServer  transMCS   = new TransformerMinecraftServer();
 	TransformerWorldServer      transWorldServer   = new TransformerWorldServer();
+	TransformerTcpConnection    transTCPConnection = new TransformerTcpConnection();
 	
 	public CoreTransformer(){
 		super();
@@ -36,6 +37,8 @@ public class CoreTransformer implements IClassTransformer {
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
+		//System.out.printf("[ %s ] %s\n", name, srgname);
+		
 		if (srgname.equals("net.minecraft.world.World"))
 			return transWorld.transform(name, srgname, bytes);
 		
@@ -59,6 +62,10 @@ public class CoreTransformer implements IClassTransformer {
 		if (srgname.equals("net.minecraft.world.WorldServer")){
 			return transWorldServer.transform(name, srgname, bytes);
 		}		
+		
+		if (srgname.equals("net.minecraft.network.TcpConnection")){
+			return transTCPConnection.transform(name, srgname, bytes);
+		}			
 		
 		return bytes;
 	}

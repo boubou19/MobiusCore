@@ -656,9 +656,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IPlay
 
                 try
                 {
-                	//ProfilerRegistrar.profilerWorldTick.WorldTickStart(id);
                     worldserver.tick();
-                	//ProfilerRegistrar.profilerWorldTick.WorldTickEnd(id);                    
                 }
                 catch (Throwable throwable)
                 {
@@ -669,9 +667,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IPlay
 
                 try
                 {
-                	//ProfilerRegistrar.profilerEntUpdate.EntUpdateStart(id);                	
                     worldserver.updateEntities();
-                	//ProfilerRegistrar.profilerEntUpdate.EntUpdateEnd(id);                 
                 }
                 catch (Throwable throwable1)
                 {

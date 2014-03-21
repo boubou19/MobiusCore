@@ -13,7 +13,9 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -25,8 +27,12 @@ public abstract class TransformerBase {
 	HashMap<String, List<MethodDescriptor>> methodsToInject    = new HashMap<String, List<MethodDescriptor>>();		
 	
 	public abstract byte[] transform(String name, String srgname, byte[] bytes);
-	
+
 	protected ArrayList<ArrayList<AbstractInsnNode>> findPattern(MethodNode methodNode, AbstractInsnNode... pattern){
+		return findPattern( methodNode, false, pattern);	
+	}
+	
+	protected ArrayList<ArrayList<AbstractInsnNode>> findPattern(MethodNode methodNode, boolean dumpOpcodes, AbstractInsnNode... pattern){
 		InsnList instructions = methodNode.instructions;
 		ArrayList<ArrayList<AbstractInsnNode>> returnList = new ArrayList<ArrayList<AbstractInsnNode>>();
 		
@@ -34,6 +40,8 @@ public abstract class TransformerBase {
 		for (int indexFirstInst = 0; indexFirstInst < instructions.size(); indexFirstInst++){	
 			
 			AbstractInsnNode currNode = instructions.get(indexFirstInst);
+			if (dumpOpcodes)
+				printInsnNode(currNode);
 			
 			//We found the first element of the pattern. We are starting matching all the elements
 			if (this.areInsnEqual(currNode, pattern[0]));{	
@@ -69,11 +77,13 @@ public abstract class TransformerBase {
 		if (insn1 instanceof LineNumberNode){
 			if ((((LineNumberNode)insn2).line == -1) || (((LineNumberNode)insn2).line == -1)) return true;
 			if (((LineNumberNode)insn2).line  != ((LineNumberNode)insn2).line) return false;
+			if (((LineNumberNode)insn2).line  == ((LineNumberNode)insn2).line) return true;			
 		}
 			
 		if (insn1 instanceof VarInsnNode){
 			if ((((VarInsnNode)insn2).var == -1) || (((VarInsnNode)insn2).var == -1)) return true;
 			if (((VarInsnNode)insn2).var  != ((VarInsnNode)insn2).var) return false;
+			if (((VarInsnNode)insn2).var  == ((VarInsnNode)insn2).var) return true;			
 		}
 
 		if (insn1 instanceof MethodInsnNode){
@@ -82,6 +92,18 @@ public abstract class TransformerBase {
 			    (((MethodInsnNode)insn1).desc.equals(((MethodInsnNode)insn2).desc)))
 				return true;
 		}
+		
+		if (insn1 instanceof FieldInsnNode){
+			if ((((FieldInsnNode)insn1).owner.equals(((FieldInsnNode)insn2).owner)) &&
+			    (((FieldInsnNode)insn1).name.equals(((FieldInsnNode)insn2).name))  &&
+			    (((FieldInsnNode)insn1).desc.equals(((FieldInsnNode)insn2).desc)))
+				return true;
+		}		
+		
+		if (insn1 instanceof InsnNode){
+			if (insn1.getOpcode() == insn2.getOpcode())
+				return true;
+		}		
 		
 		return false;
 		
@@ -102,7 +124,7 @@ public abstract class TransformerBase {
 			break;        					
 			
 		default:
-			System.out.printf("%s\n", insnNode);
+			System.out.printf("[ %s ] %s\n", insnNode.getOpcode(), insnNode);
 			break;
 		}		
 	}

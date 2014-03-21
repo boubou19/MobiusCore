@@ -5,10 +5,12 @@ import java.util.EnumSet;
 import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
 import net.minecraft.entity.Entity;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.tileentity.TileEntity;
 
 public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IProfilerHandler, 
-                                      IProfilerTick, IProfilerWorldTick, IProfilerEntUpdate {
+                                      IProfilerTick, IProfilerWorldTick, IProfilerEntUpdate,
+                                      IProfilerPacket {
 	@Override
 	public void FullTileEntityStart() {}
 
@@ -64,5 +66,11 @@ public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IPro
 
 	@Override
 	public void EntUpdateEnd(int id) {}
+
+	@Override
+	public void addPacketOut(Packet packet) {}
+
+	@Override
+	public void addPacketIn(Packet packet) {}
 
 }
