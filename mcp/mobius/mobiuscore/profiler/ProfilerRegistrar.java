@@ -20,6 +20,8 @@ public class ProfilerRegistrar {
 	public static IProfilerEntUpdate  regProfilerEntUpdate  = dummy;	
 	public static IProfilerPacket     regProfilerPacket     = dummy;
 	
+	public static long timeStampLastRun = 0;
+	
 	public static void registerProfilerTileEntity(IProfilerTileEntity profiler){
 		regProfilerTileEntity = profiler;
 	}	
@@ -64,6 +66,8 @@ public class ProfilerRegistrar {
 		profilerHandler    = dummy;		
 		profilerWorldTick  = dummy;
 		profilerEntUpdate  = dummy;
+		
+		timeStampLastRun   = System.currentTimeMillis();
 	}
 	
 }
