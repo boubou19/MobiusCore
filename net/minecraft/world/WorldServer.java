@@ -199,14 +199,23 @@ public class WorldServer extends World
         }
 
         this.theProfiler.endStartSection("tickPending");
+        
         this.tickUpdates(false);
+        
         this.theProfiler.endStartSection("tickTiles");
+        
         this.tickBlocksAndAmbiance();
+        
         this.theProfiler.endStartSection("chunkMap");
+        
         this.thePlayerManager.updatePlayerInstances();
+        
         this.theProfiler.endStartSection("village");
+        
         this.villageCollectionObj.tick();
+        
         this.villageSiegeObj.tick();
+        
         this.theProfiler.endStartSection("portalForcer");
         this.worldTeleporter.removeStalePortalLocations(this.getTotalWorldTime());
         for (Teleporter tele : customTeleporters)
@@ -214,6 +223,7 @@ public class WorldServer extends World
             tele.removeStalePortalLocations(getTotalWorldTime());
         }
         this.theProfiler.endSection();
+        
         this.sendAndApplyBlockEvents();
         
     	ProfilerRegistrar.profilerWorldTick.WorldTickEnd(this.provider.dimensionId);        
@@ -336,7 +346,10 @@ public class WorldServer extends World
      */
     protected void tickBlocksAndAmbiance()
     {
+    	ProfilerRegistrar.profilerWorldTick.startDim(this.provider.dimensionId, "initialSetup");
         super.tickBlocksAndAmbiance();
+    	ProfilerRegistrar.profilerWorldTick.stopDim(this.provider.dimensionId, "initialSetup");
+    	
         int i = 0;
         int j = 0;
         Iterator iterator = this.activeChunkSet.iterator();
@@ -349,9 +362,14 @@ public class WorldServer extends World
 
         final long startTime = System.nanoTime();
 
+    	//ProfilerRegistrar.profilerWorldTick.startDim(this.provider.dimensionId, "iterator");
+        
         while (iterator.hasNext())
         {
             ChunkCoordIntPair chunkcoordintpair = (ChunkCoordIntPair)iterator.next();
+            
+            //ProfilerRegistrar.profilerWorldTick.startChunk(this.provider.dimensionId, chunkcoordintpair, "full");
+            
             int k = chunkcoordintpair.chunkXPos * 16;
             int l = chunkcoordintpair.chunkZPos * 16;
             this.theProfiler.startSection("getChunk");
@@ -359,10 +377,15 @@ public class WorldServer extends World
             this.moodSoundAndLightCheck(k, l, chunk);
             this.theProfiler.endStartSection("tickChunk");
             //Limits and evenly distributes the lighting update time
+            
+            //ProfilerRegistrar.profilerWorldTick.startChunk(this.provider.dimensionId, chunkcoordintpair, "light");
             if (System.nanoTime() - startTime <= 4000000 && doneChunks.add(chunkcoordintpair))
             {
                 chunk.updateSkylight();
             }
+            //ProfilerRegistrar.profilerWorldTick.stopChunk(this.provider.dimensionId, chunkcoordintpair, "light");
+            
+            //ProfilerRegistrar.profilerWorldTick.startChunk(this.provider.dimensionId, chunkcoordintpair, "thunder");
             this.theProfiler.endStartSection("thunder");
             int i1;
             int j1;
@@ -382,10 +405,12 @@ public class WorldServer extends World
                     this.addWeatherEffect(new EntityLightningBolt(this, (double)j1, (double)l1, (double)k1));
                 }
             }
-
+            //ProfilerRegistrar.profilerWorldTick.stopChunk(this.provider.dimensionId, chunkcoordintpair, "thunder");
+            
             this.theProfiler.endStartSection("iceandsnow");
             int i2;
 
+            //ProfilerRegistrar.profilerWorldTick.startChunk(this.provider.dimensionId, chunkcoordintpair, "ice");
             if (provider.canDoRainSnowIce(chunk) && this.rand.nextInt(16) == 0)
             {
                 this.updateLCG = this.updateLCG * 3 + 1013904223;
@@ -419,11 +444,14 @@ public class WorldServer extends World
                     }
                 }
             }
+            //ProfilerRegistrar.profilerWorldTick.stopChunk(this.provider.dimensionId, chunkcoordintpair, "ice");
+            
 
             this.theProfiler.endStartSection("tickTiles");
             ExtendedBlockStorage[] aextendedblockstorage = chunk.getBlockStorageArray();
             j1 = aextendedblockstorage.length;
 
+            ProfilerRegistrar.profilerWorldTick.startChunk(this.provider.dimensionId, chunkcoordintpair, "tile");            
             for (k1 = 0; k1 < j1; ++k1)
             {
                 ExtendedBlockStorage extendedblockstorage = aextendedblockstorage[k1];
@@ -449,9 +477,11 @@ public class WorldServer extends World
                     }
                 }
             }
-
+            ProfilerRegistrar.profilerWorldTick.stopChunk(this.provider.dimensionId, chunkcoordintpair, "tile");
             this.theProfiler.endSection();
         }
+        
+    	//ProfilerRegistrar.profilerWorldTick.stopDim(this.provider.dimensionId, "iterator");        
     }
 
     /**
