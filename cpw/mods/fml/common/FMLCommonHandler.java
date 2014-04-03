@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import mcp.mobius.mobiuscore.profiler.ProfilerRegistrar;
 import mcp.mobius.mobiuscore.profiler_v2.ProfilerSection;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;

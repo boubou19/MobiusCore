@@ -12,7 +12,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
-import mcp.mobius.mobiuscore.profiler.ProfilerRegistrar;
 import mcp.mobius.mobiuscore.profiler_v2.ProfilerSection;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEventData;

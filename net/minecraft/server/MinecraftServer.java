@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import mcp.mobius.mobiuscore.profiler.ProfilerRegistrar;
-import mcp.mobius.opis.data.server.DeadManSwitch;
+import mcp.mobius.opis.data.profilers.DeadManSwitch;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ICommandSender;
@@ -691,9 +690,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IPlay
         DimensionManager.unloadWorlds(worldTickTimes);
         this.theProfiler.endStartSection("connection");
         
-        ProfilerRegistrar.profilerPacket.startNetwork("Network / Main");
         this.getNetworkThread().networkTick();
-        ProfilerRegistrar.profilerPacket.stopNetwork("Network / Main");
         
         this.theProfiler.endStartSection("players");
         this.serverConfigManager.sendPlayerInfoToAllPlayers();
