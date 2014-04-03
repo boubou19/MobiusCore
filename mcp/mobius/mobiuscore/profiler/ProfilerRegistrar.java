@@ -6,13 +6,11 @@ public class ProfilerRegistrar {
 	
 	public static IProfilerTileEntity profilerTileEntity = dummy;
 	public static IProfilerHandler    profilerHandler    = dummy;
-	public static IProfilerTick       profilerTick       = dummy;
 	public static IProfilerEntUpdate  profilerEntUpdate  = dummy;
 	public static IProfilerNetwork     profilerPacket     = dummy;	
 
 	public static IProfilerTileEntity regProfilerTileEntity = dummy;
 	public static IProfilerHandler    regProfilerHandler    = dummy;
-	public static IProfilerTick       regProfilerTick       = dummy;	
 	public static IProfilerEntUpdate  regProfilerEntUpdate  = dummy;	
 	public static IProfilerNetwork     regProfilerPacket     = dummy;
 	
@@ -29,11 +27,6 @@ public class ProfilerRegistrar {
 	public static void registerProfilerEntUpdate(IProfilerEntUpdate profiler){
 		regProfilerEntUpdate = profiler;
 	}	
-	
-	public static void registerProfilerTick(IProfilerTick profiler){
-		profilerTick    = profiler;		
-		regProfilerTick = profiler;
-	}				
 	
 	public static void registerProfilerPacket(IProfilerNetwork profiler){
 		profilerPacket    = profiler;		

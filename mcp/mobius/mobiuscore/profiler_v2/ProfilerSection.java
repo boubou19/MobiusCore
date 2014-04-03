@@ -5,7 +5,8 @@ import net.minecraft.world.World;
 public enum ProfilerSection implements IProfilerBase{
 	DIMENSION_TICK(RunType.REALTIME),			//Global section around the ticks for each dim (Blocks & ents).
 	DIMENSION_BLOCKTICK(RunType.ONREQUEST),		//Subsection for dimension block tick.
-	ENTITY_UPDATETIME(RunType.ONREQUEST);		//Profiling of the entity tick time, per entity.
+	ENTITY_UPDATETIME(RunType.ONREQUEST),		//Profiling of the entity tick time, per entity.
+	TICK(RunType.REALTIME);						//Tick timing profiling
 	
 	public enum RunType{
 		REALTIME,
