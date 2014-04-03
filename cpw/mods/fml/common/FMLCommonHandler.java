@@ -121,9 +121,9 @@ public class FMLCommonHandler
             ticksToRun.retainAll(ticks);
             if (!ticksToRun.isEmpty())
             {
-            	ProfilerRegistrar.profilerHandler.StartTickStart(ticker, ticksToRun);            	
+            	ProfilerSection.HANDLER_TICKSTART.start(ticker, ticksToRun);
                 ticker.tickStart(ticksToRun, data);
-            	ProfilerRegistrar.profilerHandler.StopTickStart(ticker, ticksToRun);                
+                ProfilerSection.HANDLER_TICKSTART.stop(ticker, ticksToRun);
             }
         }
     }
@@ -142,9 +142,9 @@ public class FMLCommonHandler
             ticksToRun.retainAll(ticks);
             if (!ticksToRun.isEmpty())
             {
-            	ProfilerRegistrar.profilerHandler.StartTickEnd(ticker, ticksToRun);
+            	ProfilerSection.HANDLER_TICKSTOP.start(ticker, ticksToRun);
                 ticker.tickEnd(ticksToRun, data);
-            	ProfilerRegistrar.profilerHandler.StopTickEnd(ticker, ticksToRun);                
+                ProfilerSection.HANDLER_TICKSTOP.stop(ticker, ticksToRun);
             }
         }
     }

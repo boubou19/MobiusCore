@@ -7,7 +7,9 @@ public enum ProfilerSection implements IProfilerBase{
 	DIMENSION_BLOCKTICK(RunType.ONREQUEST),		//Subsection for dimension block tick.
 	ENTITY_UPDATETIME(RunType.ONREQUEST),		//Profiling of the entity tick time, per entity.
 	TICK(RunType.REALTIME),						//Tick timing profiling
-	TILEENT_UPDATETIME(RunType.ONREQUEST);		//Profiling of the TileEntity tick time, per TE.
+	TILEENT_UPDATETIME(RunType.ONREQUEST),		//Profiling of the TileEntity tick time, per TE.
+	HANDLER_TICKSTART(RunType.ONREQUEST), 		//Server handler for ServerTick start.
+	HANDLER_TICKSTOP(RunType.ONREQUEST);  		//Server handler for ServerTick stop.
 	
 	public enum RunType{
 		REALTIME,
