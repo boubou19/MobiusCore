@@ -4,6 +4,8 @@ import net.minecraft.world.World;
 
 public interface IProfilerBase {
 
+	public void reset();
+	
 	public void start();
 	public void stop();
 

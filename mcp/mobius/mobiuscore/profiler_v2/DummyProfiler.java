@@ -3,7 +3,9 @@ package mcp.mobius.mobiuscore.profiler_v2;
 import net.minecraft.world.World;
 
 public class DummyProfiler implements IProfilerBase{
-
+	@Override
+	public void reset() {}
+	
 	@Override
 	public void start() {}
 

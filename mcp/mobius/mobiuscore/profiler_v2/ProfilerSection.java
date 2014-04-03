@@ -52,7 +52,14 @@ public enum ProfilerSection implements IProfilerBase{
 		for (ProfilerSection section : ProfilerSection.values())
 			section.desactivate();
 	}	
+
+	public static void resetAll(){
+		for (ProfilerSection section : ProfilerSection.values())
+			section.reset();
+	}	
 	
+	@Override
+	public void reset() { this.profiler.reset(); }	
 	@Override
 	public void start() { this.profiler.start(); }
 	@Override
