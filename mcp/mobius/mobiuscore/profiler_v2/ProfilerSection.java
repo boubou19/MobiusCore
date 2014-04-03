@@ -60,7 +60,7 @@ public enum ProfilerSection implements IProfilerBase{
 	}	
 	
 	@Override
-	public void reset() { this.profiler.reset(); }	
+	public void reset() { this.profiler.reset(); this.profilerSuspended.reset(); }	
 	@Override
 	public void start() { this.profiler.start(); }
 	@Override
