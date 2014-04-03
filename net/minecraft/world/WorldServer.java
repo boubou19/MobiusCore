@@ -345,9 +345,7 @@ public class WorldServer extends World
      */
     protected void tickBlocksAndAmbiance()
     {
-    	ProfilerRegistrar.profilerWorldTick.startDim(this.provider.dimensionId, "initialSetup");
         super.tickBlocksAndAmbiance();
-    	ProfilerRegistrar.profilerWorldTick.stopDim(this.provider.dimensionId, "initialSetup");
     	
         int i = 0;
         int j = 0;
@@ -450,7 +448,6 @@ public class WorldServer extends World
             ExtendedBlockStorage[] aextendedblockstorage = chunk.getBlockStorageArray();
             j1 = aextendedblockstorage.length;
 
-            ProfilerRegistrar.profilerWorldTick.startChunk(this.provider.dimensionId, chunkcoordintpair, "tile");            
             for (k1 = 0; k1 < j1; ++k1)
             {
                 ExtendedBlockStorage extendedblockstorage = aextendedblockstorage[k1];
@@ -476,7 +473,6 @@ public class WorldServer extends World
                     }
                 }
             }
-            ProfilerRegistrar.profilerWorldTick.stopChunk(this.provider.dimensionId, chunkcoordintpair, "tile");
             this.theProfiler.endSection();
         }
         

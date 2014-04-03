@@ -76,18 +76,6 @@ public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IPro
 	public void addPacketIn(Packet packet) {}
 	
 	@Override
-	public void startDim(int dim, String subsection){}
-	
-	@Override
-	public void  stopDim(int dim, String subsection){}
-
-	@Override
-	public void startChunk(int dim, ChunkCoordIntPair chunk, String subsection) {}
-
-	@Override
-	public void stopChunk(int dim, ChunkCoordIntPair chunk, String subsection) {}
-
-	@Override
 	public void startNetwork(String subprofile) {}
 
 	@Override

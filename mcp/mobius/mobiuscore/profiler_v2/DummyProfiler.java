@@ -11,15 +11,14 @@ public class DummyProfiler implements IProfilerBase{
 	public void stop() {}
 
 	@Override
-	public void start(Integer key) {}
+	public void start(Object key) {}
 
 	@Override
-	public void stop(Integer key) {}
+	public void stop(Object key) {}
 
 	@Override
-	public void start(World key) {}
+	public void start(Object key1, Object key2) {}
 
 	@Override
-	public void stop(World key) {}
-
+	public void stop(Object key1, Object key2) {}
 }

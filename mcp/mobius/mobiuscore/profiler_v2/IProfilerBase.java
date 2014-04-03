@@ -7,10 +7,10 @@ public interface IProfilerBase {
 	public void start();
 	public void stop();
 
-	public void start(Integer key);
-	public void stop(Integer key);	
+	public void start(Object key);
+	public void stop(Object key);	
 
-	public void start(World key);
-	public void stop(World key);		
+	public void start(Object key1, Object key2);
+	public void stop(Object key1, Object key2);		
 	
 }

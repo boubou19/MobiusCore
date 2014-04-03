@@ -287,7 +287,7 @@ public class FMLCommonHandler
     public void onPostWorldTick(Object world)
     {
         tickEnd(EnumSet.of(TickType.WORLD), Side.SERVER, world);
-    	ProfilerSection.DIMENSION_TICK.stop((World)world);        
+    	ProfilerSection.DIMENSION_TICK.stop(world);        
     }
 
     public void onPreServerTick()
@@ -301,7 +301,7 @@ public class FMLCommonHandler
      */
     public void onPreWorldTick(Object world)
     {
-    	ProfilerSection.DIMENSION_TICK.start((World)world);
+    	ProfilerSection.DIMENSION_TICK.start(world);
         tickStart(EnumSet.of(TickType.WORLD), Side.SERVER, world);
     }
 
