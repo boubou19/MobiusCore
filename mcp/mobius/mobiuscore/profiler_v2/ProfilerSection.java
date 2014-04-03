@@ -3,7 +3,8 @@ package mcp.mobius.mobiuscore.profiler_v2;
 import net.minecraft.world.World;
 
 public enum ProfilerSection implements IProfilerBase{
-	DIMENSION_TICK(RunType.REALTIME);
+	DIMENSION_TICK(RunType.REALTIME),			//Global section around the ticks for each dim (Blocks & ents)
+	DIMENSION_BLOCKTICK(RunType.ONREQUEST);		//Subsection for dimension block tick
 	
 	public enum RunType{
 		REALTIME,
@@ -24,7 +25,7 @@ public enum ProfilerSection implements IProfilerBase{
 	}
 	
 	public IProfilerBase getProfiler(){
-		return this.profiler;
+		return this.profilerSuspended;
 	}
 	
 	public void setProfiler(IProfilerBase profiler){

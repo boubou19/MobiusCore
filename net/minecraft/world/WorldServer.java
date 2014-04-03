@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import mcp.mobius.mobiuscore.profiler.ProfilerRegistrar;
+import mcp.mobius.mobiuscore.profiler_v2.ProfilerSection;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEventData;
 import net.minecraft.crash.CrashReport;
@@ -153,7 +154,7 @@ public class WorldServer extends World
      */
     public void tick()
     {
-    	ProfilerRegistrar.profilerWorldTick.WorldTickStart(this.provider.dimensionId);
+    	ProfilerSection.DIMENSION_BLOCKTICK.start(this.provider.dimensionId);
 
     	super.tick();
         if (this.getWorldInfo().isHardcoreModeEnabled() && this.difficultySetting < 3)
@@ -225,7 +226,7 @@ public class WorldServer extends World
         
         this.sendAndApplyBlockEvents();
         
-    	ProfilerRegistrar.profilerWorldTick.WorldTickEnd(this.provider.dimensionId);        
+    	ProfilerSection.DIMENSION_BLOCKTICK.stop(this.provider.dimensionId);        
     }
 
     /**

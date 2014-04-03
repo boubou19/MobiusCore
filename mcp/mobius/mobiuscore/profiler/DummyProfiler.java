@@ -11,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkCoordIntPair;
 
 public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IProfilerHandler, 
-                                      IProfilerTick, IProfilerWorldTick, IProfilerEntUpdate,
+                                      IProfilerTick, IProfilerEntUpdate,
                                       IProfilerNetwork {
 	@Override
 	public void FullTileEntityStart() {}
@@ -56,12 +56,6 @@ public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IPro
 
 	@Override
 	public void TickEnd() {}
-
-	@Override
-	public void WorldTickStart(int id) {}
-
-	@Override
-	public void WorldTickEnd(int id) {}
 
 	@Override
 	public void EntUpdateStart(int id) {}
