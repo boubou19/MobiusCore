@@ -12,7 +12,7 @@ import net.minecraft.world.ChunkCoordIntPair;
 
 public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IProfilerHandler, 
                                       IProfilerTick, IProfilerWorldTick, IProfilerEntUpdate,
-                                      IProfilerPacket {
+                                      IProfilerNetwork {
 	@Override
 	public void FullTileEntityStart() {}
 
@@ -85,5 +85,11 @@ public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IPro
 	public void startChunk(int dim, ChunkCoordIntPair chunk, String subsection) {}
 
 	@Override
-	public void stopChunk(int dim, ChunkCoordIntPair chunk, String subsection) {}		
+	public void stopChunk(int dim, ChunkCoordIntPair chunk, String subsection) {}
+
+	@Override
+	public void startNetwork(String subprofile) {}
+
+	@Override
+	public void stopNetwork(String subprofile) {}		
 }

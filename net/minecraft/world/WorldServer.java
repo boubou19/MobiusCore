@@ -154,9 +154,8 @@ public class WorldServer extends World
     public void tick()
     {
     	ProfilerRegistrar.profilerWorldTick.WorldTickStart(this.provider.dimensionId);
-    	
-        super.tick();
 
+    	super.tick();
         if (this.getWorldInfo().isHardcoreModeEnabled() && this.difficultySetting < 3)
         {
             this.difficultySetting = 3;

@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import mcp.mobius.mobiuscore.profiler.ProfilerRegistrar;
+import mcp.mobius.mobiuscore.profiler_v2.ProfilerSection;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
@@ -286,6 +287,7 @@ public class FMLCommonHandler
     public void onPostWorldTick(Object world)
     {
         tickEnd(EnumSet.of(TickType.WORLD), Side.SERVER, world);
+    	ProfilerSection.DIMENSION_TICK.stop((World)world);        
     }
 
     public void onPreServerTick()
@@ -299,6 +301,7 @@ public class FMLCommonHandler
      */
     public void onPreWorldTick(Object world)
     {
+    	ProfilerSection.DIMENSION_TICK.start((World)world);
         tickStart(EnumSet.of(TickType.WORLD), Side.SERVER, world);
     }
 

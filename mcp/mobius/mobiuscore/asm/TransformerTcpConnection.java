@@ -70,14 +70,14 @@ public class TransformerTcpConnection extends TransformerBase {
 				 };		
 		
 		TCPCON_PAYLOAD_INPACKET =	new AbstractInsnNode[]{ 
-				 new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerPacket", "Lmcp/mobius/mobiuscore/profiler/IProfilerPacket;"),
+				 new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerPacket", "Lmcp/mobius/mobiuscore/profiler/IProfilerNetwork;"),
 				 new VarInsnNode(Opcodes.ALOAD, 2), 
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerPacket", "addPacketIn", "(Ley;)V")};
+				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerNetwork", "addPacketIn", "(Ley;)V")};
 		
 		TCPCON_PAYLOAD_OUTPACKET = new AbstractInsnNode[]{
-				 new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerPacket", "Lmcp/mobius/mobiuscore/profiler/IProfilerPacket;"),
+				 new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerPacket", "Lmcp/mobius/mobiuscore/profiler/IProfilerNetwork;"),
 				 new VarInsnNode(Opcodes.ALOAD, 2), 
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerPacket", "addPacketOut", "(Ley;)V")};				
+				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerNetwork", "addPacketOut", "(Ley;)V")};				
 	}	
 	
 	@Override

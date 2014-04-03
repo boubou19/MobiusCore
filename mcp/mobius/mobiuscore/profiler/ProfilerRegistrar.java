@@ -10,7 +10,7 @@ public class ProfilerRegistrar {
 	public static IProfilerTick       profilerTick       = dummy;
 	public static IProfilerWorldTick  profilerWorldTick  = dummy;
 	public static IProfilerEntUpdate  profilerEntUpdate  = dummy;
-	public static IProfilerPacket     profilerPacket     = dummy;	
+	public static IProfilerNetwork     profilerPacket     = dummy;	
 
 	public static IProfilerTileEntity regProfilerTileEntity = dummy;
 	public static IProfilerEntity     regProfilerEntity     = dummy;
@@ -18,7 +18,7 @@ public class ProfilerRegistrar {
 	public static IProfilerTick       regProfilerTick       = dummy;	
 	public static IProfilerWorldTick  regProfilerWorldTick  = dummy;
 	public static IProfilerEntUpdate  regProfilerEntUpdate  = dummy;	
-	public static IProfilerPacket     regProfilerPacket     = dummy;
+	public static IProfilerNetwork     regProfilerPacket     = dummy;
 	
 	public static long timeStampLastRun = 0;
 	
@@ -47,7 +47,7 @@ public class ProfilerRegistrar {
 		regProfilerTick = profiler;
 	}				
 	
-	public static void registerProfilerPacket(IProfilerPacket profiler){
+	public static void registerProfilerPacket(IProfilerNetwork profiler){
 		profilerPacket    = profiler;		
 		regProfilerPacket = profiler;
 	}	

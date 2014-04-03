@@ -2,7 +2,7 @@ package mcp.mobius.mobiuscore.profiler;
 
 import net.minecraft.tileentity.TileEntity;
 
-public interface IProfilerTileEntity {
+public interface IProfilerTileEntity extends IProfilerBase {
 	public void FullTileEntityStart();
 	public void FullTileEntityStop();
 	

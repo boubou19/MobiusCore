@@ -5,7 +5,7 @@ import java.util.EnumSet;
 import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
 
-public interface IProfilerHandler {
+public interface IProfilerHandler extends IProfilerBase {
 
 	public void StartTickStart(IScheduledTickHandler ticker, EnumSet<TickType> ticksToRun);
 	public void StopTickStart (IScheduledTickHandler ticker, EnumSet<TickType> ticksToRun);	

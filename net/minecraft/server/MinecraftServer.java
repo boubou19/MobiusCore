@@ -690,7 +690,11 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IPlay
         this.theProfiler.endStartSection("dim_unloading");
         DimensionManager.unloadWorlds(worldTickTimes);
         this.theProfiler.endStartSection("connection");
+        
+        ProfilerRegistrar.profilerPacket.startNetwork("Network / Main");
         this.getNetworkThread().networkTick();
+        ProfilerRegistrar.profilerPacket.stopNetwork("Network / Main");
+        
         this.theProfiler.endStartSection("players");
         this.serverConfigManager.sendPlayerInfoToAllPlayers();
         this.theProfiler.endStartSection("tickables");
