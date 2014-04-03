@@ -2212,9 +2212,9 @@ public abstract class World implements IBlockAccess
             {
                 try
                 {
-                	ProfilerRegistrar.profilerTileEntity.Start(tileentity);
+                 	ProfilerSection.TILEENT_UPDATETIME.start(tileentity);
                     tileentity.updateEntity();
-                    ProfilerRegistrar.profilerTileEntity.Stop(tileentity);
+                    ProfilerSection.TILEENT_UPDATETIME.stop(tileentity);
                 }
                 catch (Throwable throwable2)
                 {
