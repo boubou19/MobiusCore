@@ -10,7 +10,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkCoordIntPair;
 
-public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IProfilerHandler, 
+public class DummyProfiler implements IProfilerTileEntity, IProfilerHandler, 
                                       IProfilerTick, IProfilerEntUpdate,
                                       IProfilerNetwork {
 	@Override
@@ -26,18 +26,6 @@ public class DummyProfiler implements IProfilerTileEntity, IProfilerEntity, IPro
 
 	@Override
 	public void Stop(TileEntity te) {}
-
-	@Override
-	public void FullEntityStart() {}
-
-	@Override
-	public void FullEntityStop() {}
-
-	@Override
-	public void Start(Entity ent) {}
-
-	@Override
-	public void Stop(Entity ent) {}
 
 	@Override
 	public void StartTickStart(IScheduledTickHandler ticker, EnumSet<TickType> ticksToRun) {}

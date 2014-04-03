@@ -14,6 +14,7 @@ import java.util.Random;
 import java.util.Set;
 
 import mcp.mobius.mobiuscore.profiler.ProfilerRegistrar;
+import mcp.mobius.mobiuscore.profiler_v2.ProfilerSection;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFluid;
 import net.minecraft.block.BlockHalfSlab;
@@ -2157,9 +2158,9 @@ public abstract class World implements IBlockAccess
             {
                 try
                 {
-                	ProfilerRegistrar.profilerEntity.Start(entity);
+                	ProfilerSection.ENTITY_UPDATETIME.start(entity);
                     this.updateEntity(entity);
-                	ProfilerRegistrar.profilerEntity.Stop(entity);
+                	ProfilerSection.ENTITY_UPDATETIME.stop(entity);
                 }
                 catch (Throwable throwable1)
                 {

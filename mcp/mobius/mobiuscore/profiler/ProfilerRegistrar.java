@@ -5,14 +5,12 @@ public class ProfilerRegistrar {
 	public static DummyProfiler dummy = new DummyProfiler();
 	
 	public static IProfilerTileEntity profilerTileEntity = dummy;
-	public static IProfilerEntity     profilerEntity     = dummy;
 	public static IProfilerHandler    profilerHandler    = dummy;
 	public static IProfilerTick       profilerTick       = dummy;
 	public static IProfilerEntUpdate  profilerEntUpdate  = dummy;
 	public static IProfilerNetwork     profilerPacket     = dummy;	
 
 	public static IProfilerTileEntity regProfilerTileEntity = dummy;
-	public static IProfilerEntity     regProfilerEntity     = dummy;
 	public static IProfilerHandler    regProfilerHandler    = dummy;
 	public static IProfilerTick       regProfilerTick       = dummy;	
 	public static IProfilerEntUpdate  regProfilerEntUpdate  = dummy;	
@@ -23,10 +21,6 @@ public class ProfilerRegistrar {
 	public static void registerProfilerTileEntity(IProfilerTileEntity profiler){
 		regProfilerTileEntity = profiler;
 	}	
-
-	public static void registerProfilerEntity(IProfilerEntity profiler){
-		regProfilerEntity = profiler;
-	}		
 
 	public static void registerProfilerHandler(IProfilerHandler profiler){
 		regProfilerHandler = profiler;
@@ -48,14 +42,12 @@ public class ProfilerRegistrar {
 	
 	public static void turnOn(){
 		profilerTileEntity = regProfilerTileEntity;
-		profilerEntity     = regProfilerEntity;
 		profilerHandler    = regProfilerHandler;
 		profilerEntUpdate  = regProfilerEntUpdate;
 	}
 	
 	public static void turnOff(){
 		profilerTileEntity = dummy;
-		profilerEntity     = dummy;
 		profilerHandler    = dummy;		
 		profilerEntUpdate  = dummy;
 		
