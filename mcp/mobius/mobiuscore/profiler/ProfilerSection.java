@@ -1,4 +1,4 @@
-package mcp.mobius.mobiuscore.profiler_v2;
+package mcp.mobius.mobiuscore.profiler;
 
 import net.minecraft.world.World;
 

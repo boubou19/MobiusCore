@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import mcp.mobius.mobiuscore.profiler_v2.ProfilerSection;
+import mcp.mobius.mobiuscore.profiler.ProfilerSection;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFluid;
 import net.minecraft.block.BlockHalfSlab;
