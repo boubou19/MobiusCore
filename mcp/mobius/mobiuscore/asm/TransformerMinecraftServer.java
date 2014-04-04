@@ -3,6 +3,8 @@ package mcp.mobius.mobiuscore.asm;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import mcp.mobius.mobiuscore.profiler.ProfilerSection;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -26,7 +28,9 @@ public class TransformerMinecraftServer extends TransformerBase {
 	private static AbstractInsnNode[] MCSERVER_PAYLOAD_TICKEND;	
 	
 	static{
-		//MCSERVER_TICK = "tick ()V";
+		String profilerClass =  ProfilerSection.getClassName();
+		String profilerType  =  ProfilerSection.getTypeName();
+		
 		MCSERVER_RUN = "run ()V";
 			
 		MCSERVER_PATTERN_MCSERVER_TICK = new AbstractInsnNode[] 
@@ -36,14 +40,14 @@ public class TransformerMinecraftServer extends TransformerBase {
 		
 		MCSERVER_PAYLOAD_TICKSTART =	new AbstractInsnNode[] 
 				{
-				 new FieldInsnNode (Opcodes.GETSTATIC,       "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTick", "Lmcp/mobius/mobiuscore/profiler/IProfilerTick;"),
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTick",     "TickStart",    "()V"),				
+				 new FieldInsnNode (Opcodes.GETSTATIC,       profilerClass, ProfilerSection.TICK.name(), profilerType),
+				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, profilerClass,     "start",    "()V"),				
 				};
 		
 		MCSERVER_PAYLOAD_TICKEND =	new AbstractInsnNode[] 
 				{
-				 new FieldInsnNode (Opcodes.GETSTATIC,       "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTick", "Lmcp/mobius/mobiuscore/profiler/IProfilerTick;"),
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTick",     "TickEnd",    "()V"),				
+				 new FieldInsnNode (Opcodes.GETSTATIC,       profilerClass, ProfilerSection.TICK.name(), profilerType),
+				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, profilerClass,     "stop",    "()V"),				
 				};		
 		
 	}

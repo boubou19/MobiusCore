@@ -68,6 +68,14 @@ public enum ProfilerSection implements IProfilerBase{
 			section.reset();
 	}	
 	
+	public static String getClassName(){
+		return ProfilerSection.class.getCanonicalName().replace(".", "/");
+	}
+	
+	public static String getTypeName(){
+		return "L" + ProfilerSection.getClassName() + ";";
+	}	
+	
 	@Override
 	public void reset() { this.profiler.reset(); this.profilerSuspended.reset(); }	
 	@Override

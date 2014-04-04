@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ListIterator;
 
+import mcp.mobius.mobiuscore.profiler.ProfilerSection;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -51,6 +53,9 @@ public class TransformerWorld extends TransformerBase{
 	private static HashMap<String, String> obfTable = new HashMap<String, String>();
 	
 	static{
+		String profilerClass =  ProfilerSection.getClassName();
+		String profilerType  =  ProfilerSection.getTypeName();
+		
 		isEclipse = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
 		
 		obfTable.put("h ()V"   , "updateEntities ()V");
@@ -69,14 +74,14 @@ public class TransformerWorld extends TransformerBase{
 			 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getCorrectName("asp"), getCorrectName("h"), "()V")};
 
 		WORLD_UPDATE_PAYLOAD_START_TEUPDATE = new AbstractInsnNode[]
-			{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerTileEntity;"),
+			{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.TILEENT_UPDATETIME.name(), profilerType),
 			 new VarInsnNode(Opcodes.ALOAD, 8), 
-			 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Start", getCorrectName("(Lasp;)V"))};	
+			 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V")};	
 
 		WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE = new AbstractInsnNode[]
-			{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTileEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerTileEntity;"),
+			{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.TILEENT_UPDATETIME.name(), profilerType),
 			 new VarInsnNode(Opcodes.ALOAD, 8), 
-			 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTileEntity", "Stop", getCorrectName("(Lasp;)V"))};		
+			 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;)V")};		
 		
 		WORLD_UPDATE_PATTERN_ENTUPDATE = new AbstractInsnNode[]
 			{new LineNumberNode(-1, new LabelNode()), 
@@ -85,24 +90,24 @@ public class TransformerWorld extends TransformerBase{
 		     new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getCorrectName("abw"), getCorrectName("g"), getCorrectName("(Lnn;)V"))};	
 
 		WORLD_UPDATE_PAYLOAD_START_ENTUPDATE = new AbstractInsnNode[]
-			{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
+			{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.ENTITY_UPDATETIME.name(), profilerType),
 			 new VarInsnNode(Opcodes.ALOAD, 2), 
-			 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Start", getCorrectName("(Lnn;)V"))};	
+			 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V")};	
 
 		WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE = new AbstractInsnNode[]
-			{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
+			{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.ENTITY_UPDATETIME.name(), profilerType),
 			 new VarInsnNode(Opcodes.ALOAD, 2), 
-			 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Stop", getCorrectName("(Lnn;)V"))};			
+			 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;)V")};			
 		
 		WORLD_UPDATE_PAYLOAD_START_ENTUPDATE_MCPC = new AbstractInsnNode[]
-			{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
+			{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.ENTITY_UPDATETIME.name(), profilerType),
 			 new VarInsnNode(Opcodes.ALOAD, 4),
-			 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Start", getCorrectName("(Lnn;)V"))};	
+			 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V")};	
 
 		WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE_MCPC = new AbstractInsnNode[]
-			{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerEntity", "Lmcp/mobius/mobiuscore/profiler/IProfilerEntity;"),
+			{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.ENTITY_UPDATETIME.name(), profilerType),
 			 new VarInsnNode(Opcodes.ALOAD, 4),
-			 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerEntity", "Stop", getCorrectName("(Lnn;)V"))};			
+			 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;)V")};			
 		
 	}
 	

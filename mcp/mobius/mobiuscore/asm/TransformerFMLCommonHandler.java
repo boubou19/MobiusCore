@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ListIterator;
 
+import mcp.mobius.mobiuscore.profiler.ProfilerSection;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -40,6 +42,9 @@ public class TransformerFMLCommonHandler extends TransformerBase {
 	private static boolean isEclipse;
 	
 	static{
+		String profilerClass =  ProfilerSection.getClassName();
+		String profilerType  =  ProfilerSection.getTypeName();
+		
 		FMLCH_TICKSTART = "tickStart (Ljava/util/EnumSet;Lcpw/mods/fml/relauncher/Side;[Ljava/lang/Object;)V";
 		FMLCH_TICKEND   = "tickEnd (Ljava/util/EnumSet;Lcpw/mods/fml/relauncher/Side;[Ljava/lang/Object;)V";		
 		FMLCH_ONPRESERVERTICK  = "onPreServerTick ()V";
@@ -60,39 +65,39 @@ public class TransformerFMLCommonHandler extends TransformerBase {
 				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "cpw/mods/fml/common/IScheduledTickHandler", "tickEnd", "(Ljava/util/EnumSet;[Ljava/lang/Object;)V")};
 		
 		FMLCH_PAYLOAD_TICKSTART_PRE = new AbstractInsnNode[]
-				{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerHandler", "Lmcp/mobius/mobiuscore/profiler/IProfilerHandler;"),
+				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.HANDLER_TICKSTART.name(), profilerType),
 				 new VarInsnNode(Opcodes.ALOAD, 6),
 				 new VarInsnNode(Opcodes.ALOAD, 7),				 
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerHandler", "StartTickStart", "(Lcpw/mods/fml/common/IScheduledTickHandler;Ljava/util/EnumSet;)V")};				
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;Ljava/lang/Object;)V")};				
 		
 		FMLCH_PAYLOAD_TICKSTART_POST = new AbstractInsnNode[]
-				{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerHandler", "Lmcp/mobius/mobiuscore/profiler/IProfilerHandler;"),
+				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.HANDLER_TICKSTART.name(), profilerType),
 				 new VarInsnNode(Opcodes.ALOAD, 6),
 				 new VarInsnNode(Opcodes.ALOAD, 7),				 
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerHandler", "StopTickStart", "(Lcpw/mods/fml/common/IScheduledTickHandler;Ljava/util/EnumSet;)V")};		
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;Ljava/lang/Object;)V")};		
 
 		FMLCH_PAYLOAD_TICKEND_PRE = new AbstractInsnNode[]
-				{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerHandler", "Lmcp/mobius/mobiuscore/profiler/IProfilerHandler;"),
+				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.HANDLER_TICKSTOP.name(), profilerType),
 				 new VarInsnNode(Opcodes.ALOAD, 6),
 				 new VarInsnNode(Opcodes.ALOAD, 7),				 
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerHandler", "StartTickEnd", "(Lcpw/mods/fml/common/IScheduledTickHandler;Ljava/util/EnumSet;)V")};				
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;Ljava/lang/Object;)V")};				
 		
 		FMLCH_PAYLOAD_TICKEND_POST = new AbstractInsnNode[]
-				{new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerHandler", "Lmcp/mobius/mobiuscore/profiler/IProfilerHandler;"),
+				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.HANDLER_TICKSTOP.name(), profilerType),
 				 new VarInsnNode(Opcodes.ALOAD, 6),
 				 new VarInsnNode(Opcodes.ALOAD, 7),
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerHandler", "StopTickEnd", "(Lcpw/mods/fml/common/IScheduledTickHandler;Ljava/util/EnumSet;)V")};	
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;Ljava/lang/Object;)V")};	
 		
 		FMLCH_PAYLOAD_PRESERVERTICK =	new AbstractInsnNode[] 
 				{
-				 new FieldInsnNode (Opcodes.GETSTATIC,       "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTick", "Lmcp/mobius/mobiuscore/profiler/IProfilerTick;"),
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTick",     "TickStart",    "()V"),				
+				 new FieldInsnNode (Opcodes.GETSTATIC,     profilerClass, ProfilerSection.TICK.name(), profilerType),
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "()V"),				
 				};
 		
 		FMLCH_PAYLOAD_POSTSERVERTICK =	new AbstractInsnNode[] 
 				{
-				 new FieldInsnNode (Opcodes.GETSTATIC,       "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerTick", "Lmcp/mobius/mobiuscore/profiler/IProfilerTick;"),
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerTick",     "TickEnd",    "()V"),				
+				 new FieldInsnNode (Opcodes.GETSTATIC,     profilerClass, ProfilerSection.TICK.name(), profilerType),
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "()V"),				
 				};			
 	}	
 	

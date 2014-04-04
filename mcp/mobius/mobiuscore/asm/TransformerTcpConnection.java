@@ -3,6 +3,8 @@ package mcp.mobius.mobiuscore.asm;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import mcp.mobius.mobiuscore.profiler.ProfilerSection;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -29,6 +31,9 @@ public class TransformerTcpConnection extends TransformerBase {
 	private static AbstractInsnNode[] TCPCON_PAYLOAD_OUTPACKET;	
 	
 	static{
+		String profilerClass =  ProfilerSection.getClassName();
+		String profilerType  =  ProfilerSection.getTypeName();
+		
 		TCPCON_READPACKET   = "i ()Z";
 		TCPCON_SENDPACKET   = "a (Z)Ley;";		
 
@@ -70,14 +75,14 @@ public class TransformerTcpConnection extends TransformerBase {
 				 };		
 		
 		TCPCON_PAYLOAD_INPACKET =	new AbstractInsnNode[]{ 
-				 new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerPacket", "Lmcp/mobius/mobiuscore/profiler/IProfilerNetwork;"),
+				 new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.PACKET_INBOUND.name() , profilerType),
 				 new VarInsnNode(Opcodes.ALOAD, 2), 
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerNetwork", "addPacketIn", "(Ley;)V")};
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V")};
 		
 		TCPCON_PAYLOAD_OUTPACKET = new AbstractInsnNode[]{
-				 new FieldInsnNode(Opcodes.GETSTATIC, "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerPacket", "Lmcp/mobius/mobiuscore/profiler/IProfilerNetwork;"),
+				 new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.PACKET_OUTBOUND.name() , profilerType),
 				 new VarInsnNode(Opcodes.ALOAD, 2), 
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerNetwork", "addPacketOut", "(Ley;)V")};				
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V")};				
 	}	
 	
 	@Override

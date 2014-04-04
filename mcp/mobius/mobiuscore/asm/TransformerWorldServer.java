@@ -1,5 +1,6 @@
 package mcp.mobius.mobiuscore.asm;
 
+import mcp.mobius.mobiuscore.profiler.ProfilerSection;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -23,6 +24,9 @@ public class TransformerWorldServer extends TransformerBase {
 	private static boolean isEclipse;
 	
 	static{
+		String profilerClass =  ProfilerSection.getClassName();
+		String profilerType  =  ProfilerSection.getTypeName();		
+		
 		WORLDSERVER_TICK = "b ()V";
 
 		/*
@@ -38,20 +42,22 @@ public class TransformerWorldServer extends TransformerBase {
 
 		WORLDSERVER_PAYLOAD_TICKSTART =	new AbstractInsnNode[] 
 				{
-				 new FieldInsnNode (Opcodes.GETSTATIC,       "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerWorldTick", "Lmcp/mobius/mobiuscore/profiler/IProfilerWorldTick;"),
+				 new FieldInsnNode (Opcodes.GETSTATIC,       profilerClass, ProfilerSection.DIMENSION_BLOCKTICK.name(), profilerType),
 				 new VarInsnNode   (Opcodes.ALOAD, 0),	
 				 new FieldInsnNode (Opcodes.GETFIELD,        "js", "t", "Laei;"),
 				 new FieldInsnNode (Opcodes.GETFIELD,        "aei", "i", "I"),
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerWorldTick",     "WorldTickStart",    "(I)V"),				 
+				 new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;"),
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V"),				 
 				};		
 
 		WORLDSERVER_PAYLOAD_TICKEND =	new AbstractInsnNode[] 
 				{
-				 new FieldInsnNode (Opcodes.GETSTATIC,       "mcp/mobius/mobiuscore/profiler/ProfilerRegistrar", "profilerWorldTick", "Lmcp/mobius/mobiuscore/profiler/IProfilerWorldTick;"),
+				 new FieldInsnNode (Opcodes.GETSTATIC,       profilerClass, ProfilerSection.DIMENSION_BLOCKTICK.name(), profilerType),
 				 new VarInsnNode   (Opcodes.ALOAD, 0),	
 				 new FieldInsnNode (Opcodes.GETFIELD,        "js", "t", "Laei;"),
 				 new FieldInsnNode (Opcodes.GETFIELD,        "aei", "i", "I"),
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "mcp/mobius/mobiuscore/profiler/IProfilerWorldTick", "WorldTickEnd",    "(I)V"),				 
+				 new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;"),
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;)V"),				 
 				};			
 	}
 	
