@@ -26,6 +26,8 @@ public class TransformerFMLCommonHandler extends TransformerBase {
 	private static String FMLCH_TICKEND;	
 	private static String FMLCH_ONPRESERVERTICK;
 	private static String FMLCH_ONPOSTSERVERTICK;	
+	private static String FMLCH_ONPREWORLDTICK;
+	private static String FMLCH_ONPOSTWORLDTICK;
 	
 	private static AbstractInsnNode[] FMLCH_PATTERN_TICKSTART;
 	private static AbstractInsnNode[] FMLCH_PATTERN_TICKEND;
@@ -38,6 +40,9 @@ public class TransformerFMLCommonHandler extends TransformerBase {
 	private static AbstractInsnNode[] FMLCH_PAYLOAD_PRESERVERTICK;
 	private static AbstractInsnNode[] FMLCH_PAYLOAD_POSTSERVERTICK;	
 	
+	private static AbstractInsnNode[] FMLCH_PAYLOAD_PREWORLDTICK;
+	private static AbstractInsnNode[] FMLCH_PAYLOAD_POSTWORLDTICK;		
+	
 	
 	private static boolean isEclipse;
 	
@@ -49,6 +54,9 @@ public class TransformerFMLCommonHandler extends TransformerBase {
 		FMLCH_TICKEND   = "tickEnd (Ljava/util/EnumSet;Lcpw/mods/fml/relauncher/Side;[Ljava/lang/Object;)V";		
 		FMLCH_ONPRESERVERTICK  = "onPreServerTick ()V";
 		FMLCH_ONPOSTSERVERTICK = "onPostServerTick ()V";
+		
+		FMLCH_ONPREWORLDTICK  =  "onPreWorldTick (Ljava/lang/Object;)V";
+		FMLCH_ONPOSTWORLDTICK =  "onPostWorldTick (Ljava/lang/Object;)V";
 		
 		FMLCH_PATTERN_TICKSTART =	new AbstractInsnNode[] 
 				{//new LineNumberNode(-1, new LabelNode()), 
@@ -98,7 +106,17 @@ public class TransformerFMLCommonHandler extends TransformerBase {
 				{
 				 new FieldInsnNode (Opcodes.GETSTATIC,     profilerClass, ProfilerSection.TICK.name(), profilerType),
 				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "()V"),				
-				};			
+				};
+		
+		FMLCH_PAYLOAD_PREWORLDTICK = new AbstractInsnNode[]
+				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.DIMENSION_TICK.name(), profilerType),
+				 new VarInsnNode(Opcodes.ALOAD, 1),				 
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V")};				
+		
+		FMLCH_PAYLOAD_POSTWORLDTICK = new AbstractInsnNode[]
+				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.DIMENSION_TICK.name(), profilerType),
+				 new VarInsnNode(Opcodes.ALOAD, 1),
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;)V")};			
 	}	
 	
 	@Override
@@ -163,6 +181,20 @@ public class TransformerFMLCommonHandler extends TransformerBase {
         		this.applyPayloadLast(instructions, FMLCH_PAYLOAD_POSTSERVERTICK); 
 
         	}
+        	
+        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(FMLCH_ONPREWORLDTICK)){
+        		System.out.printf("Found FMLCH.onPreWorldTick()... \n");
+        		InsnList instructions = methodNode.instructions;
+        		this.applyPayloadFirst(instructions, FMLCH_PAYLOAD_PREWORLDTICK); 
+
+        	}
+        	
+        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(FMLCH_ONPOSTWORLDTICK)){
+        		System.out.printf("Found FMLCH.onPostWorldTick()... \n");
+        		InsnList instructions = methodNode.instructions;
+        		this.applyPayloadLast(instructions, FMLCH_PAYLOAD_POSTWORLDTICK); 
+
+        	}        	
         }
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
