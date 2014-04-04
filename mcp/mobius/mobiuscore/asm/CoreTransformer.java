@@ -30,6 +30,8 @@ public class CoreTransformer implements IClassTransformer {
 	TransformerMinecraftServer  transMCS   = new TransformerMinecraftServer();
 	TransformerWorldServer      transWorldServer   = new TransformerWorldServer();
 	TransformerTcpConnection    transTCPConnection = new TransformerTcpConnection();
+	TransformerRenderManager	transRenderManag   = new TransformerRenderManager();
+	TransformerTERenderer		transTERenderer    = new TransformerTERenderer();
 	
 	public CoreTransformer(){
 		super();
@@ -65,6 +67,14 @@ public class CoreTransformer implements IClassTransformer {
 		
 		if (srgname.equals("net.minecraft.network.TcpConnection")){
 			return transTCPConnection.transform(name, srgname, bytes);
+		}			
+		
+		if (srgname.equals("net.minecraft.client.renderer.entity.RenderManager")){
+			return transRenderManag.transform(name, srgname, bytes);
+		}	
+		
+		if (srgname.equals("net.minecraft.client.renderer.tileentity.TileEntityRenderer")){
+			return transTERenderer.transform(name, srgname, bytes);
 		}			
 		
 		return bytes;

@@ -11,7 +11,10 @@ public enum ProfilerSection implements IProfilerBase{
 	HANDLER_TICKSTART(RunType.ONREQUEST), 		//Server handler for ServerTick start.
 	HANDLER_TICKSTOP(RunType.ONREQUEST),  		//Server handler for ServerTick stop.
 	PACKET_INBOUND(RunType.REALTIME),			//Outbound packet analysis
-	PACKET_OUTBOUND(RunType.REALTIME);			//Inbound packet analysis
+	PACKET_OUTBOUND(RunType.REALTIME),			//Inbound packet analysis
+	
+	RENDER_TILEENTITY(RunType.ONREQUEST),		//Profiler for TileEnt rendering
+	RENDER_ENTITY(RunType.ONREQUEST);		//Profiler for Entity rendering
 	
 	public enum RunType{
 		REALTIME,
@@ -19,8 +22,8 @@ public enum ProfilerSection implements IProfilerBase{
 	}
 	
 	private RunType       runType;
-	private IProfilerBase profiler;
-	private IProfilerBase profilerSuspended;
+	private IProfilerBase profiler          = new DummyProfiler();;
+	private IProfilerBase profilerSuspended = new DummyProfiler();;
 	
 	public static long timeStampLastRun;
 	
