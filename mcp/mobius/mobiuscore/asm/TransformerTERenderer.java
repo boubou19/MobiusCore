@@ -33,8 +33,10 @@ public class TransformerTERenderer extends TransformerBase {
 		String profilerClass =  ProfilerSection.getClassName();
 		String profilerType  =  ProfilerSection.getTypeName();
 		
-		TER_RENDER = "a (Lasp;F)V";
+		//TER_RENDER = "a (Lasp;F)V";
+		TER_RENDER = "a (Lasp;DDDF)V";
 		
+		/*
 		TER_RENDER_PATTERN_TOP =	new AbstractInsnNode[] 
 				{//new LineNumberNode(-1, new LabelNode()), 
 				 new VarInsnNode(Opcodes.ALOAD, -1),
@@ -51,6 +53,7 @@ public class TransformerTERenderer extends TransformerBase {
 				{
 				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "bjd", "a", "(Lasp;DDDF)V") //net/minecraft/client/renderer/tileentity/TileEntityRenderer.renderTileEntityAt(Lnet/minecraft/tileentity/TileEntity;DDDF)V)
 				};
+		*/
 		
 		TER_RENDER_PAYLOAD_TOP = new AbstractInsnNode[]
 				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.RENDER_TILEENTITY.name(), profilerType),
@@ -71,9 +74,11 @@ public class TransformerTERenderer extends TransformerBase {
 		
         classReader.accept(classNode, 0);
 		
+        /*
         for (MethodNode methodNode : classNode.methods){
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(TER_RENDER)){
-        		System.out.printf("Found TileEntityRenderer.renderTileEntity()... \n");
+        		//System.out.printf("Found TileEntityRenderer.renderTileEntity()... \n");
+        		System.out.printf("Found TileEntityRenderer.renderTileEntityAt()... \n");
         		InsnList instructions = methodNode.instructions;
         		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
         		ArrayList<ArrayList<AbstractInsnNode>> match;
@@ -99,6 +104,16 @@ public class TransformerTERenderer extends TransformerBase {
         		} else {
         			System.out.printf("Error while injecting !\n");
         		}        		
+        	}
+        }
+        */
+        
+        for (MethodNode methodNode : classNode.methods){
+        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(TER_RENDER)){
+        		System.out.printf("Found TileEntityRenderer.renderTileEntityAt()... \n");
+        		InsnList instructions = methodNode.instructions;
+        		this.applyPayloadFirst(instructions, TER_RENDER_PAYLOAD_TOP);
+        		this.applyPayloadLast(instructions, TER_RENDER_PAYLOAD_BOTTOM);        		
         	}
         }
         

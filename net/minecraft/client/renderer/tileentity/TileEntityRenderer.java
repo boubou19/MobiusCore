@@ -154,16 +154,12 @@ public class TileEntityRenderer
    	
         if (par1TileEntity.getDistanceFrom(this.playerX, this.playerY, this.playerZ) < par1TileEntity.getMaxRenderDistanceSquared())
         {
-        	ProfilerSection.RENDER_TILEENTITY.start(par1TileEntity);        	
-        	
             int i = this.worldObj.getLightBrightnessForSkyBlocks(par1TileEntity.xCoord, par1TileEntity.yCoord, par1TileEntity.zCoord, 0);
             int j = i % 65536;
             int k = i / 65536;
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.renderTileEntityAt(par1TileEntity, (double)par1TileEntity.xCoord - staticPlayerX, (double)par1TileEntity.yCoord - staticPlayerY, (double)par1TileEntity.zCoord - staticPlayerZ, par2);
-             
-        	ProfilerSection.RENDER_TILEENTITY.stop(par1TileEntity);            
         }
     }
 
@@ -172,6 +168,8 @@ public class TileEntityRenderer
      */
     public void renderTileEntityAt(TileEntity par1TileEntity, double par2, double par4, double par6, float par8)
     {
+    	ProfilerSection.RENDER_TILEENTITY.start(par1TileEntity);  
+    	
         TileEntitySpecialRenderer tileentityspecialrenderer = this.getSpecialRendererForEntity(par1TileEntity);
 
         if (tileentityspecialrenderer != null)
@@ -188,6 +186,8 @@ public class TileEntityRenderer
                 throw new ReportedException(crashreport);
             }
         }
+        
+        ProfilerSection.RENDER_TILEENTITY.stop(par1TileEntity);        
     }
 
     /**
