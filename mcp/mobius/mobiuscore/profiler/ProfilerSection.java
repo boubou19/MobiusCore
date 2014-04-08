@@ -15,7 +15,8 @@ public enum ProfilerSection implements IProfilerBase{
 	PACKET_OUTBOUND    (RunType.REALTIME, Side.SERVER),			//Inbound packet analysis
 	
 	RENDER_TILEENTITY  (RunType.ONREQUEST, Side.CLIENT),		//Profiler for TileEnt rendering
-	RENDER_ENTITY      (RunType.ONREQUEST, Side.CLIENT);		//Profiler for Entity rendering
+	RENDER_ENTITY      (RunType.ONREQUEST, Side.CLIENT),		//Profiler for Entity rendering
+	RENDER_BLOCK       (RunType.ONREQUEST, Side.CLIENT);		//Profiler for Block rendering
 	
 	public enum RunType{
 		REALTIME,
@@ -103,4 +104,8 @@ public enum ProfilerSection implements IProfilerBase{
 	public void start(Object key1, Object key2) { this.profiler.start(key1, key2); }
 	@Override
 	public void stop(Object key1, Object key2) { this.profiler.stop(key1, key2); }
+	@Override
+	public void start(Object key1, Object key2, Object key3, Object key4) {	this.profiler.start(key1, key2, key3, key4);}
+	@Override
+	public void stop(Object key1, Object key2, Object key3, Object key4) { this.profiler.stop(key1, key2, key3, key4); }
 }

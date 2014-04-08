@@ -23,4 +23,10 @@ public class DummyProfiler implements IProfilerBase{
 
 	@Override
 	public void stop(Object key1, Object key2) {}
+
+	@Override
+	public void start(Object key1, Object key2, Object key3, Object key4) {}
+
+	@Override
+	public void stop(Object key1, Object key2, Object key3, Object key4) {}
 }
