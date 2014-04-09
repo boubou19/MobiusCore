@@ -76,7 +76,12 @@ public class CoreTransformer implements IClassTransformer {
 			return transTERenderer.transform(name, srgname, bytes);
 		}			
 		
-		if (srgname.equals("net.minecraft.network.NetworkListenThread")){
+		if (srgname.equals("net.minecraft.server.integrated.IntegratedServerListenThread")){
+			System.out.printf("[MobiusCore] Found %s\n", srgname);
+			return transNetListen.transform(name, srgname, bytes);
+		}		
+		
+		if (srgname.equals("net.minecraft.server.dedicated.DedicatedServerListenThread")){
 			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transNetListen.transform(name, srgname, bytes);
 		}		
