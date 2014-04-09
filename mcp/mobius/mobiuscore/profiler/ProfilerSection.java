@@ -13,6 +13,7 @@ public enum ProfilerSection implements IProfilerBase{
 	HANDLER_TICKSTOP   (RunType.ONREQUEST, Side.SERVER),  		//Server handler for ServerTick stop.
 	PACKET_INBOUND     (RunType.REALTIME, Side.SERVER),			//Outbound packet analysis
 	PACKET_OUTBOUND    (RunType.REALTIME, Side.SERVER),			//Inbound packet analysis
+	NETWORK_TICK       (RunType.ONREQUEST, Side.SERVER),  		//The time it takes for the server to handle the packets during a tick.
 	
 	RENDER_TILEENTITY  (RunType.ONREQUEST, Side.CLIENT),		//Profiler for TileEnt rendering
 	RENDER_ENTITY      (RunType.ONREQUEST, Side.CLIENT),		//Profiler for Entity rendering
