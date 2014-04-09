@@ -128,7 +128,7 @@ public class TransformerFMLCommonHandler extends TransformerBase {
 		
         for (MethodNode methodNode : classNode.methods){
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(FMLCH_TICKSTART)){
-        		System.out.printf("Found FMLCH.tickStart()... \n");
+        		System.out.printf("[MobiusCore] Found FMLCH.tickStart()... \n");
         		InsnList instructions = methodNode.instructions;
         		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
         		ArrayList<ArrayList<AbstractInsnNode>> match;
@@ -136,7 +136,7 @@ public class TransformerFMLCommonHandler extends TransformerBase {
         		match = this.findPattern(methodNode, FMLCH_PATTERN_TICKSTART);
         		if (match.size() != 0){
         			for (ArrayList<AbstractInsnNode> sublist : match){
-        				System.out.printf("Trying to inject tick profiler... ");
+        				System.out.printf("[MobiusCore] Trying to inject tick profiler... ");
         			
         				this.applyPayloadBefore(instructions, sublist, FMLCH_PAYLOAD_TICKSTART_PRE);
         				this.applyPayloadAfter (instructions, sublist, FMLCH_PAYLOAD_TICKSTART_POST);        			
@@ -149,7 +149,7 @@ public class TransformerFMLCommonHandler extends TransformerBase {
         	}
 
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(FMLCH_TICKEND)){
-        		System.out.printf("Found FMLCH.tickEnd()... \n");
+        		System.out.printf("[MobiusCore] Found FMLCH.tickEnd()... \n");
         		InsnList instructions = methodNode.instructions;
         		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
         		ArrayList<ArrayList<AbstractInsnNode>> match;
@@ -157,7 +157,7 @@ public class TransformerFMLCommonHandler extends TransformerBase {
         		match = this.findPattern(methodNode, FMLCH_PATTERN_TICKEND);
         		if (match.size() != 0){
         			for (ArrayList<AbstractInsnNode> sublist : match){
-	        			System.out.printf("Trying to inject tick profiler... ");
+	        			System.out.printf("[MobiusCore] Trying to inject tick profiler... ");
 	        			
 	        			this.applyPayloadBefore(instructions, sublist, FMLCH_PAYLOAD_TICKEND_PRE);
 	        			this.applyPayloadAfter(instructions, sublist, FMLCH_PAYLOAD_TICKEND_POST);        			
@@ -170,13 +170,13 @@ public class TransformerFMLCommonHandler extends TransformerBase {
         	} 
         	
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(FMLCH_ONPRESERVERTICK)){
-        		System.out.printf("Found FMLCH.onPreServerTick()... \n");
+        		System.out.printf("[MobiusCore] Found FMLCH.onPreServerTick()... \n");
         		InsnList instructions = methodNode.instructions;
         		this.applyPayloadFirst(instructions, FMLCH_PAYLOAD_PRESERVERTICK);
         	}
         	
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(FMLCH_ONPOSTSERVERTICK)){
-        		System.out.printf("Found FMLCH.onPostServerTick()... \n");
+        		System.out.printf("[MobiusCore] Found FMLCH.onPostServerTick()... \n");
         		InsnList instructions = methodNode.instructions;
         		this.applyPayloadLast(instructions, FMLCH_PAYLOAD_POSTSERVERTICK); 
 

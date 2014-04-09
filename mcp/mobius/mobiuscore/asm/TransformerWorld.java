@@ -129,7 +129,7 @@ public class TransformerWorld extends TransformerBase{
 		
         for (MethodNode methodNode : classNode.methods){
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(WORLD_UPDATEENTITIES)){
-        		System.out.printf("Found World.updateEntities()... \n");
+        		System.out.printf("[MobiusCore] Found World.updateEntities()... \n");
         		InsnList instructions = methodNode.instructions;
         		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
         		ArrayList<ArrayList<AbstractInsnNode>> match;
@@ -137,7 +137,7 @@ public class TransformerWorld extends TransformerBase{
         		match = this.findPattern(methodNode, WORLD_UPDATE_PATTERN_TEUPDATE);
         		if (match.size() != 0){
         			for (ArrayList<AbstractInsnNode> sublist : match){
-	        			System.out.printf("Trying to inject tile entity profiler... ");
+	        			System.out.printf("[MobiusCore] Trying to inject tile entity profiler... ");
 	        			
 	        			this.applyPayloadBefore(instructions, sublist, WORLD_UPDATE_PAYLOAD_START_TEUPDATE);
 	        			this.applyPayloadAfter(instructions, sublist, WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE);        			
@@ -151,7 +151,7 @@ public class TransformerWorld extends TransformerBase{
         		match = this.findPattern(methodNode, WORLD_UPDATE_PATTERN_ENTUPDATE);
         		if (match.size() != 0){
         			for (ArrayList<AbstractInsnNode> sublist : match){
-	        			System.out.printf("Trying to inject entity profiler... ");
+	        			System.out.printf("[MobiusCore] Trying to inject entity profiler... ");
 	        			
 	        			AbstractInsnNode[] PrevPayload = WORLD_UPDATE_PAYLOAD_START_ENTUPDATE;
 	        			AbstractInsnNode[] NextPayload = WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE;

@@ -53,7 +53,7 @@ public class TransformerRenderManager extends TransformerBase {
 		
         for (MethodNode methodNode : classNode.methods){
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(RM_RENDERENT)){
-        		System.out.printf("Found RenderManager.renderEntity()... \n");
+        		System.out.printf("[MobiusCore] Found RenderManager.renderEntity()... \n");
         		InsnList instructions = methodNode.instructions;
         		this.applyPayloadFirst(instructions, RM_RENDER_PAYLOAD_TOP);
         		this.applyPayloadLast(instructions, RM_RENDER_PAYLOAD_BOTTOM);        		

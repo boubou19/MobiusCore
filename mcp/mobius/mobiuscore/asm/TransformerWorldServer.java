@@ -72,7 +72,7 @@ public class TransformerWorldServer extends TransformerBase {
 		
         for (MethodNode methodNode : classNode.methods){
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(WORLDSERVER_TICK)){
-        		System.out.printf("Found WorldServer.tick()... \n");
+        		System.out.printf("[MobiusCore] Found WorldServer.tick()... \n");
         		
         		InsnList instructions = methodNode.instructions;
         		this.applyPayloadFirst(instructions, WORLDSERVER_PAYLOAD_TICKSTART);

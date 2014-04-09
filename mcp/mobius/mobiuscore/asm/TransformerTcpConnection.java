@@ -97,7 +97,7 @@ public class TransformerTcpConnection extends TransformerBase {
         for (MethodNode methodNode : classNode.methods){
         	
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(TCPCON_READPACKET)){
-        		System.out.printf("Found TcpConnection.readPacket()... \n");
+        		System.out.printf("[MobiusCore] Found TcpConnection.readPacket()... \n");
         		InsnList instructions = methodNode.instructions;
         		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
         		ArrayList<ArrayList<AbstractInsnNode>> match;
@@ -105,7 +105,7 @@ public class TransformerTcpConnection extends TransformerBase {
         		match = this.findPattern(methodNode, TCPCON_PATTERN_INPACKET);
         		if (match.size() != 0){
         			for (ArrayList<AbstractInsnNode> sublist : match){
-        				System.out.printf("Trying to inject input packet profiler... ");
+        				System.out.printf("[MobiusCore] Trying to inject input packet profiler... ");
         			
         				this.applyPayloadAfter(instructions, sublist, TCPCON_PAYLOAD_INPACKET);
         			
@@ -117,7 +117,7 @@ public class TransformerTcpConnection extends TransformerBase {
         	}
 
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(TCPCON_SENDPACKET)){
-        		System.out.printf("Found TcpConnection.sendPacket()... \n");
+        		System.out.printf("[MobiusCore] Found TcpConnection.sendPacket()... \n");
         		InsnList instructions = methodNode.instructions;
         		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
         		ArrayList<ArrayList<AbstractInsnNode>> match;
@@ -125,7 +125,7 @@ public class TransformerTcpConnection extends TransformerBase {
         		match = this.findPattern(methodNode, TCPCON_PATTERN_OUTPACKET);
         		if (match.size() != 0){
         			for (ArrayList<AbstractInsnNode> sublist : match){
-	        			System.out.printf("Trying to inject output packet profiler... ");
+	        			System.out.printf("[MobiusCore] Trying to inject output packet profiler... ");
 	        			
 	        			this.applyPayloadBefore(instructions, sublist, TCPCON_PAYLOAD_OUTPACKET);
 	        			

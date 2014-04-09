@@ -110,7 +110,7 @@ public class TransformerTERenderer extends TransformerBase {
         
         for (MethodNode methodNode : classNode.methods){
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(TER_RENDER)){
-        		System.out.printf("Found TileEntityRenderer.renderTileEntityAt()... \n");
+        		System.out.printf("[MobiusCore] Found TileEntityRenderer.renderTileEntityAt()... \n");
         		InsnList instructions = methodNode.instructions;
         		this.applyPayloadFirst(instructions, TER_RENDER_PAYLOAD_TOP);
         		this.applyPayloadLast(instructions, TER_RENDER_PAYLOAD_BOTTOM);        		

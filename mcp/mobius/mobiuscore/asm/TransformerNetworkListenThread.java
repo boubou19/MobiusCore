@@ -51,7 +51,7 @@ public class TransformerNetworkListenThread extends TransformerBase {
 		
         for (MethodNode methodNode : classNode.methods){
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(NETWORKTICK)){
-        		System.out.printf("Found NetworkListenThread.networkTick()... \n");
+        		System.out.printf("[MobiusCore] Found NetworkListenThread.networkTick()... \n");
         		InsnList instructions = methodNode.instructions;
         		this.applyPayloadFirst(instructions, NETWORKTICK_PAYLOAD_TOP);
         		this.applyPayloadLast(instructions, NETWORKTICK_PAYLOAD_BOTTOM);        		
