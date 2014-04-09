@@ -32,6 +32,7 @@ public class CoreTransformer implements IClassTransformer {
 	TransformerTcpConnection    transTCPConnection = new TransformerTcpConnection();
 	TransformerRenderManager	transRenderManag   = new TransformerRenderManager();
 	TransformerTERenderer		transTERenderer    = new TransformerTERenderer();
+	TransformerNetworkListenThread transNetListen  = new TransformerNetworkListenThread();
 	
 	public CoreTransformer(){
 		super();
@@ -41,19 +42,13 @@ public class CoreTransformer implements IClassTransformer {
 	public byte[] transform(String name, String srgname, byte[] bytes) {
 		//System.out.printf("[ %s ] %s\n", name, srgname);
 		
-		if (srgname.equals("net.minecraft.world.World"))
+		if (srgname.equals("net.minecraft.world.World")){
+			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transWorld.transform(name, srgname, bytes);
+		}
 		
 		if (srgname.equals("cpw.mods.fml.common.FMLCommonHandler")){
-			System.out.printf("++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-			
-			/*
-			System.out.printf("FMLCH : %s\n", bytes.length);
-			for (byte b : bytes)
-				System.out.printf("%02X ", b);
-			System.out.printf("\n");			
-			*/
-			
+			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transFML.transform(name, srgname, bytes);		
 		}
 
@@ -62,20 +57,29 @@ public class CoreTransformer implements IClassTransformer {
 		//}
 		
 		if (srgname.equals("net.minecraft.world.WorldServer")){
+			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transWorldServer.transform(name, srgname, bytes);
 		}		
 		
 		if (srgname.equals("net.minecraft.network.TcpConnection")){
+			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transTCPConnection.transform(name, srgname, bytes);
 		}			
 		
 		if (srgname.equals("net.minecraft.client.renderer.entity.RenderManager")){
+			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transRenderManag.transform(name, srgname, bytes);
 		}	
 		
 		if (srgname.equals("net.minecraft.client.renderer.tileentity.TileEntityRenderer")){
+			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transTERenderer.transform(name, srgname, bytes);
 		}			
+		
+		if (srgname.equals("net.minecraft.network.NetworkListenThread")){
+			System.out.printf("[MobiusCore] Found %s\n", srgname);
+			return transNetListen.transform(name, srgname, bytes);
+		}		
 		
 		return bytes;
 	}
