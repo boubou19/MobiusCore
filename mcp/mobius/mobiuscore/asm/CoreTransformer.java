@@ -33,6 +33,7 @@ public class CoreTransformer implements IClassTransformer {
 	TransformerRenderManager	transRenderManag   = new TransformerRenderManager();
 	TransformerTERenderer		transTERenderer    = new TransformerTERenderer();
 	TransformerNetworkListenThread transNetListen  = new TransformerNetworkListenThread();
+	TransformerASMEventHandler     transASMEvent   = new TransformerASMEventHandler();
 	
 	public CoreTransformer(){
 		super();
@@ -85,6 +86,13 @@ public class CoreTransformer implements IClassTransformer {
 			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transNetListen.transform(name, srgname, bytes);
 		}		
+	
+		if (srgname.equals("net.minecraftforge.event.ASMEventHandler")){
+			System.out.printf("[MobiusCore] Found %s\n", srgname);
+			return transASMEvent.transform(name, srgname, bytes);
+		}			
+		
+		//new TransformerIEventListener().transform(name, srgname, bytes);
 		
 		return bytes;
 	}

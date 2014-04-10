@@ -46,9 +46,8 @@ public class TransformerNetworkListenThread extends TransformerBase {
 	public byte[] transform(String name, String srgname, byte[] bytes) {
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		
-		
         classReader.accept(classNode, 0);
-		
+
         for (MethodNode methodNode : classNode.methods){
         	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(NETWORKTICK)){
         		System.out.printf("[MobiusCore] Found NetworkListenThread.networkTick()... \n");

@@ -4,16 +4,17 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraft.world.World;
 
 public enum ProfilerSection implements IProfilerBase{
-	DIMENSION_TICK     (RunType.REALTIME, Side.SERVER),			//Global section around the ticks for each dim (Blocks & ents).
+	DIMENSION_TICK     (RunType.REALTIME,  Side.SERVER),		//Global section around the ticks for each dim (Blocks & ents).
 	DIMENSION_BLOCKTICK(RunType.ONREQUEST, Side.SERVER),		//Subsection for dimension block tick.
 	ENTITY_UPDATETIME  (RunType.ONREQUEST, Side.SERVER),		//Profiling of the entity tick time, per entity.
-	TICK               (RunType.REALTIME, Side.SERVER),			//Tick timing profiling
+	TICK               (RunType.REALTIME,  Side.SERVER),		//Tick timing profiling
 	TILEENT_UPDATETIME (RunType.ONREQUEST, Side.SERVER),		//Profiling of the TileEntity tick time, per TE.
 	HANDLER_TICKSTART  (RunType.ONREQUEST, Side.SERVER), 		//Server handler for ServerTick start.
 	HANDLER_TICKSTOP   (RunType.ONREQUEST, Side.SERVER),  		//Server handler for ServerTick stop.
-	PACKET_INBOUND     (RunType.REALTIME, Side.SERVER),			//Outbound packet analysis
-	PACKET_OUTBOUND    (RunType.REALTIME, Side.SERVER),			//Inbound packet analysis
+	PACKET_INBOUND     (RunType.REALTIME,  Side.SERVER),		//Outbound packet analysis
+	PACKET_OUTBOUND    (RunType.REALTIME,  Side.SERVER),		//Inbound packet analysis
 	NETWORK_TICK       (RunType.ONREQUEST, Side.SERVER),  		//The time it takes for the server to handle the packets during a tick.
+	EVENT_INVOKE	   (RunType.ONREQUEST, Side.SERVER),		//Timing of the event invokation
 	
 	RENDER_TILEENTITY  (RunType.ONREQUEST, Side.CLIENT),		//Profiler for TileEnt rendering
 	RENDER_ENTITY      (RunType.ONREQUEST, Side.CLIENT),		//Profiler for Entity rendering
