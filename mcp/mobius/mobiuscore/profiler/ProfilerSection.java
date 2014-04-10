@@ -107,6 +107,10 @@ public enum ProfilerSection implements IProfilerBase{
 	@Override
 	public void stop(Object key1, Object key2) { this.profiler.stop(key1, key2); }
 	@Override
+	public void start(Object key1, Object key2, Object key3) {	this.profiler.start(key1, key2, key3);}
+	@Override
+	public void stop(Object key1, Object key2, Object key3) { this.profiler.stop(key1, key2, key3); }	
+	@Override
 	public void start(Object key1, Object key2, Object key3, Object key4) {	this.profiler.start(key1, key2, key3, key4);}
 	@Override
 	public void stop(Object key1, Object key2, Object key3, Object key4) { this.profiler.stop(key1, key2, key3, key4); }

@@ -42,14 +42,13 @@ public class TransformerASMEventHandler extends TransformerBase {
 
 		ASMEH_INVOKE_PAYLOAD_PRE = new AbstractInsnNode[]
 				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.EVENT_INVOKE.name(), profilerType),
-				 new VarInsnNode(Opcodes.ALOAD, 1),
-				 new VarInsnNode(Opcodes.ALOAD, 0),				 
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;Ljava/lang/Object;)V")};				
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "()V")};				
 		
 		ASMEH_INVOKE_PAYLOAD_POST = new AbstractInsnNode[]
 				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.EVENT_INVOKE.name(), profilerType),
 				 new VarInsnNode(Opcodes.ALOAD, 1),
-				 new VarInsnNode(Opcodes.ALOAD, 0),				 
+				 new VarInsnNode(Opcodes.ALOAD, 0),
+				 new FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/event/ASMEventHandler", "handler", "Lnet/minecraftforge/event/IEventListener;"),				 
 				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;Ljava/lang/Object;)V")};		
 
 		

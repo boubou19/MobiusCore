@@ -15,6 +15,9 @@ public interface IProfilerBase {
 	public void start(Object key1, Object key2);
 	public void stop(Object key1, Object key2);		
 
+	public void start(Object key1, Object key2, Object key3);
+	public void stop(Object key1, Object key2, Object key3);	
+	
 	public void start(Object key1, Object key2, Object key3, Object key4);
 	public void stop(Object key1, Object key2, Object key3, Object key4);		
 	
