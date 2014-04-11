@@ -17,7 +17,7 @@ public class CoreContainer extends DummyModContainer {
 		ModMetadata md = getMetadata();
 		md.modId   = "MobiusCore";
 		md.name    = "MobiusCore";
-		md.version = "1.2.1_dev3";
+		md.version = "1.2.1_dev5";
 		md.credits = "ProfMobius";
 		md.authorList = Arrays.asList("ProfMobius");
 		md.description = "";
