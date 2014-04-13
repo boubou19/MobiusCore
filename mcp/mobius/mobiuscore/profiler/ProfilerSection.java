@@ -1,5 +1,7 @@
 package mcp.mobius.mobiuscore.profiler;
 
+import java.util.EnumSet;
+
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.world.World;
 
@@ -9,8 +11,8 @@ public enum ProfilerSection implements IProfilerBase{
 	ENTITY_UPDATETIME  (RunType.ONREQUEST, Side.SERVER),		//Profiling of the entity tick time, per entity.
 	TICK               (RunType.REALTIME,  Side.SERVER),		//Tick timing profiling
 	TILEENT_UPDATETIME (RunType.ONREQUEST, Side.SERVER),		//Profiling of the TileEntity tick time, per TE.
-	HANDLER_TICKSTART  (RunType.ONREQUEST, Side.SERVER), 		//Server handler for ServerTick start.
-	HANDLER_TICKSTOP   (RunType.ONREQUEST, Side.SERVER),  		//Server handler for ServerTick stop.
+	HANDLER_TICKSTART  (RunType.ONREQUEST, EnumSet.of(Side.CLIENT, Side.SERVER)), 		//Server handler for ServerTick start.
+	HANDLER_TICKSTOP   (RunType.ONREQUEST, EnumSet.of(Side.CLIENT, Side.SERVER)),  		//Server handler for ServerTick stop.
 	PACKET_INBOUND     (RunType.REALTIME,  Side.SERVER),		//Outbound packet analysis
 	PACKET_OUTBOUND    (RunType.REALTIME,  Side.SERVER),		//Inbound packet analysis
 	NETWORK_TICK       (RunType.ONREQUEST, Side.SERVER),  		//The time it takes for the server to handle the packets during a tick.
@@ -25,7 +27,7 @@ public enum ProfilerSection implements IProfilerBase{
 		ONREQUEST;
 	}
 	
-	private Side          side;
+	private EnumSet<Side> sides;
 	private RunType       runType;
 	private IProfilerBase profiler          = new DummyProfiler();;
 	private IProfilerBase profilerSuspended = new DummyProfiler();;
@@ -35,15 +37,21 @@ public enum ProfilerSection implements IProfilerBase{
 	private ProfilerSection(RunType runType, Side side){
 		this.runType  = runType;
 		this.profiler = new DummyProfiler();
-		this.side     = side;
+		this.sides    = EnumSet.of(side);
 	}
+	
+	private ProfilerSection(RunType runType, EnumSet<Side> sides){
+		this.runType  = runType;
+		this.profiler = new DummyProfiler();
+		this.sides    = sides;
+	}	
 	
 	public RunType getRunType(){
 		return this.runType;
 	}
 	
-	public Side getSide(){
-		return this.side;
+	public EnumSet<Side> getSide(){
+		return this.sides;
 	}
 	
 	public IProfilerBase getProfiler(){
@@ -68,19 +76,19 @@ public enum ProfilerSection implements IProfilerBase{
 	
 	public static void activateAll(Side trgside){
 		for (ProfilerSection section : ProfilerSection.values())
-			if (section.side == trgside)
+			if (section.sides.contains(trgside))
 				section.activate();
 	}
 
 	public static void desactivateAll(Side trgside){
 		for (ProfilerSection section : ProfilerSection.values())
-			if (section.side == trgside)
+			if (section.sides.contains(trgside))
 				section.desactivate();
 	}	
 
 	public static void resetAll(Side trgside){
 		for (ProfilerSection section : ProfilerSection.values())
-			if (section.side == trgside)
+			if (section.sides.contains(trgside))
 				section.reset();
 	}	
 	
