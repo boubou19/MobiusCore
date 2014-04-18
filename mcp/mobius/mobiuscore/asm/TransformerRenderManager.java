@@ -46,19 +46,16 @@ public class TransformerRenderManager extends TransformerBase {
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
+		this.dumpChecksum(bytes, srgname);
+		
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		
 		
         classReader.accept(classNode, 0);
 		
-        for (MethodNode methodNode : classNode.methods){
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(RM_RENDERENT)){
-        		System.out.printf("[MobiusCore] Found RenderManager.renderEntity()... \n");
-        		InsnList instructions = methodNode.instructions;
-        		this.applyPayloadFirst(instructions, RM_RENDER_PAYLOAD_TOP);
-        		this.applyPayloadLast(instructions, RM_RENDER_PAYLOAD_BOTTOM);        		
-        	}
-        }
+        MethodNode renderEntNode  = this.getMethod(classNode, RM_RENDERENT);
+        this.applyPayloadFirst(renderEntNode, RM_RENDER_PAYLOAD_TOP);
+        this.applyPayloadLast (renderEntNode, RM_RENDER_PAYLOAD_BOTTOM);        
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);

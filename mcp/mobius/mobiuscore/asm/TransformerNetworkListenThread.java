@@ -44,18 +44,15 @@ public class TransformerNetworkListenThread extends TransformerBase {
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
+		this.dumpChecksum(bytes, srgname);
+		
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		
         classReader.accept(classNode, 0);
 
-        for (MethodNode methodNode : classNode.methods){
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(NETWORKTICK)){
-        		System.out.printf("[MobiusCore] Found NetworkListenThread.networkTick()... \n");
-        		InsnList instructions = methodNode.instructions;
-        		this.applyPayloadFirst(instructions, NETWORKTICK_PAYLOAD_TOP);
-        		this.applyPayloadLast(instructions, NETWORKTICK_PAYLOAD_BOTTOM);        		
-        	}
-        }
+        MethodNode networkTickNode  = this.getMethod(classNode, NETWORKTICK);
+        this.applyPayloadFirst(networkTickNode, NETWORKTICK_PAYLOAD_TOP);
+        this.applyPayloadLast (networkTickNode, NETWORKTICK_PAYLOAD_BOTTOM);        
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);

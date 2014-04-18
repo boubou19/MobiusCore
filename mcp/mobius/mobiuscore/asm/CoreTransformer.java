@@ -44,12 +44,10 @@ public class CoreTransformer implements IClassTransformer {
 		//System.out.printf("[ %s ] %s\n", name, srgname);
 		
 		if (srgname.equals("net.minecraft.world.World")){
-			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transWorld.transform(name, srgname, bytes);
 		}
 		
 		if (srgname.equals("cpw.mods.fml.common.FMLCommonHandler")){
-			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transFML.transform(name, srgname, bytes);		
 		}
 
@@ -58,37 +56,30 @@ public class CoreTransformer implements IClassTransformer {
 		//}
 		
 		if (srgname.equals("net.minecraft.world.WorldServer")){
-			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transWorldServer.transform(name, srgname, bytes);
 		}		
 		
 		if (srgname.equals("net.minecraft.network.TcpConnection")){
-			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transTCPConnection.transform(name, srgname, bytes);
 		}			
 		
 		if (srgname.equals("net.minecraft.client.renderer.entity.RenderManager")){
-			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transRenderManag.transform(name, srgname, bytes);
 		}	
 		
 		if (srgname.equals("net.minecraft.client.renderer.tileentity.TileEntityRenderer")){
-			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transTERenderer.transform(name, srgname, bytes);
 		}			
 		
 		if (srgname.equals("net.minecraft.server.integrated.IntegratedServerListenThread")){
-			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transNetListen.transform(name, srgname, bytes);
 		}		
 		
 		if (srgname.equals("net.minecraft.server.dedicated.DedicatedServerListenThread")){
-			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transNetListen.transform(name, srgname, bytes);
 		}		
 	
 		if (srgname.equals("net.minecraftforge.event.ASMEventHandler")){
-			System.out.printf("[MobiusCore] Found %s\n", srgname);
 			return transASMEvent.transform(name, srgname, bytes);
 		}			
 		

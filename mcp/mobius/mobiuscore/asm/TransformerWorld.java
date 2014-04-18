@@ -70,12 +70,12 @@ public class TransformerWorld extends TransformerBase{
 		
 		WORLD_UPDATE_PATTERN_TEUPDATE =	new AbstractInsnNode[] 
 			{new LineNumberNode(-1, new LabelNode()), 
-			 new VarInsnNode(Opcodes.ALOAD, -1), 
+			 new VarInsnNode   (Opcodes.ALOAD, -1), 
 			 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getCorrectName("asp"), getCorrectName("h"), "()V")};
 
 		WORLD_UPDATE_PAYLOAD_START_TEUPDATE = new AbstractInsnNode[]
-			{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.TILEENT_UPDATETIME.name(), profilerType),
-			 new VarInsnNode(Opcodes.ALOAD, 8), 
+			{new FieldInsnNode (Opcodes.GETSTATIC, profilerClass, ProfilerSection.TILEENT_UPDATETIME.name(), profilerType),
+			 new VarInsnNode   (Opcodes.ALOAD, 8), 
 			 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V")};	
 
 		WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE = new AbstractInsnNode[]
@@ -120,59 +120,49 @@ public class TransformerWorld extends TransformerBase{
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes){
-		//log.setLevel(Level.FINEST);
+		this.dumpChecksum(bytes, srgname);
 		
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		
 		
         classReader.accept(classNode, 0);
 		
-        for (MethodNode methodNode : classNode.methods){
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(WORLD_UPDATEENTITIES)){
-        		System.out.printf("[MobiusCore] Found World.updateEntities()... \n");
-        		InsnList instructions = methodNode.instructions;
-        		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
-        		ArrayList<ArrayList<AbstractInsnNode>> match;
+        MethodNode updateEntitiesNode = this.getMethod(classNode, WORLD_UPDATEENTITIES);
+		System.out.printf("[MobiusCore] Found World.updateEntities()... \n");
+		
+		this.applyPayloadBefore(updateEntitiesNode, WORLD_UPDATE_PATTERN_TEUPDATE, WORLD_UPDATE_PAYLOAD_START_TEUPDATE);
+		this.applyPayloadAfter (updateEntitiesNode, WORLD_UPDATE_PATTERN_TEUPDATE, WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE);
 
-        		match = this.findPattern(methodNode, WORLD_UPDATE_PATTERN_TEUPDATE);
-        		if (match.size() != 0){
-        			for (ArrayList<AbstractInsnNode> sublist : match){
-	        			System.out.printf("[MobiusCore] Trying to inject tile entity profiler... ");
-	        			
-	        			this.applyPayloadBefore(instructions, sublist, WORLD_UPDATE_PAYLOAD_START_TEUPDATE);
-	        			this.applyPayloadAfter(instructions, sublist, WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE);        			
-	        			
-	        			System.out.printf("Successful injection !\n");
-        			}
-        		} else {
-        			System.out.printf("Error while injecting !\n");
-        		}
+		this.applyPayloadBefore(updateEntitiesNode, WORLD_UPDATE_PATTERN_ENTUPDATE, WORLD_UPDATE_PAYLOAD_START_ENTUPDATE);
+		this.applyPayloadAfter (updateEntitiesNode, WORLD_UPDATE_PATTERN_ENTUPDATE, WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE);		
+
+		/*
+		ArrayList<ArrayList<AbstractInsnNode>> match;
+
+		match = this.findPattern(updateEntitiesNode, WORLD_UPDATE_PATTERN_ENTUPDATE);
+		if (match.size() != 0){
+			for (ArrayList<AbstractInsnNode> sublist : match){
+    			System.out.printf("[MobiusCore] Trying to inject entity profiler... ");
+    			
+    			AbstractInsnNode[] PrevPayload = WORLD_UPDATE_PAYLOAD_START_ENTUPDATE;
+    			AbstractInsnNode[] NextPayload = WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE;
+    			VarInsnNode aload = (VarInsnNode)(sublist.get(2));
+    			if (aload.var == 4){
+    				PrevPayload = WORLD_UPDATE_PAYLOAD_START_ENTUPDATE_MCPC;
+    				NextPayload = WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE_MCPC;        				
+    			}
+    			
+    			this.applyPayloadBefore(instructions, sublist, PrevPayload);
+    			this.applyPayloadAfter(instructions, sublist, NextPayload);
+    			
+    			System.out.printf("Successful injection !\n");
+			}
+		} else {
+			System.out.printf("Error while injecting !\n");
+		}        		
+        */	
         		
-        		match = this.findPattern(methodNode, WORLD_UPDATE_PATTERN_ENTUPDATE);
-        		if (match.size() != 0){
-        			for (ArrayList<AbstractInsnNode> sublist : match){
-	        			System.out.printf("[MobiusCore] Trying to inject entity profiler... ");
-	        			
-	        			AbstractInsnNode[] PrevPayload = WORLD_UPDATE_PAYLOAD_START_ENTUPDATE;
-	        			AbstractInsnNode[] NextPayload = WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE;
-	        			VarInsnNode aload = (VarInsnNode)(sublist.get(2));
-	        			if (aload.var == 4){
-	        				PrevPayload = WORLD_UPDATE_PAYLOAD_START_ENTUPDATE_MCPC;
-	        				NextPayload = WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE_MCPC;        				
-	        			}
-	        			
-	        			this.applyPayloadBefore(instructions, sublist, PrevPayload);
-	        			this.applyPayloadAfter(instructions, sublist, NextPayload);
-	        			
-	        			System.out.printf("Successful injection !\n");
-        			}
-        		} else {
-        			System.out.printf("Error while injecting !\n");
-        		}        		
-        		
-        		
-        	}
-        }
+
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);

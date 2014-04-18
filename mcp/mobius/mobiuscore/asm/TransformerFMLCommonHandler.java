@@ -1,5 +1,6 @@
 package mcp.mobius.mobiuscore.asm;
 
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ListIterator;
@@ -121,81 +122,32 @@ public class TransformerFMLCommonHandler extends TransformerBase {
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
+		this.dumpChecksum(bytes, srgname);		
+		
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		
 		
         classReader.accept(classNode, 0);
 		
-        for (MethodNode methodNode : classNode.methods){
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(FMLCH_TICKSTART)){
-        		System.out.printf("[MobiusCore] Found FMLCH.tickStart()... \n");
-        		InsnList instructions = methodNode.instructions;
-        		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
-        		ArrayList<ArrayList<AbstractInsnNode>> match;
+        MethodNode tickStartNode = this.getMethod(classNode, FMLCH_TICKSTART);
+		this.applyPayloadBefore(tickStartNode, FMLCH_PATTERN_TICKSTART, FMLCH_PAYLOAD_TICKSTART_PRE);
+		this.applyPayloadAfter (tickStartNode, FMLCH_PATTERN_TICKSTART, FMLCH_PAYLOAD_TICKSTART_POST);
+        
+        MethodNode tickEndNode   = this.getMethod(classNode, FMLCH_TICKEND);
+		this.applyPayloadBefore(tickEndNode, FMLCH_PATTERN_TICKEND, FMLCH_PAYLOAD_TICKEND_PRE);
+		this.applyPayloadAfter (tickEndNode, FMLCH_PATTERN_TICKEND, FMLCH_PAYLOAD_TICKEND_POST);         
 
-        		match = this.findPattern(methodNode, FMLCH_PATTERN_TICKSTART);
-        		if (match.size() != 0){
-        			for (ArrayList<AbstractInsnNode> sublist : match){
-        				System.out.printf("[MobiusCore] Trying to inject tick profiler... ");
-        			
-        				this.applyPayloadBefore(instructions, sublist, FMLCH_PAYLOAD_TICKSTART_PRE);
-        				this.applyPayloadAfter (instructions, sublist, FMLCH_PAYLOAD_TICKSTART_POST);        			
-        			
-        				System.out.printf("Successful injection !\n");
-        			}
-        		} else {
-        			System.out.printf("Error while injecting !\n");
-        		}
-        	}
-
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(FMLCH_TICKEND)){
-        		System.out.printf("[MobiusCore] Found FMLCH.tickEnd()... \n");
-        		InsnList instructions = methodNode.instructions;
-        		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
-        		ArrayList<ArrayList<AbstractInsnNode>> match;
-
-        		match = this.findPattern(methodNode, FMLCH_PATTERN_TICKEND);
-        		if (match.size() != 0){
-        			for (ArrayList<AbstractInsnNode> sublist : match){
-	        			System.out.printf("[MobiusCore] Trying to inject tick profiler... ");
-	        			
-	        			this.applyPayloadBefore(instructions, sublist, FMLCH_PAYLOAD_TICKEND_PRE);
-	        			this.applyPayloadAfter(instructions, sublist, FMLCH_PAYLOAD_TICKEND_POST);        			
-	        			
-	        			System.out.printf("Successful injection !\n");
-        			}
-        		} else {
-        			System.out.printf("Error while injecting !\n");
-        		}
-        	} 
-        	
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(FMLCH_ONPRESERVERTICK)){
-        		System.out.printf("[MobiusCore] Found FMLCH.onPreServerTick()... \n");
-        		InsnList instructions = methodNode.instructions;
-        		this.applyPayloadFirst(instructions, FMLCH_PAYLOAD_PRESERVERTICK);
-        	}
-        	
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(FMLCH_ONPOSTSERVERTICK)){
-        		System.out.printf("[MobiusCore] Found FMLCH.onPostServerTick()... \n");
-        		InsnList instructions = methodNode.instructions;
-        		this.applyPayloadLast(instructions, FMLCH_PAYLOAD_POSTSERVERTICK); 
-
-        	}
-        	
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(FMLCH_ONPREWORLDTICK)){
-        		System.out.printf("Found FMLCH.onPreWorldTick()... \n");
-        		InsnList instructions = methodNode.instructions;
-        		this.applyPayloadFirst(instructions, FMLCH_PAYLOAD_PREWORLDTICK); 
-
-        	}
-        	
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(FMLCH_ONPOSTWORLDTICK)){
-        		System.out.printf("Found FMLCH.onPostWorldTick()... \n");
-        		InsnList instructions = methodNode.instructions;
-        		this.applyPayloadLast(instructions, FMLCH_PAYLOAD_POSTWORLDTICK); 
-
-        	}        	
-        }
+        MethodNode preServerTickNode  = this.getMethod(classNode, FMLCH_ONPRESERVERTICK);
+        this.applyPayloadFirst(preServerTickNode, FMLCH_PAYLOAD_PRESERVERTICK);
+        
+        MethodNode postServerTickNode = this.getMethod(classNode, FMLCH_ONPOSTSERVERTICK);  
+        this.applyPayloadLast(postServerTickNode, FMLCH_PAYLOAD_POSTSERVERTICK);
+        
+        MethodNode preworldTick  = this.getMethod(classNode, FMLCH_ONPREWORLDTICK);
+        this.applyPayloadFirst(preworldTick, FMLCH_PAYLOAD_PREWORLDTICK);
+        
+        MethodNode postWorldTick = this.getMethod(classNode, FMLCH_ONPOSTWORLDTICK);
+        this.applyPayloadLast(postWorldTick, FMLCH_PAYLOAD_POSTWORLDTICK);
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);

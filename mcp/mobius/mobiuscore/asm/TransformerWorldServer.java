@@ -63,22 +63,16 @@ public class TransformerWorldServer extends TransformerBase {
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
-		//log.setLevel(Level.FINEST);
+		this.dumpChecksum(bytes, srgname);
 		
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		
 		
         classReader.accept(classNode, 0);
 		
-        for (MethodNode methodNode : classNode.methods){
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(WORLDSERVER_TICK)){
-        		System.out.printf("[MobiusCore] Found WorldServer.tick()... \n");
-        		
-        		InsnList instructions = methodNode.instructions;
-        		this.applyPayloadFirst(instructions, WORLDSERVER_PAYLOAD_TICKSTART);
-        		this.applyPayloadLast(instructions,  WORLDSERVER_PAYLOAD_TICKEND);
-        	}
-        }
+        MethodNode tickNode  = this.getMethod(classNode, WORLDSERVER_TICK);
+        this.applyPayloadFirst(tickNode, WORLDSERVER_PAYLOAD_TICKSTART);
+        this.applyPayloadLast (tickNode, WORLDSERVER_PAYLOAD_TICKEND);         
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES |ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);

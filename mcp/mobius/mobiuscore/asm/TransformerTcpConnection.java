@@ -87,6 +87,8 @@ public class TransformerTcpConnection extends TransformerBase {
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
+		this.dumpChecksum(bytes, srgname);
+		
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		
 		
@@ -94,50 +96,11 @@ public class TransformerTcpConnection extends TransformerBase {
         
         classReader.accept(classNode, 0);
 		
-        for (MethodNode methodNode : classNode.methods){
-        	
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(TCPCON_READPACKET)){
-        		System.out.printf("[MobiusCore] Found TcpConnection.readPacket()... \n");
-        		InsnList instructions = methodNode.instructions;
-        		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
-        		ArrayList<ArrayList<AbstractInsnNode>> match;
-
-        		match = this.findPattern(methodNode, TCPCON_PATTERN_INPACKET);
-        		if (match.size() != 0){
-        			for (ArrayList<AbstractInsnNode> sublist : match){
-        				System.out.printf("[MobiusCore] Trying to inject input packet profiler... ");
-        			
-        				this.applyPayloadAfter(instructions, sublist, TCPCON_PAYLOAD_INPACKET);
-        			
-        				System.out.printf("Successful injection !\n");
-        			}
-        		} else {
-        			System.out.printf("Error while injecting !\n");
-        		}
-        	}
-
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(TCPCON_SENDPACKET)){
-        		System.out.printf("[MobiusCore] Found TcpConnection.sendPacket()... \n");
-        		InsnList instructions = methodNode.instructions;
-        		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
-        		ArrayList<ArrayList<AbstractInsnNode>> match;
-
-        		match = this.findPattern(methodNode, TCPCON_PATTERN_OUTPACKET);
-        		if (match.size() != 0){
-        			for (ArrayList<AbstractInsnNode> sublist : match){
-	        			System.out.printf("[MobiusCore] Trying to inject output packet profiler... ");
-	        			
-	        			this.applyPayloadBefore(instructions, sublist, TCPCON_PAYLOAD_OUTPACKET);
-	        			
-	        			System.out.printf("Successful injection !\n");
-	        			
-        			}
-        		} else {
-        			System.out.printf("Error while injecting !\n");
-        		}
-        	}
- 
-        }
+        MethodNode readPacketNode  = this.getMethod(classNode, TCPCON_READPACKET);
+        this.applyPayloadAfter(readPacketNode, TCPCON_PATTERN_INPACKET, TCPCON_PAYLOAD_INPACKET);
+        
+        MethodNode sendPacketNode  = this.getMethod(classNode, TCPCON_SENDPACKET);
+        this.applyPayloadBefore(sendPacketNode, TCPCON_PATTERN_OUTPACKET, TCPCON_PAYLOAD_OUTPACKET);         
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);

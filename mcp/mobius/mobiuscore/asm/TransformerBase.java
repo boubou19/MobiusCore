@@ -1,6 +1,8 @@
 package mcp.mobius.mobiuscore.asm;
 
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -129,7 +131,7 @@ public abstract class TransformerBase {
 		}		
 	}
 	
-	protected void applyPayloadAfter(InsnList instructions, ArrayList<AbstractInsnNode> match,  AbstractInsnNode[] payload_pattern){
+	private void applyPayloadAfter(InsnList instructions, ArrayList<AbstractInsnNode> match,  AbstractInsnNode[] payload_pattern){
 		InsnList payload = new InsnList();
 		for (int i = 0; i < payload_pattern.length; i++)
 			payload.add(payload_pattern[i]);
@@ -137,7 +139,7 @@ public abstract class TransformerBase {
 		instructions.insert(match.get(match.size() - 1), payload);		
 	}
 	
-	protected void applyPayloadBefore(InsnList instructions, ArrayList<AbstractInsnNode> match,  AbstractInsnNode[] payload_pattern){
+	private void applyPayloadBefore(InsnList instructions, ArrayList<AbstractInsnNode> match,  AbstractInsnNode[] payload_pattern){
 		InsnList payload = new InsnList();
 		for (int i = 0; i < payload_pattern.length; i++)
 			payload.add(payload_pattern[i]);
@@ -145,15 +147,47 @@ public abstract class TransformerBase {
 		instructions.insertBefore(match.get(0), payload);
 	}	
 	
-	protected void applyPayloadFirst(InsnList instructions, AbstractInsnNode[] payload_pattern){
+	protected void applyPayloadBefore(MethodNode methodNode, AbstractInsnNode[] pattern, AbstractInsnNode[] payload){
+		ArrayList<ArrayList<AbstractInsnNode>> match;
+		
+		match = this.findPattern(methodNode, pattern);
+		if (match.size() != 0){
+			for (ArrayList<AbstractInsnNode> sublist : match){
+    			this.applyPayloadBefore(methodNode.instructions, sublist, payload);
+			}
+			System.out.printf("[MobiusCore] Successful injection in %s %s\n", methodNode.name, methodNode.desc);
+			return;
+		}		
+		throw new RuntimeException(String.format("Pattern not found while trying to inject into %s", methodNode.name));
+	}
+	
+	protected void applyPayloadAfter(MethodNode methodNode, AbstractInsnNode[] pattern, AbstractInsnNode[] payload){
+		ArrayList<ArrayList<AbstractInsnNode>> match;
+		
+		match = this.findPattern(methodNode, pattern);
+		if (match.size() != 0){
+			for (ArrayList<AbstractInsnNode> sublist : match){
+    			this.applyPayloadAfter(methodNode.instructions, sublist, payload);
+			}
+			System.out.printf("[MobiusCore] Successful injection in %s %s\n", methodNode.name, methodNode.desc);			
+			return;			
+		}		
+		throw new RuntimeException(String.format("Pattern not found while trying to inject into %s", methodNode.name));
+	}	
+	
+	protected void applyPayloadFirst(MethodNode methodNode, AbstractInsnNode[] payload_pattern){
+		InsnList instructions = methodNode.instructions;
 		InsnList payload = new InsnList();
 		for (int i = 0; i < payload_pattern.length; i++)
 			payload.add(payload_pattern[i]);
 	
 		instructions.insertBefore(instructions.getFirst(), payload);
+		
+		System.out.printf("[MobiusCore] Successful injection in %s %s\n", methodNode.name, methodNode.desc);		
 	}		
 	
-	protected void applyPayloadLast(InsnList instructions, AbstractInsnNode[] payload_pattern){
+	protected void applyPayloadLast(MethodNode methodNode, AbstractInsnNode[] payload_pattern){
+		InsnList instructions = methodNode.instructions;
 		InsnList payload = new InsnList();
 		for (int i = 0; i < payload_pattern.length; i++)
 			payload.add(payload_pattern[i]);
@@ -163,6 +197,8 @@ public abstract class TransformerBase {
 				instructions.insertBefore(instructions.get(i), payload);
 			}
 		}
+
+		System.out.printf("[MobiusCore] Successful injection in %s %s\n", methodNode.name, methodNode.desc);		
 	}		
 	
 	/*
@@ -293,4 +329,34 @@ public abstract class TransformerBase {
 			return vanillaBytes;
 		}		
 	}	
+	
+	protected void dumpChecksum(byte[] data, String filename){
+		try{ 
+			//System.out.printf("[MobiusCore] Found %s with checksum %s\n", filename, MessageDigest.getInstance("MD5").digest(data));
+			
+			MessageDigest m = MessageDigest.getInstance("MD5");
+			m.reset();
+			m.update(data);
+			byte[] digest = m.digest();
+			BigInteger bigInt = new BigInteger(1,digest);
+			String hashtext = bigInt.toString(16);
+			// Now we need to zero pad it if you actually want the full 32 chars.
+			while(hashtext.length() < 32 ){
+			  hashtext = "0"+hashtext;
+			}	
+			
+			System.out.printf("[MobiusCore] Found %s with checksum %s\n", filename, hashtext.toUpperCase());
+			
+		}
+		catch (Exception e) {
+		}			
+	}
+	
+	protected MethodNode getMethod(ClassNode classNode, String methodName){
+        for (MethodNode methodNode : classNode.methods)
+        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(methodName))
+        		return methodNode;
+
+        throw new RuntimeException(String.format("Method %s not found in %s\n", methodName, classNode.name));
+	}
 }

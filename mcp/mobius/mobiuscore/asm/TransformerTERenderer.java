@@ -69,53 +69,16 @@ public class TransformerTERenderer extends TransformerBase {
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
+		this.dumpChecksum(bytes, srgname);
+		
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		
 		
         classReader.accept(classNode, 0);
 		
-        /*
-        for (MethodNode methodNode : classNode.methods){
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(TER_RENDER)){
-        		//System.out.printf("Found TileEntityRenderer.renderTileEntity()... \n");
-        		System.out.printf("Found TileEntityRenderer.renderTileEntityAt()... \n");
-        		InsnList instructions = methodNode.instructions;
-        		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
-        		ArrayList<ArrayList<AbstractInsnNode>> match;
-
-        		match = this.findPattern(methodNode, TER_RENDER_PATTERN_TOP);
-        		if (match.size() != 0){
-        			for (ArrayList<AbstractInsnNode> sublist : match){
-        				System.out.printf("Trying to inject rendering profiler start... ");
-        				this.applyPayloadBefore(instructions, sublist, TER_RENDER_PAYLOAD_TOP);
-        				System.out.printf("Successful injection !\n");
-        			}
-        		} else {
-        			System.out.printf("Error while injecting !\n");
-        		}
-        		
-        		match = this.findPattern(methodNode, TER_RENDER_PATTERN_BOTTOM);
-        		if (match.size() != 0){
-        			for (ArrayList<AbstractInsnNode> sublist : match){
-        				System.out.printf("Trying to inject rendering profiler stop... ");
-        				this.applyPayloadAfter(instructions, sublist, TER_RENDER_PAYLOAD_BOTTOM);
-        				System.out.printf("Successful injection !\n");
-        			}
-        		} else {
-        			System.out.printf("Error while injecting !\n");
-        		}        		
-        	}
-        }
-        */
-        
-        for (MethodNode methodNode : classNode.methods){
-        	if (String.format("%s %s", methodNode.name, methodNode.desc).equals(TER_RENDER)){
-        		System.out.printf("[MobiusCore] Found TileEntityRenderer.renderTileEntityAt()... \n");
-        		InsnList instructions = methodNode.instructions;
-        		this.applyPayloadFirst(instructions, TER_RENDER_PAYLOAD_TOP);
-        		this.applyPayloadLast(instructions, TER_RENDER_PAYLOAD_BOTTOM);        		
-        	}
-        }
+        MethodNode renderEntNode  = this.getMethod(classNode, TER_RENDER);
+        this.applyPayloadFirst(renderEntNode, TER_RENDER_PAYLOAD_TOP);
+        this.applyPayloadLast (renderEntNode, TER_RENDER_PAYLOAD_BOTTOM); 
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);
