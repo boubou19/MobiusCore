@@ -1,8 +1,10 @@
-package mcp.mobius.mobiuscore.asm;
+package mcp.mobius.mobiuscore.asm.transformers.common;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import mcp.mobius.mobiuscore.asm.ObfTable;
+import mcp.mobius.mobiuscore.asm.transformers.TransformerBase;
 import mcp.mobius.mobiuscore.profiler.ProfilerSection;
 
 import org.objectweb.asm.ClassReader;
@@ -34,8 +36,8 @@ public class TransformerTcpConnection extends TransformerBase {
 		String profilerClass =  ProfilerSection.getClassName();
 		String profilerType  =  ProfilerSection.getTypeName();
 		
-		TCPCON_READPACKET   = "i ()Z";
-		TCPCON_SENDPACKET   = "a (Z)Ley;";		
+		TCPCON_READPACKET   = ObfTable.TCPCONN_READPACKET.getFullDescriptor();
+		TCPCON_SENDPACKET   = ObfTable.TCPCONN_SENDPACKET.getFullDescriptor();		
 
 		/*
 		TCPCON_PATTERN_OUTPACKET =	new AbstractInsnNode[]{
@@ -60,8 +62,8 @@ public class TransformerTcpConnection extends TransformerBase {
 				};
 		
 		TCPCON_PATTERN_INPACKET =	new AbstractInsnNode[]{
-				new FieldInsnNode(Opcodes.GETFIELD, "co", "j", "Ljava/net/Socket;"),
-				new MethodInsnNode(Opcodes.INVOKESTATIC, "ey", "a", "(Llp;Ljava/io/DataInput;ZLjava/net/Socket;)Ley;"),
+				new FieldInsnNode(Opcodes.GETFIELD, ObfTable.TCPCONN_NETWORKSOCKET.getClazz(), ObfTable.TCPCONN_NETWORKSOCKET.getName(), ObfTable.TCPCONN_NETWORKSOCKET.getDescriptor()),
+				new MethodInsnNode(Opcodes.INVOKESTATIC, ObfTable.PACKET_READPACKET.getClazz(), ObfTable.PACKET_READPACKET.getName(), ObfTable.PACKET_READPACKET.getDescriptor()),
 				new VarInsnNode(Opcodes.ASTORE, -1)
 				};		
 		
@@ -87,7 +89,7 @@ public class TransformerTcpConnection extends TransformerBase {
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
-		this.dumpChecksum(bytes, srgname);
+		this.dumpChecksum(bytes, name, srgname);
 		
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		

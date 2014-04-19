@@ -1,9 +1,11 @@
-package mcp.mobius.mobiuscore.asm;
+package mcp.mobius.mobiuscore.asm.transformers.common;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
 import org.objectweb.asm.tree.AbstractInsnNode;
 
+import mcp.mobius.mobiuscore.asm.ObfTable;
+import mcp.mobius.mobiuscore.asm.transformers.TransformerBase;
 import mcp.mobius.mobiuscore.profiler.ProfilerSection;
 
 import org.objectweb.asm.ClassReader;
@@ -30,7 +32,7 @@ public class TransformerNetworkListenThread extends TransformerBase {
 		String profilerClass =  ProfilerSection.getClassName();
 		String profilerType  =  ProfilerSection.getTypeName();
 		
-		NETWORKTICK = "b ()V";
+		NETWORKTICK = ObfTable.NETWORKLISTEN_NETWORKTICK.getFullDescriptor();
 		
 		NETWORKTICK_PAYLOAD_TOP = new AbstractInsnNode[]
 				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.NETWORK_TICK.name(), profilerType),
@@ -44,7 +46,7 @@ public class TransformerNetworkListenThread extends TransformerBase {
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
-		this.dumpChecksum(bytes, srgname);
+		this.dumpChecksum(bytes, name, srgname);
 		
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		

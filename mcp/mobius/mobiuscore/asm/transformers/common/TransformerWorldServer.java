@@ -1,6 +1,9 @@
-package mcp.mobius.mobiuscore.asm;
+package mcp.mobius.mobiuscore.asm.transformers.common;
 
+import mcp.mobius.mobiuscore.asm.ObfTable;
+import mcp.mobius.mobiuscore.asm.transformers.TransformerBase;
 import mcp.mobius.mobiuscore.profiler.ProfilerSection;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -21,13 +24,11 @@ public class TransformerWorldServer extends TransformerBase {
 	private static AbstractInsnNode[] WORLDSERVER_PAYLOAD_TICKSTART;
 	private static AbstractInsnNode[] WORLDSERVER_PAYLOAD_TICKEND;
 	
-	private static boolean isEclipse;
-	
 	static{
 		String profilerClass =  ProfilerSection.getClassName();
 		String profilerType  =  ProfilerSection.getTypeName();		
 		
-		WORLDSERVER_TICK = "b ()V";
+		WORLDSERVER_TICK = ObfTable.WORLDSERVER_TICK.getFullDescriptor();
 
 		/*
 		WORLDSERVER_PAYLOAD_TICKSTART =	new AbstractInsnNode[] 
@@ -44,8 +45,8 @@ public class TransformerWorldServer extends TransformerBase {
 				{
 				 new FieldInsnNode (Opcodes.GETSTATIC,       profilerClass, ProfilerSection.DIMENSION_BLOCKTICK.name(), profilerType),
 				 new VarInsnNode   (Opcodes.ALOAD, 0),	
-				 new FieldInsnNode (Opcodes.GETFIELD,        "js", "t", "Laei;"),
-				 new FieldInsnNode (Opcodes.GETFIELD,        "aei", "i", "I"),
+				 new FieldInsnNode (Opcodes.GETFIELD, ObfTable.WORLD_PROVIDER.getClazz(),      ObfTable.WORLD_PROVIDER.getName(),      ObfTable.WORLD_PROVIDER.getDescriptor()),
+				 new FieldInsnNode (Opcodes.GETFIELD, ObfTable.WORLDPROVIDER_DIMID.getClazz(), ObfTable.WORLDPROVIDER_DIMID.getName(), ObfTable.WORLDPROVIDER_DIMID.getDescriptor()),
 				 new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;"),
 				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V"),				 
 				};		
@@ -54,8 +55,8 @@ public class TransformerWorldServer extends TransformerBase {
 				{
 				 new FieldInsnNode (Opcodes.GETSTATIC,       profilerClass, ProfilerSection.DIMENSION_BLOCKTICK.name(), profilerType),
 				 new VarInsnNode   (Opcodes.ALOAD, 0),	
-				 new FieldInsnNode (Opcodes.GETFIELD,        "js", "t", "Laei;"),
-				 new FieldInsnNode (Opcodes.GETFIELD,        "aei", "i", "I"),
+				 new FieldInsnNode (Opcodes.GETFIELD, ObfTable.WORLD_PROVIDER.getClazz(),      ObfTable.WORLD_PROVIDER.getName(),      ObfTable.WORLD_PROVIDER.getDescriptor()),
+				 new FieldInsnNode (Opcodes.GETFIELD, ObfTable.WORLDPROVIDER_DIMID.getClazz(), ObfTable.WORLDPROVIDER_DIMID.getName(), ObfTable.WORLDPROVIDER_DIMID.getDescriptor()),
 				 new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;"),
 				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;)V"),				 
 				};			
@@ -63,7 +64,7 @@ public class TransformerWorldServer extends TransformerBase {
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
-		this.dumpChecksum(bytes, srgname);
+		this.dumpChecksum(bytes, name, srgname);
 		
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		

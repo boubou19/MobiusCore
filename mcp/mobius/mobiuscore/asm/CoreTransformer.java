@@ -18,72 +18,72 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import mcp.mobius.mobiuscore.asm.transformers.common.TransformerASMEventHandler;
+import mcp.mobius.mobiuscore.asm.transformers.common.TransformerCallableMinecraftVersion;
+import mcp.mobius.mobiuscore.asm.transformers.common.TransformerFMLCommonHandler;
+import mcp.mobius.mobiuscore.asm.transformers.common.TransformerNetworkListenThread;
+import mcp.mobius.mobiuscore.asm.transformers.common.TransformerRenderManager;
+import mcp.mobius.mobiuscore.asm.transformers.common.TransformerTERenderer;
+import mcp.mobius.mobiuscore.asm.transformers.common.TransformerTcpConnection;
+import mcp.mobius.mobiuscore.asm.transformers.common.TransformerWorld;
+import mcp.mobius.mobiuscore.asm.transformers.common.TransformerWorldServer;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class CoreTransformer implements IClassTransformer {
-
-	// TileEntityHopper  => asi
-	// TileEntityFurnace => asg
-
-	TransformerWorld            transWorld = new TransformerWorld();
-	TransformerFMLCommonHandler transFML   = new TransformerFMLCommonHandler(); 
-	TransformerMinecraftServer  transMCS   = new TransformerMinecraftServer();
-	TransformerWorldServer      transWorldServer   = new TransformerWorldServer();
-	TransformerTcpConnection    transTCPConnection = new TransformerTcpConnection();
-	TransformerRenderManager	transRenderManag   = new TransformerRenderManager();
-	TransformerTERenderer		transTERenderer    = new TransformerTERenderer();
-	TransformerNetworkListenThread transNetListen  = new TransformerNetworkListenThread();
-	TransformerASMEventHandler     transASMEvent   = new TransformerASMEventHandler();
 	
 	public CoreTransformer(){
 		super();
 	}
+	
+	public static TargetVersion version = TargetVersion.UNKNOWN;
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
 		//System.out.printf("[ %s ] %s\n", name, srgname);
 		
 		if (srgname.equals("net.minecraft.world.World")){
-			return transWorld.transform(name, srgname, bytes);
+			return new TransformerWorld().transform(name, srgname, bytes);
 		}
 		
 		if (srgname.equals("cpw.mods.fml.common.FMLCommonHandler")){
-			return transFML.transform(name, srgname, bytes);		
+			return new TransformerFMLCommonHandler().transform(name, srgname, bytes);		
 		}
 
 		//if (srgname.equals("net.minecraft.server.MinecraftServer")){
-		//	return transMCS.transform(name, srgname, bytes);
+		//	return new TransformerMinecraftServer().transform(name, srgname, bytes);
 		//}
 		
 		if (srgname.equals("net.minecraft.world.WorldServer")){
-			return transWorldServer.transform(name, srgname, bytes);
+			return new TransformerWorldServer().transform(name, srgname, bytes);
 		}		
 		
 		if (srgname.equals("net.minecraft.network.TcpConnection")){
-			return transTCPConnection.transform(name, srgname, bytes);
+			return new TransformerTcpConnection().transform(name, srgname, bytes);
 		}			
 		
 		if (srgname.equals("net.minecraft.client.renderer.entity.RenderManager")){
-			return transRenderManag.transform(name, srgname, bytes);
+			return new TransformerRenderManager().transform(name, srgname, bytes);
 		}	
 		
 		if (srgname.equals("net.minecraft.client.renderer.tileentity.TileEntityRenderer")){
-			return transTERenderer.transform(name, srgname, bytes);
+			return new TransformerTERenderer().transform(name, srgname, bytes);
 		}			
 		
 		if (srgname.equals("net.minecraft.server.integrated.IntegratedServerListenThread")){
-			return transNetListen.transform(name, srgname, bytes);
+			return new TransformerNetworkListenThread().transform(name, srgname, bytes);
 		}		
 		
 		if (srgname.equals("net.minecraft.server.dedicated.DedicatedServerListenThread")){
-			return transNetListen.transform(name, srgname, bytes);
+			return new TransformerNetworkListenThread().transform(name, srgname, bytes);
 		}		
 	
 		if (srgname.equals("net.minecraftforge.event.ASMEventHandler")){
-			return transASMEvent.transform(name, srgname, bytes);
+			return new TransformerASMEventHandler().transform(name, srgname, bytes);
 		}			
 		
-		//new TransformerIEventListener().transform(name, srgname, bytes);
+		if (srgname.equals("net.minecraft.crash.CallableMinecraftVersion")){
+			return new TransformerCallableMinecraftVersion().transform(name, srgname, bytes);			
+		}
 		
 		return bytes;
 	}

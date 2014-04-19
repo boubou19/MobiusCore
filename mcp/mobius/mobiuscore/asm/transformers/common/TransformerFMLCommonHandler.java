@@ -1,10 +1,11 @@
-package mcp.mobius.mobiuscore.asm;
+package mcp.mobius.mobiuscore.asm.transformers.common;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ListIterator;
 
+import mcp.mobius.mobiuscore.asm.transformers.TransformerBase;
 import mcp.mobius.mobiuscore.profiler.ProfilerSection;
 
 import org.objectweb.asm.ClassReader;
@@ -122,7 +123,7 @@ public class TransformerFMLCommonHandler extends TransformerBase {
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
-		this.dumpChecksum(bytes, srgname);		
+		this.dumpChecksum(bytes, name, srgname);	
 		
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		

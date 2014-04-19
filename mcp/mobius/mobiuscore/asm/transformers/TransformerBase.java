@@ -1,4 +1,4 @@
-package mcp.mobius.mobiuscore.asm;
+package mcp.mobius.mobiuscore.asm.transformers;
 
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import mcp.mobius.mobiuscore.asm.CoreDescription;
+import mcp.mobius.mobiuscore.asm.MethodDescriptor;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -330,7 +333,7 @@ public abstract class TransformerBase {
 		}		
 	}	
 	
-	protected void dumpChecksum(byte[] data, String filename){
+	protected String dumpChecksum(byte[] data, String obf, String searge){
 		try{ 
 			//System.out.printf("[MobiusCore] Found %s with checksum %s\n", filename, MessageDigest.getInstance("MD5").digest(data));
 			
@@ -345,11 +348,17 @@ public abstract class TransformerBase {
 			  hashtext = "0"+hashtext;
 			}	
 			
-			System.out.printf("[MobiusCore] Found %s with checksum %s\n", filename, hashtext.toUpperCase());
+			if (obf.equals(searge))
+				System.out.printf("[MobiusCore] Found %s with checksum %s\n", searge, hashtext.toUpperCase());
+			else
+				System.out.printf("[MobiusCore] Found %s [ %s ] with checksum %s\n", searge, obf, hashtext.toUpperCase());
 			
+			return hashtext.toUpperCase();
 		}
 		catch (Exception e) {
 		}			
+		
+		return "00000000000000000000000000000000";
 	}
 	
 	protected MethodNode getMethod(ClassNode classNode, String methodName){

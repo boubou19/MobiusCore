@@ -1,4 +1,6 @@
-package mcp.mobius.mobiuscore.asm;
+package mcp.mobius.mobiuscore.asm.transformers.common;
+
+import mcp.mobius.mobiuscore.asm.transformers.TransformerBase;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -21,6 +23,9 @@ public class TransformerTestTransformer extends TransformerBase {
         ClassReader classReader = new ClassReader(bytes);		
         classReader.accept(classNode, 0);
         
+		this.dumpChecksum(bytes, name, srgname);
+        
+        /*
         if (classNode.interfaces.size() > 0){
 	        System.out.printf("+ %s\n", srgname);
 	        for (String s : classNode.interfaces){
@@ -31,6 +36,7 @@ public class TransformerTestTransformer extends TransformerBase {
 	        	System.out.printf("^^^^^^^^^^^^^^^^^^^^^^^\n");
 	        }
         }
+        */
 		return bytes;
 	}
 
