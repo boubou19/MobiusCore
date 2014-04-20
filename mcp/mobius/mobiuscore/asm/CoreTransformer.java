@@ -25,8 +25,9 @@ import mcp.mobius.mobiuscore.asm.transformers.common.TransformerNetworkListenThr
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerRenderManager;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerTERenderer;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerTcpConnection;
-import mcp.mobius.mobiuscore.asm.transformers.common.TransformerWorld;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerWorldServer;
+import mcp.mobius.mobiuscore.asm.transformers.forge.TransformerWorld;
+import mcp.mobius.mobiuscore.asm.transformers.mcpc.TransformerWorldMCPC;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class CoreTransformer implements IClassTransformer {
@@ -41,9 +42,13 @@ public class CoreTransformer implements IClassTransformer {
 	public byte[] transform(String name, String srgname, byte[] bytes) {
 		//System.out.printf("[ %s ] %s\n", name, srgname);
 		
-		if (srgname.equals("net.minecraft.world.World")){
+		if (srgname.equals("net.minecraft.world.World") && version != TargetVersion.MCPC_B250){
 			return new TransformerWorld().transform(name, srgname, bytes);
 		}
+
+		if (srgname.equals("net.minecraft.world.World") && version == TargetVersion.MCPC_B250){
+			return new TransformerWorldMCPC().transform(name, srgname, bytes);
+		}		
 		
 		if (srgname.equals("cpw.mods.fml.common.FMLCommonHandler")){
 			return new TransformerFMLCommonHandler().transform(name, srgname, bytes);		

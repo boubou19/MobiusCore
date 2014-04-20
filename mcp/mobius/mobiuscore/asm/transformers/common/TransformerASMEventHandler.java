@@ -4,6 +4,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import mcp.mobius.mobiuscore.asm.Opcode;
 import mcp.mobius.mobiuscore.asm.transformers.TransformerBase;
 import mcp.mobius.mobiuscore.profiler.ProfilerSection;
 import static org.objectweb.asm.Opcodes.*;
@@ -23,6 +24,8 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 public class TransformerASMEventHandler extends TransformerBase {
 
+	/* SHOULD WORK BOTH SIDES */
+	
 	private static String ASMEH_INVOKE;
 	private static String ASMEH_INIT;	
 	
@@ -41,35 +44,40 @@ public class TransformerASMEventHandler extends TransformerBase {
 		ASMEH_INIT = "<init> (Ljava/lang/Object;Ljava/lang/reflect/Method;)V";
 		
 		ASMEH_INVOKE_PATTERN =	new AbstractInsnNode[] 
-				{//new LineNumberNode(-1, new LabelNode()), 
-				 new VarInsnNode   (Opcodes.ALOAD, -1),
-				 new FieldInsnNode (Opcodes.GETFIELD, "net/minecraftforge/event/ASMEventHandler", "handler", "Lnet/minecraftforge/event/IEventListener;"), 
-				 new VarInsnNode   (Opcodes.ALOAD, -1), 
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "net/minecraftforge/event/IEventListener", "invoke", "(Lnet/minecraftforge/event/Event;)V")};		
+				{ 
+				Opcode.ALOAD(-1),
+				Opcode.GETFIELD("net/minecraftforge/event/ASMEventHandler.handler Lnet/minecraftforge/event/IEventListener;"),
+				Opcode.ALOAD(-1), 
+				Opcode.INVOKEINTERFACE("net/minecraftforge/event/IEventListener.invoke (Lnet/minecraftforge/event/Event;)V")
+				};		
 
 		
 		ASMEH_INIT_PAYLOAD_PRE = new AbstractInsnNode[]
 				{
-				new VarInsnNode   (Opcodes.ALOAD, 0),
-				new VarInsnNode   (Opcodes.ALOAD, 2),
-				new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/reflect/Method", "getDeclaringClass", "()Ljava/lang/Class;"),
-				new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/Class", "getCanonicalName", "()Ljava/lang/String;"),
-				new FieldInsnNode (Opcodes.PUTFIELD, "net/minecraftforge/event/ASMEventHandler", "package_", "Ljava/lang/String;"), 
+				Opcode.ALOAD(0),
+				Opcode.ALOAD(2),
+				Opcode.INVOKEVIRTUAL("java/lang/reflect/Method.getDeclaringClass ()Ljava/lang/Class;"),
+				Opcode.INVOKEVIRTUAL("java/lang/Class.getCanonicalName ()Ljava/lang/String;"),
+				Opcode.PUTFIELD("net/minecraftforge/event/ASMEventHandler.package_ Ljava/lang/String;"), 
 				};
 
 		
 		ASMEH_INVOKE_PAYLOAD_PRE = new AbstractInsnNode[]
-				{new FieldInsnNode (Opcodes.GETSTATIC, profilerClass, ProfilerSection.EVENT_INVOKE.name(), profilerType),
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "()V")};				
+				{
+				Opcode.GETSTATIC(profilerClass, ProfilerSection.EVENT_INVOKE.name(), profilerType),
+				Opcode.INVOKEVIRTUAL(profilerClass, "start", "()V")
+				};				
 		
 		ASMEH_INVOKE_PAYLOAD_POST = new AbstractInsnNode[]
-				{new FieldInsnNode (Opcodes.GETSTATIC, profilerClass, ProfilerSection.EVENT_INVOKE.name(), profilerType),
-				 new VarInsnNode   (Opcodes.ALOAD, 1),
-				 new VarInsnNode   (Opcodes.ALOAD, 0),
-				 new FieldInsnNode (Opcodes.GETFIELD, "net/minecraftforge/event/ASMEventHandler", "package_", "Ljava/lang/String;"),				 
-				 new VarInsnNode   (Opcodes.ALOAD, 0),
-				 new FieldInsnNode (Opcodes.GETFIELD, "net/minecraftforge/event/ASMEventHandler", "handler", "Lnet/minecraftforge/event/IEventListener;"),				 
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V")};		
+				{
+				Opcode.GETSTATIC(profilerClass, ProfilerSection.EVENT_INVOKE.name(), profilerType),
+				Opcode.ALOAD(1),
+				Opcode.ALOAD(0),
+				Opcode.GETFIELD("net/minecraftforge/event/ASMEventHandler.package_ Ljava/lang/String;"),				
+				Opcode.ALOAD(0),
+				Opcode.GETFIELD("net/minecraftforge/event/ASMEventHandler.handler Lnet/minecraftforge/event/IEventListener;"),				 
+				Opcode.INVOKEVIRTUAL(profilerClass, "stop", "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V")
+				};		
 	}		
 	
 	@Override

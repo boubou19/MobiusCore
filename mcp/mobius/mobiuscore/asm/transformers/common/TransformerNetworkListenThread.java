@@ -5,6 +5,7 @@ import java.util.ListIterator;
 import org.objectweb.asm.tree.AbstractInsnNode;
 
 import mcp.mobius.mobiuscore.asm.ObfTable;
+import mcp.mobius.mobiuscore.asm.Opcode;
 import mcp.mobius.mobiuscore.asm.transformers.TransformerBase;
 import mcp.mobius.mobiuscore.profiler.ProfilerSection;
 
@@ -35,12 +36,16 @@ public class TransformerNetworkListenThread extends TransformerBase {
 		NETWORKTICK = ObfTable.NETWORKLISTEN_NETWORKTICK.getFullDescriptor();
 		
 		NETWORKTICK_PAYLOAD_TOP = new AbstractInsnNode[]
-				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.NETWORK_TICK.name(), profilerType),
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "()V")};				
+				{
+				Opcode.GETSTATIC(profilerClass, ProfilerSection.NETWORK_TICK.name(), profilerType),
+				Opcode.INVOKEVIRTUAL(profilerClass, "start", "()V")
+				};				
 		
 		NETWORKTICK_PAYLOAD_BOTTOM = new AbstractInsnNode[]
-				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.NETWORK_TICK.name(), profilerType),
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "()V")};			
+				{
+				Opcode.GETSTATIC(profilerClass, ProfilerSection.NETWORK_TICK.name(), profilerType),
+				Opcode.INVOKEVIRTUAL(profilerClass, "stop", "()V")
+				};			
 		
 	}	
 	

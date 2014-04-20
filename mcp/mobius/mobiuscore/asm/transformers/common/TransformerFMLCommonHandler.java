@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ListIterator;
 
+import mcp.mobius.mobiuscore.asm.Opcode;
 import mcp.mobius.mobiuscore.asm.transformers.TransformerBase;
 import mcp.mobius.mobiuscore.profiler.ProfilerSection;
 
@@ -62,63 +63,69 @@ public class TransformerFMLCommonHandler extends TransformerBase {
 		
 		FMLCH_PATTERN_TICKSTART =	new AbstractInsnNode[] 
 				{//new LineNumberNode(-1, new LabelNode()), 
-				 new VarInsnNode(Opcodes.ALOAD, -1),
-				 new VarInsnNode(Opcodes.ALOAD, -1), 
-				 new VarInsnNode(Opcodes.ALOAD, -1), 
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "cpw/mods/fml/common/IScheduledTickHandler", "tickStart", "(Ljava/util/EnumSet;[Ljava/lang/Object;)V")};		
+				 Opcode.ALOAD(-1),
+				 Opcode.ALOAD(-1), 
+				 Opcode.ALOAD(-1), 
+				 Opcode.INVOKEINTERFACE("cpw/mods/fml/common/IScheduledTickHandler.tickStart (Ljava/util/EnumSet;[Ljava/lang/Object;)V")};		
 
 		FMLCH_PATTERN_TICKEND =	new AbstractInsnNode[] 
 				{//new LineNumberNode(-1, new LabelNode()), 
-				 new VarInsnNode(Opcodes.ALOAD, -1),
-				 new VarInsnNode(Opcodes.ALOAD, -1), 
-				 new VarInsnNode(Opcodes.ALOAD, -1), 
-				 new MethodInsnNode(Opcodes.INVOKEINTERFACE, "cpw/mods/fml/common/IScheduledTickHandler", "tickEnd", "(Ljava/util/EnumSet;[Ljava/lang/Object;)V")};
+				 Opcode.ALOAD(-1),
+				 Opcode.ALOAD(-1), 
+				 Opcode.ALOAD(-1), 
+				 Opcode.INVOKEINTERFACE("cpw/mods/fml/common/IScheduledTickHandler.tickEnd (Ljava/util/EnumSet;[Ljava/lang/Object;)V")};
 		
 		FMLCH_PAYLOAD_TICKSTART_PRE = new AbstractInsnNode[]
-				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.HANDLER_TICKSTART.name(), profilerType),
-				 new VarInsnNode(Opcodes.ALOAD, 6),
-				 new VarInsnNode(Opcodes.ALOAD, 7),				 
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;Ljava/lang/Object;)V")};				
+				{
+				 Opcode.GETSTATIC(profilerClass, ProfilerSection.HANDLER_TICKSTART.name(), profilerType),
+				 Opcode.ALOAD(6),
+				 Opcode.ALOAD(7),				 
+				 Opcode.INVOKEVIRTUAL(profilerClass, "start", "(Ljava/lang/Object;Ljava/lang/Object;)V")};				
 		
 		FMLCH_PAYLOAD_TICKSTART_POST = new AbstractInsnNode[]
-				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.HANDLER_TICKSTART.name(), profilerType),
-				 new VarInsnNode(Opcodes.ALOAD, 6),
-				 new VarInsnNode(Opcodes.ALOAD, 7),				 
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;Ljava/lang/Object;)V")};		
+				{
+				 Opcode.GETSTATIC(profilerClass, ProfilerSection.HANDLER_TICKSTART.name(), profilerType),
+				 Opcode.ALOAD(6),
+				 Opcode.ALOAD(7),				 
+				 Opcode.INVOKEVIRTUAL(profilerClass, "stop", "(Ljava/lang/Object;Ljava/lang/Object;)V")};		
 
 		FMLCH_PAYLOAD_TICKEND_PRE = new AbstractInsnNode[]
-				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.HANDLER_TICKSTOP.name(), profilerType),
-				 new VarInsnNode(Opcodes.ALOAD, 6),
-				 new VarInsnNode(Opcodes.ALOAD, 7),				 
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;Ljava/lang/Object;)V")};				
+				{
+				 Opcode.GETSTATIC(profilerClass, ProfilerSection.HANDLER_TICKSTOP.name(), profilerType),
+				 Opcode.ALOAD(6),
+				 Opcode.ALOAD(7),				 
+				 Opcode.INVOKEVIRTUAL(profilerClass, "start", "(Ljava/lang/Object;Ljava/lang/Object;)V")};				
 		
 		FMLCH_PAYLOAD_TICKEND_POST = new AbstractInsnNode[]
-				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.HANDLER_TICKSTOP.name(), profilerType),
-				 new VarInsnNode(Opcodes.ALOAD, 6),
-				 new VarInsnNode(Opcodes.ALOAD, 7),
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;Ljava/lang/Object;)V")};	
+				{
+				 Opcode.GETSTATIC(profilerClass, ProfilerSection.HANDLER_TICKSTOP.name(), profilerType),
+				 Opcode.ALOAD(6),
+				 Opcode.ALOAD(7),
+				 Opcode.INVOKEVIRTUAL(profilerClass, "stop", "(Ljava/lang/Object;Ljava/lang/Object;)V")};	
 		
 		FMLCH_PAYLOAD_PRESERVERTICK =	new AbstractInsnNode[] 
 				{
-				 new FieldInsnNode (Opcodes.GETSTATIC,     profilerClass, ProfilerSection.TICK.name(), profilerType),
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "()V"),				
+				 Opcode.GETSTATIC(profilerClass, ProfilerSection.TICK.name(), profilerType),
+				 Opcode.INVOKEVIRTUAL(profilerClass, "start", "()V"),				
 				};
 		
 		FMLCH_PAYLOAD_POSTSERVERTICK =	new AbstractInsnNode[] 
 				{
-				 new FieldInsnNode (Opcodes.GETSTATIC,     profilerClass, ProfilerSection.TICK.name(), profilerType),
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "()V"),				
+				 Opcode.GETSTATIC(profilerClass, ProfilerSection.TICK.name(), profilerType),
+				 Opcode.INVOKEVIRTUAL(profilerClass, "stop", "()V"),				
 				};
 		
 		FMLCH_PAYLOAD_PREWORLDTICK = new AbstractInsnNode[]
-				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.DIMENSION_TICK.name(), profilerType),
-				 new VarInsnNode(Opcodes.ALOAD, 1),				 
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V")};				
+				{
+				 Opcode.GETSTATIC(profilerClass, ProfilerSection.DIMENSION_TICK.name(), profilerType),
+				 Opcode.ALOAD(1),			 
+				 Opcode.INVOKEVIRTUAL(profilerClass, "start", "(Ljava/lang/Object;)V")};				
 		
 		FMLCH_PAYLOAD_POSTWORLDTICK = new AbstractInsnNode[]
-				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.DIMENSION_TICK.name(), profilerType),
-				 new VarInsnNode(Opcodes.ALOAD, 1),
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;)V")};			
+				{
+				 Opcode.GETSTATIC(profilerClass, ProfilerSection.DIMENSION_TICK.name(), profilerType),
+				 Opcode.ALOAD(1),
+				 Opcode.INVOKEVIRTUAL(profilerClass, "stop", "(Ljava/lang/Object;)V")};			
 	}	
 	
 	@Override

@@ -15,13 +15,9 @@ public enum ObfTable {
 	PACKET_WRITEPACKET        ("ey",  "a", "(Llp;Ljava/io/DataInput;ZLjava/net/Socket;)Ley;", "net/minecraft/network/packet/Packet", "writePacket", "(Lnet/minecraft/network/packet/Packet;Ljava/io/DataOutput;)V"),
 	PACKET_READPACKET         ("ey",  "a", "(Llp;Ljava/io/DataInput;ZLjava/net/Socket;)Ley;", "net/minecraft/network/packet/Packet", "readPacket", "(Lnet/minecraft/logging/ILogAgent;Ljava/io/DataInput;ZLjava/net/Socket;)Lnet/minecraft/network/packet/Packet;"),
 	TERENDER_RENDERAT         ("bjd", "a", "(Lasp;DDDF)V", "net/minecraft/client/renderer/tileentity/TileEntityRenderer", "renderTileEntityAt", "(Lnet/minecraft/tileentity/TileEntity;DDDF)V"),
-	WORLDSERVER_TICK          ("js",  "b", "()V", "net/minecraft/world/WorldServer", "tick", "()V"),
-	WORLD_PROVIDER            ("js",  "t", "Laei;", "net/minecraft/world/WorldServer", "provider", "Lnet/minecraft/world/WorldProvider;"),
-	WORLDPROVIDER_DIMID       ("aei", "i", "I", "net/minecraft/world/WorldProvider", "dimensionId", "I");
-	
-    //GETFIELD net/minecraft/network/TcpConnection.networkSocket : Ljava/net/Socket;
-    //INVOKESTATIC net/minecraft/network/packet/Packet.readPacket(Lnet/minecraft/logging/ILogAgent;Ljava/io/DataInput;ZLjava/net/Socket;)Lnet/minecraft/network/packet/Packet;
-    //ASTORE 2	
+	WORLDSERVER_TICK          ("js",  "b", "()V",   "net/minecraft/world/WorldServer",   "tick",        "()V"),
+	WORLD_PROVIDER            ("js",  "t", "Laei;", "net/minecraft/world/WorldServer",   "provider",    "Lnet/minecraft/world/WorldProvider;"),
+	WORLDPROVIDER_DIMID       ("aei", "i", "I",     "net/minecraft/world/WorldProvider", "dimensionId", "I");
 	
 	private String clazzNameN;
 	private String methodNameN;
@@ -67,8 +63,9 @@ public enum ObfTable {
 			return this.methodNameN + " " + this.descriptorN;
 	}
 	
+	/*
 	public FieldInsnNode getFieldNode(){
 		return new FieldInsnNode(Opcodes.GETFIELD, this.getClazz(), this.getName(), this.getDescriptor());
 	}
-	
+	*/
 }

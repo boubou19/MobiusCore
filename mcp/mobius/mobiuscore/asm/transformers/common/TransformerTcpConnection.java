@@ -38,22 +38,6 @@ public class TransformerTcpConnection extends TransformerBase {
 		
 		TCPCON_READPACKET   = ObfTable.TCPCONN_READPACKET.getFullDescriptor();
 		TCPCON_SENDPACKET   = ObfTable.TCPCONN_SENDPACKET.getFullDescriptor();		
-
-		/*
-		TCPCON_PATTERN_OUTPACKET =	new AbstractInsnNode[]{
-				new VarInsnNode(Opcodes.ALOAD, -1), 
-				new VarInsnNode(Opcodes.ALOAD, -1),
-				new FieldInsnNode(Opcodes.GETFIELD, "co", "m", "Ljava/io/DataOutputStream;"),
-				new MethodInsnNode(Opcodes.INVOKEINTERFACE, "ey", "a", "(Ley;Ljava/io/DataOutput;)V")
-				};
-		*/			
-
-		/*
-		TCPCON_PATTERN_OUTPACKET =	new AbstractInsnNode[]{
-				new FieldInsnNode(Opcodes.GETSTATIC, "co", "d", "[I"),
-				new VarInsnNode(Opcodes.ASTORE, -1)
-				};
-		*/
 		
 		TCPCON_PATTERN_OUTPACKET =	new AbstractInsnNode[]{
 				new VarInsnNode(Opcodes.ALOAD, -1),
@@ -62,14 +46,10 @@ public class TransformerTcpConnection extends TransformerBase {
 				};
 		
 		TCPCON_PATTERN_INPACKET =	new AbstractInsnNode[]{
-				new FieldInsnNode(Opcodes.GETFIELD, ObfTable.TCPCONN_NETWORKSOCKET.getClazz(), ObfTable.TCPCONN_NETWORKSOCKET.getName(), ObfTable.TCPCONN_NETWORKSOCKET.getDescriptor()),
-				new MethodInsnNode(Opcodes.INVOKESTATIC, ObfTable.PACKET_READPACKET.getClazz(), ObfTable.PACKET_READPACKET.getName(), ObfTable.PACKET_READPACKET.getDescriptor()),
+				new FieldInsnNode(Opcodes.GETFIELD,      ObfTable.TCPCONN_NETWORKSOCKET.getClazz(), ObfTable.TCPCONN_NETWORKSOCKET.getName(), ObfTable.TCPCONN_NETWORKSOCKET.getDescriptor()),
+				new MethodInsnNode(Opcodes.INVOKESTATIC, ObfTable.PACKET_READPACKET.getClazz(),     ObfTable.PACKET_READPACKET.getName(),     ObfTable.PACKET_READPACKET.getDescriptor()),
 				new VarInsnNode(Opcodes.ASTORE, -1)
 				};		
-		
-	    //GETFIELD net/minecraft/network/TcpConnection.networkSocket : Ljava/net/Socket;
-	    //INVOKESTATIC net/minecraft/network/packet/Packet.readPacket(Lnet/minecraft/logging/ILogAgent;Ljava/io/DataInput;ZLjava/net/Socket;)Lnet/minecraft/network/packet/Packet;
-	    //ASTORE 2	
 		
 		TCPCON_PATTERN_FLAGSET =	new AbstractInsnNode[]{ 
 				 new InsnNode(Opcodes.ICONST_1),
