@@ -21,6 +21,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerASMEventHandler;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerCallableMinecraftVersion;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerFMLCommonHandler;
+import mcp.mobius.mobiuscore.asm.transformers.common.TransformerMemoryConnection;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerNetworkListenThread;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerRenderManager;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerTERenderer;
@@ -89,6 +90,10 @@ public class CoreTransformer implements IClassTransformer {
 		if (srgname.equals("net.minecraft.crash.CallableMinecraftVersion")){
 			return new TransformerCallableMinecraftVersion().transform(name, srgname, bytes);			
 		}
+		
+		if (srgname.equals("net.minecraft.network.MemoryConnection")){
+			return new TransformerMemoryConnection().transform(name, srgname, bytes);			
+		}		
 		
 		return bytes;
 	}

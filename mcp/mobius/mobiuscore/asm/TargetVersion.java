@@ -21,6 +21,6 @@ public enum TargetVersion {
 			if (testVersion.getChecksum().equals(checksum))
 				return testVersion;
 		}
-		return TargetVersion.UNKNOWN;
+		return TargetVersion.ECLIPSE;
 	}
 }

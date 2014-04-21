@@ -12,6 +12,15 @@ public enum ObfTable {
 	TCPCONN_READPACKET		  ("co",  "i", "()Z",	   "net/minecraft/network/TcpConnection",                "readPacket",    "()Z"),
 	TCPCONN_SENDPACKET        ("co",  "a", "(Z)Ley;",  "net/minecraft/network/TcpConnection",                "func_74460_a",  "(Z)Lnet/minecraft/network/packet/Packet;"),
 	TCPCONN_NETWORKSOCKET     ("co",  "j", "Ljava/net/Socket;", "net/minecraft/network/TcpConnection",       "networkSocket", "Ljava/net/Socket;"),
+	
+	MEMCONN_ADDSENDQUEUE      ("cn",  "a", "(Ley;)V", "net/minecraft/network/MemoryConnection", "addToSendQueue", "(Lnet/minecraft/network/packet/Packet;)V"),
+	MEMCONN_PROCESSREAD       ("cn",  "b", "()V", "net/minecraft/network/MemoryConnection", "processReadPackets", "()V"),
+	MEMCONN_PAIREDCONN        ("cn",  "d", "Lcn;",    "net/minecraft/network/MemoryConnection", "pairedConnection",     "Lnet/minecraft/network/MemoryConnection;"),
+    MEMCONN_PROCESSORCACHE    ("cn",  "b", "(Ley;)V", "net/minecraft/network/MemoryConnection", "processOrCachePacket", "(Lnet/minecraft/network/packet/Packet;)V"),	
+	
+    MEMCONN_MYNETHANDLER      ("cn", "e", "Lez;", "net/minecraft/network/MemoryConnection", "myNetHandler", "Lnet/minecraft/network/packet/NetHandler;"),
+    PACKET_PROCESSPACKET      ("ey", "a", "(Lez;)V", "net/minecraft/network/packet/Packet", "processPacket", "(Lnet/minecraft/network/packet/NetHandler;)V"),    
+    
 	PACKET_WRITEPACKET        ("ey",  "a", "(Llp;Ljava/io/DataInput;ZLjava/net/Socket;)Ley;", "net/minecraft/network/packet/Packet", "writePacket", "(Lnet/minecraft/network/packet/Packet;Ljava/io/DataOutput;)V"),
 	PACKET_READPACKET         ("ey",  "a", "(Llp;Ljava/io/DataInput;ZLjava/net/Socket;)Ley;", "net/minecraft/network/packet/Packet", "readPacket", "(Lnet/minecraft/logging/ILogAgent;Ljava/io/DataInput;ZLjava/net/Socket;)Lnet/minecraft/network/packet/Packet;"),
 	TERENDER_RENDERAT         ("bjd", "a", "(Lasp;DDDF)V", "net/minecraft/client/renderer/tileentity/TileEntityRenderer", "renderTileEntityAt", "(Lnet/minecraft/tileentity/TileEntity;DDDF)V"),

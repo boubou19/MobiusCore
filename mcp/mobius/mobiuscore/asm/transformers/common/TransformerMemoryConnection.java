@@ -22,49 +22,45 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-public class TransformerTcpConnection extends TransformerBase {
+public class TransformerMemoryConnection extends TransformerBase {
 
-	private static String TCPCON_READPACKET;
-	private static String TCPCON_SENDPACKET;	
+	private static String MEMCON_READPACKET;
+	private static String MEMCON_SENDPACKET;	
 
-	private static AbstractInsnNode[] TCPCON_PATTERN_FLAGSET;
-	private static AbstractInsnNode[] TCPCON_PATTERN_INPACKET;		
-	private static AbstractInsnNode[] TCPCON_PATTERN_OUTPACKET;	
-	private static AbstractInsnNode[] TCPCON_PAYLOAD_INPACKET;
-	private static AbstractInsnNode[] TCPCON_PAYLOAD_OUTPACKET;	
+	private static AbstractInsnNode[] MEMCON_PATTERN_PROCESSPACKET;		
+	private static AbstractInsnNode[] MEMCON_PATTERN_ADDSENDQUEUE;	
+	private static AbstractInsnNode[] MEMCON_PAYLOAD_INPACKET;
+	private static AbstractInsnNode[] MEMCON_PAYLOAD_OUTPACKET;	
 	
 	static{
 		String profilerClass =  ProfilerSection.getClassName();
 		String profilerType  =  ProfilerSection.getTypeName();
 		
-		TCPCON_READPACKET   = ObfTable.TCPCONN_READPACKET.getFullDescriptor();
-		TCPCON_SENDPACKET   = ObfTable.TCPCONN_SENDPACKET.getFullDescriptor();		
+		MEMCON_READPACKET   = ObfTable.MEMCONN_PROCESSREAD.getFullDescriptor();
+		MEMCON_SENDPACKET   = ObfTable.MEMCONN_ADDSENDQUEUE.getFullDescriptor();		
 		
-		TCPCON_PATTERN_OUTPACKET =	new AbstractInsnNode[]{
-				Opcode.ALOAD(-1),
-				Opcode.ALOAD(-1),
-				new InsnNode(Opcodes.MONITOREXIT)
+		MEMCON_PATTERN_ADDSENDQUEUE =	new AbstractInsnNode[]{
+			    Opcode.ALOAD(-1),
+			    Opcode.GETFIELD(ObfTable.MEMCONN_PAIREDCONN.getClazz(), ObfTable.MEMCONN_PAIREDCONN.getName(), ObfTable.MEMCONN_PAIREDCONN.getDescriptor()),
+			    Opcode.ALOAD(-1),
+			    Opcode.INVOKEVIRTUAL(ObfTable.MEMCONN_PROCESSORCACHE.getClazz(), ObfTable.MEMCONN_PROCESSORCACHE.getName(), ObfTable.MEMCONN_PROCESSORCACHE.getDescriptor()),
 				};
 		
-		TCPCON_PATTERN_INPACKET =	new AbstractInsnNode[]{
-				new FieldInsnNode(Opcodes.GETFIELD,      ObfTable.TCPCONN_NETWORKSOCKET.getClazz(), ObfTable.TCPCONN_NETWORKSOCKET.getName(), ObfTable.TCPCONN_NETWORKSOCKET.getDescriptor()),
-				new MethodInsnNode(Opcodes.INVOKESTATIC, ObfTable.PACKET_READPACKET.getClazz(),     ObfTable.PACKET_READPACKET.getName(),     ObfTable.PACKET_READPACKET.getDescriptor()),
-				new VarInsnNode(Opcodes.ASTORE, -1)
+		MEMCON_PATTERN_PROCESSPACKET =	new AbstractInsnNode[]{
+				Opcode.ALOAD(-1),
+				Opcode.ALOAD(-1),
+				Opcode.GETFIELD(ObfTable.MEMCONN_MYNETHANDLER.getClazz(), ObfTable.MEMCONN_MYNETHANDLER.getName(), ObfTable.MEMCONN_MYNETHANDLER.getDescriptor()),
+				Opcode.INVOKEVIRTUAL(ObfTable.PACKET_PROCESSPACKET.getClazz(), ObfTable.PACKET_PROCESSPACKET.getName(), ObfTable.PACKET_PROCESSPACKET.getDescriptor())
 				};		
 		
-		TCPCON_PATTERN_FLAGSET =	new AbstractInsnNode[]{ 
-				 new InsnNode(Opcodes.ICONST_1),
-				 new VarInsnNode(Opcodes.ISTORE, 1)
-				 };		
-		
-		TCPCON_PAYLOAD_INPACKET =	new AbstractInsnNode[]{ 
+		MEMCON_PAYLOAD_INPACKET =	new AbstractInsnNode[]{ 
 				 Opcode.GETSTATIC(profilerClass, ProfilerSection.PACKET_INBOUND.name() , profilerType),
 				 Opcode.ALOAD(2), 
 				 Opcode.INVOKEVIRTUAL(profilerClass, "start", "(Ljava/lang/Object;)V")};
 		
-		TCPCON_PAYLOAD_OUTPACKET = new AbstractInsnNode[]{
+		MEMCON_PAYLOAD_OUTPACKET = new AbstractInsnNode[]{
 				 Opcode.GETSTATIC(profilerClass, ProfilerSection.PACKET_OUTBOUND.name() , profilerType),
-				 Opcode.ALOAD(2), 
+				 Opcode.ALOAD(1), 
 				 Opcode.INVOKEVIRTUAL(profilerClass, "start", "(Ljava/lang/Object;)V")};				
 	}	
 	
@@ -75,15 +71,13 @@ public class TransformerTcpConnection extends TransformerBase {
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		
 		
-        System.out.printf("Found TcpConnection. Starting injection\n");
-        
         classReader.accept(classNode, 0);
 		
-        MethodNode readPacketNode  = this.getMethod(classNode, TCPCON_READPACKET);
-        this.applyPayloadAfter(readPacketNode, TCPCON_PATTERN_INPACKET, TCPCON_PAYLOAD_INPACKET);
+        MethodNode readPacketNode  = this.getMethod(classNode, MEMCON_READPACKET);
+        this.applyPayloadBefore(readPacketNode, MEMCON_PATTERN_PROCESSPACKET, MEMCON_PAYLOAD_INPACKET);
         
-        MethodNode sendPacketNode  = this.getMethod(classNode, TCPCON_SENDPACKET);
-        this.applyPayloadBefore(sendPacketNode, TCPCON_PATTERN_OUTPACKET, TCPCON_PAYLOAD_OUTPACKET);         
+        MethodNode sendPacketNode  = this.getMethod(classNode, MEMCON_SENDPACKET);
+        this.applyPayloadBefore(sendPacketNode, MEMCON_PATTERN_ADDSENDQUEUE, MEMCON_PAYLOAD_OUTPACKET);         
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);
