@@ -205,7 +205,7 @@ public abstract class TransformerBase {
 			payload.add(payload_pattern[i]);
 	
 		for (int i = instructions.size() - 1; i >= 0; i--){
-			if (instructions.get(i).getOpcode() == Opcodes.RETURN){
+			if ((instructions.get(i).getOpcode() == Opcodes.RETURN) || (instructions.get(i).getOpcode() == Opcodes.IRETURN)){
 				instructions.insertBefore(instructions.get(i), payload);
 			}
 		}

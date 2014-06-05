@@ -1,26 +1,28 @@
 package mcp.mobius.mobiuscore.asm;
 
+import java.util.HashMap;
+
 public enum TargetVersion {
-	UNKNOWN  ("00000000000000000000000000000000"),
-	ECLIPSE  ("692647CD444C16C2ADB9DC910E7075AF"),
-	FORGE_965("66EEDF6E5E980628FE43F39F53AF9064"),
-	MCPC_B250("D81A8F118691C19722544C02FD2CFBE4");
+	NOTSET,
+	ECLIPSE,
+	FORGE,
+	MCPC;
 	
-	private String checksum;
+	private static HashMap<String, TargetVersion> checksums = new HashMap<String, TargetVersion>();
+	private static TargetVersion version = TargetVersion.NOTSET;
 	
-	private TargetVersion(String checksum){
-		this.checksum = checksum;
-	}
-	
-	private String getChecksum(){
-		return this.checksum;
+	static {
+		checksums.put("11B8C6D6620D782E8BAF798743C35179", FORGE);	//MinecraftServer
+		checksums.put("D948375D466A3BE9FE1D39E2D576450C", MCPC);	//MinecraftServer
+		checksums.put("6555654E81266AC7EAFE7A35B1E89B71", ECLIPSE); //MinecraftServer
+		
+		checksums.put("AECCA57A66EB8925C1E097A773557156", FORGE);	//MinecraftClient
+		checksums.put("C567A42F708A58A62374D9B323A0592F", ECLIPSE); //MinecraftClient		
 	}
 	
 	public static TargetVersion getVersion(String checksum){
-		for (TargetVersion testVersion : TargetVersion.values()){
-			if (testVersion.getChecksum().equals(checksum))
-				return testVersion;
-		}
-		return TargetVersion.ECLIPSE;
+		if (checksums.containsKey(checksum))
+			version = checksums.get(checksum);
+		return version;
 	}
 }

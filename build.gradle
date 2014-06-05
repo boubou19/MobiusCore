@@ -31,9 +31,10 @@ repositories {
     }
 }
 
+apply plugin: 'maven'
 apply plugin: 'java'
 apply plugin: 'forge'
-apply plugin: 'maven'
+
 
 version = "1.2.1"
 group= "mcp.mobius.mobiuscore" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -45,8 +46,8 @@ def commonManifest = {
 }
 
 jar {
-    // packs a bunch of stuff into my jar.
-    // everything marked as packed
+    manifest commonManifest
+
     from {
         configurations.packed.collect {
             it.isDirectory() ? it : zipTree(it).matching {
@@ -55,8 +56,6 @@ jar {
             }
         }
     }
-
-    manifest commonManifest
 }
 
 // Define properties file
@@ -114,11 +113,13 @@ task sourceJar(type: Jar) {
     from sourceSets.main.java
     from new File(root, "dev")
     classifier = 'sources'
+    manifest commonManifest
 }
 
 task devJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'dev'
+    manifest commonManifest
 }
 
 artifacts {

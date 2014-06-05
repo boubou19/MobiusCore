@@ -66,7 +66,7 @@ public class TransformerMessageDeserializer extends TransformerBase {
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES |ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);        
         
-		return bytes;
+		return writer.toByteArray();
 	}
 
 }

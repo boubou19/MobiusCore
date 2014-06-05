@@ -115,6 +115,7 @@ public class TransformerWorld extends TransformerBase{
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);
+        
         return writer.toByteArray();
 	}	
 	

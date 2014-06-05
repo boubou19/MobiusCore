@@ -27,13 +27,13 @@ import mcp.mobius.mobiuscore.asm.transformers.common.TransformerASMEventHandler;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerFMLCommonHandler;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerFMLOutboundHandler;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerFMLProxyPacket;
+import mcp.mobius.mobiuscore.asm.transformers.common.TransformerMinecraftServer;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerTERenderer;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerRenderManager;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerMessageDeserializer;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerMessageSerializer;
+import mcp.mobius.mobiuscore.asm.transformers.common.TransformerVersionCheck;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerWorldServer;
-import mcp.mobius.mobiuscore.asm.transformers.common.old.OLD_TransformerCallableMinecraftVersion;
-import mcp.mobius.mobiuscore.asm.transformers.common.old.OLD_TransformerNetworkListenThread;
 import mcp.mobius.mobiuscore.asm.transformers.forge.TransformerWorld;
 import mcp.mobius.mobiuscore.asm.transformers.mcpc.OLD_TransformerWorldMCPC;
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -44,32 +44,33 @@ public class CoreTransformer implements IClassTransformer {
 		super();
 	}
 	
-	public static TargetVersion version = TargetVersion.UNKNOWN;
+	public static TargetVersion version = TargetVersion.NOTSET;
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
 		try{
 		
+			//TransformerBase.dumpChecksum(bytes, name, srgname);
+
+			if (srgname.equals("net.minecraft.server.MinecraftServer") || srgname.equals("net.minecraft.client.main.Main")){
+				TransformerBase.dumpChecksum(bytes, name, srgname);
+				new TransformerVersionCheck().transform(name, srgname, bytes);
+			}			
+			
 			if (srgname.equals("net.minecraft.world.World")){
-				new TransformerWorld().transform(name, srgname, bytes);
+				bytes = new TransformerWorld().transform(name, srgname, bytes);
 			}
 	
 			if (srgname.equals("net.minecraft.world.WorldServer")){
-				new TransformerWorldServer().transform(name, srgname, bytes);
+				bytes = new TransformerWorldServer().transform(name, srgname, bytes);
 			}
-			
-			/*
-			if (srgname.equals("net.minecraft.world.gen.ChunkProviderServer")){
-				TransformerBase.dumpChecksum(bytes, name, srgname);
-			}
-			*/
-			
+
 			if (srgname.equals("net.minecraft.util.MessageSerializer")){
-				new TransformerMessageSerializer().transform(name, srgname, bytes);
+				bytes = new TransformerMessageSerializer().transform(name, srgname, bytes);
 			}
 	
 			if (srgname.equals("net.minecraft.util.MessageDeserializer")){
-				new TransformerMessageDeserializer().transform(name, srgname, bytes);
+				bytes = new TransformerMessageDeserializer().transform(name, srgname, bytes);
 			}		
 			
 			/*
@@ -79,27 +80,27 @@ public class CoreTransformer implements IClassTransformer {
 			*/
 			
 			if (srgname.equals("net.minecraft.client.renderer.entity.RenderManager")){
-				new TransformerRenderManager().transform(name, srgname, bytes);
+				bytes = new TransformerRenderManager().transform(name, srgname, bytes);
 			}		
 	
 			if (srgname.equals("net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher")){
-				new TransformerTERenderer().transform(name, srgname, bytes);
+				bytes = new TransformerTERenderer().transform(name, srgname, bytes);
 			}				
 			
 			if (srgname.equals("cpw.mods.fml.common.FMLCommonHandler")){
-				new TransformerFMLCommonHandler().transform(name, srgname, bytes);
+				bytes = new TransformerFMLCommonHandler().transform(name, srgname, bytes);
 			}			
 	
 			if (srgname.equals("cpw.mods.fml.common.network.FMLOutboundHandler")){
-				new TransformerFMLOutboundHandler().transform(name, srgname, bytes);
+				bytes = new TransformerFMLOutboundHandler().transform(name, srgname, bytes);
 			}					
 			
 			if (srgname.equals("cpw.mods.fml.common.network.internal.FMLProxyPacket")){
-				new TransformerFMLProxyPacket().transform(name, srgname, bytes);
+				bytes = new TransformerFMLProxyPacket().transform(name, srgname, bytes);
 			}			
 	
 			if (srgname.equals("cpw.mods.fml.common.eventhandler.ASMEventHandler")){
-				new TransformerASMEventHandler().transform(name, srgname, bytes);
+				bytes = new TransformerASMEventHandler().transform(name, srgname, bytes);
 			}					
 		
 		} catch (Exception e){

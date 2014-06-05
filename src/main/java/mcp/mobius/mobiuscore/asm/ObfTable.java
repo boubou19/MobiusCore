@@ -23,7 +23,8 @@ public enum ObfTable {
 	
 	RENDERMANAGER_RENDERENTITY("bnf", "a", "(Lqn;FZ)Z", "net/minecraft/client/renderer/entity/RenderManager", "renderEntityStatic",  "(Lnet/minecraft/entity/Entity;FZ)Z"),
 	RENDERMANAGER_RENDERPOSYAW("bnf", "a", "(Lqn;DDDFF)Z", "net/minecraft/client/renderer/entity/RenderManager", "renderEntityWithPosYaw",  "(Lnet/minecraft/entity/Entity;DDDFF)Z"),
-
+	RENDERMANAGER_RENDER      ("bnf", "a", "(Lqn;DDDFFZ)Z", "net/minecraft/client/renderer/entity/RenderManager", "func_147939_a",  "(Lnet/minecraft/entity/Entity;DDDFFZ)Z"),
+	
 	TERENDER_RENDERAT         ("bmc", "a", "(Land;DDDF)V", "net/minecraft/client/renderer/tileentity/TileEntityRenderer", "renderTileEntityAt", "(Lnet/minecraft/tileentity/TileEntity;DDDF)V"),	
 	
 	FMLCH_PREWORLDTICK        ("cpw/mods/fml/common/FMLCommonHandler","onPreWorldTick","(Lafn;)V", "cpw/mods/fml/common/FMLCommonHandler","onPreWorldTick","(Lnet/minecraft/world/World;)V"),

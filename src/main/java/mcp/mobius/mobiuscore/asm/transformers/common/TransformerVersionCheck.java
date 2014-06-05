@@ -1,10 +1,10 @@
-package mcp.mobius.mobiuscore.asm.transformers.common.old;
+package mcp.mobius.mobiuscore.asm.transformers.common;
 
 import mcp.mobius.mobiuscore.asm.CoreTransformer;
 import mcp.mobius.mobiuscore.asm.TargetVersion;
 import mcp.mobius.mobiuscore.asm.transformers.TransformerBase;
 
-public class OLD_TransformerCallableMinecraftVersion extends TransformerBase {
+public class TransformerVersionCheck extends TransformerBase {
 
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
