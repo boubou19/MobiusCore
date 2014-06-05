@@ -35,7 +35,7 @@ import mcp.mobius.mobiuscore.asm.transformers.common.TransformerMessageSerialize
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerVersionCheck;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerWorldServer;
 import mcp.mobius.mobiuscore.asm.transformers.forge.TransformerWorld;
-import mcp.mobius.mobiuscore.asm.transformers.mcpc.OLD_TransformerWorldMCPC;
+import mcp.mobius.mobiuscore.asm.transformers.mcpc.TransformerWorldMCPC;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class CoreTransformer implements IClassTransformer {
@@ -57,10 +57,14 @@ public class CoreTransformer implements IClassTransformer {
 				new TransformerVersionCheck().transform(name, srgname, bytes);
 			}			
 			
-			if (srgname.equals("net.minecraft.world.World")){
+			if (srgname.equals("net.minecraft.world.World") && version == TargetVersion.FORGE){
 				bytes = new TransformerWorld().transform(name, srgname, bytes);
 			}
-	
+
+			if (srgname.equals("net.minecraft.world.World") && version == TargetVersion.MCPC){
+				bytes = new TransformerWorldMCPC().transform(name, srgname, bytes);
+			}			
+			
 			if (srgname.equals("net.minecraft.world.WorldServer")){
 				bytes = new TransformerWorldServer().transform(name, srgname, bytes);
 			}

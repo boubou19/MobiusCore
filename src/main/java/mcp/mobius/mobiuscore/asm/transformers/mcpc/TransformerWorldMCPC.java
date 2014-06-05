@@ -23,7 +23,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 
-public class OLD_TransformerWorldMCPC extends TransformerBase{
+public class TransformerWorldMCPC extends TransformerBase{
 
 	private static String WORLD_UPDATEENTITIES;
 	
@@ -61,14 +61,14 @@ public class OLD_TransformerWorldMCPC extends TransformerBase{
 		WORLD_UPDATE_PAYLOAD_START_TEUPDATE = new AbstractInsnNode[]
 			{
 			Opcode.GETSTATIC(profilerClass, ProfilerSection.TILEENT_UPDATETIME.name(), profilerType),
-			Opcode.ALOAD(8), 
+			Opcode.ALOAD(10), 
 			Opcode.INVOKEVIRTUAL(profilerClass, "start", "(Ljava/lang/Object;)V")
 			};	
 
 		WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE = new AbstractInsnNode[]
 			{
 			Opcode.GETSTATIC(profilerClass, ProfilerSection.TILEENT_UPDATETIME.name(), profilerType),
-			Opcode.ALOAD(8), 
+			Opcode.ALOAD(10), 
 			Opcode.INVOKEVIRTUAL(profilerClass, "stop", "(Ljava/lang/Object;)V")
 			};		
 		
@@ -83,16 +83,16 @@ public class OLD_TransformerWorldMCPC extends TransformerBase{
 		WORLD_UPDATE_PAYLOAD_START_ENTUPDATE = new AbstractInsnNode[]
 			{
 			Opcode.GETSTATIC(profilerClass, ProfilerSection.ENTITY_UPDATETIME.name(), profilerType),
-			Opcode.ALOAD(4),
+			Opcode.ALOAD(2), 
 			Opcode.INVOKEVIRTUAL(profilerClass, "start", "(Ljava/lang/Object;)V")
 			};	
 
 		WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE = new AbstractInsnNode[]
 			{
 			Opcode.GETSTATIC(profilerClass, ProfilerSection.ENTITY_UPDATETIME.name(), profilerType),
-			Opcode.ALOAD(4),
+			Opcode.ALOAD(2), 
 			Opcode.INVOKEVIRTUAL(profilerClass, "stop", "(Ljava/lang/Object;)V")
-			};
+			};			
 	}
 	
 	@Override
@@ -115,6 +115,7 @@ public class OLD_TransformerWorldMCPC extends TransformerBase{
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);
+        
         return writer.toByteArray();
 	}	
 	
