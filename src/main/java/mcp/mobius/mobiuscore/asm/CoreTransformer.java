@@ -57,7 +57,7 @@ public class CoreTransformer implements IClassTransformer {
 				new TransformerVersionCheck().transform(name, srgname, bytes);
 			}			
 			
-			if (srgname.equals("net.minecraft.world.World") && version == TargetVersion.FORGE){
+			if (srgname.equals("net.minecraft.world.World") && version != TargetVersion.MCPC){
 				bytes = new TransformerWorld().transform(name, srgname, bytes);
 			}
 
