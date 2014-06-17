@@ -39,7 +39,7 @@ public class CoreTransformer implements IClassTransformer {
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
-		TransformerBase.dumpChecksum(bytes, name, srgname); 
+		//TransformerBase.dumpChecksum(bytes, name, srgname); 
 		
 		if (srgname.equals("net.minecraft.world.World") && !ObfTable.isCauldron()){
 			return new TransformerWorld().transform(name, srgname, bytes);
