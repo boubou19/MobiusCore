@@ -333,7 +333,7 @@ public abstract class TransformerBase {
 		}		
 	}	
 	
-	protected String dumpChecksum(byte[] data, String obf, String searge){
+	public static String dumpChecksum(byte[] data, String obf, String searge){
 		try{ 
 			//System.out.printf("[MobiusCore] Found %s with checksum %s\n", filename, MessageDigest.getInstance("MD5").digest(data));
 			
@@ -360,6 +360,7 @@ public abstract class TransformerBase {
 		
 		return "00000000000000000000000000000000";
 	}
+
 	
 	protected MethodNode getMethod(ClassNode classNode, String methodName){
         for (MethodNode methodNode : classNode.methods)

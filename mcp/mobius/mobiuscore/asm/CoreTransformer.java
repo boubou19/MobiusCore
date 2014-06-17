@@ -18,8 +18,8 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import mcp.mobius.mobiuscore.asm.transformers.TransformerBase;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerASMEventHandler;
-import mcp.mobius.mobiuscore.asm.transformers.common.TransformerCallableMinecraftVersion;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerFMLCommonHandler;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerMemoryConnection;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerNetworkListenThread;
@@ -37,17 +37,15 @@ public class CoreTransformer implements IClassTransformer {
 		super();
 	}
 	
-	public static TargetVersion version = TargetVersion.UNKNOWN;
-	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
-		//System.out.printf("[ %s ] %s\n", name, srgname);
+		TransformerBase.dumpChecksum(bytes, name, srgname); 
 		
-		if (srgname.equals("net.minecraft.world.World") && version != TargetVersion.MCPC_B250){
+		if (srgname.equals("net.minecraft.world.World") && !ObfTable.isCauldron()){
 			return new TransformerWorld().transform(name, srgname, bytes);
 		}
 
-		if (srgname.equals("net.minecraft.world.World") && version == TargetVersion.MCPC_B250){
+		if (srgname.equals("net.minecraft.world.World") && ObfTable.isCauldron()){
 			return new TransformerWorldMCPC().transform(name, srgname, bytes);
 		}		
 		
@@ -86,10 +84,6 @@ public class CoreTransformer implements IClassTransformer {
 		if (srgname.equals("net.minecraftforge.event.ASMEventHandler")){
 			return new TransformerASMEventHandler().transform(name, srgname, bytes);
 		}			
-		
-		if (srgname.equals("net.minecraft.crash.CallableMinecraftVersion")){
-			return new TransformerCallableMinecraftVersion().transform(name, srgname, bytes);			
-		}
 		
 		if (srgname.equals("net.minecraft.network.MemoryConnection")){
 			return new TransformerMemoryConnection().transform(name, srgname, bytes);			

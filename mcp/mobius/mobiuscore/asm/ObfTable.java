@@ -1,7 +1,13 @@
 package mcp.mobius.mobiuscore.asm;
 
+import java.io.IOException;
+
+import net.minecraft.launchwrapper.LaunchClassLoader;
+
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.FieldInsnNode;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public enum ObfTable {
 	WORLD_UPDATEENTITIES      ("abw", "h", "()V",      "net/minecraft/world/World",           "updateEntities", "()V"),
@@ -28,6 +34,9 @@ public enum ObfTable {
 	WORLD_PROVIDER            ("js",  "t", "Laei;", "net/minecraft/world/WorldServer",   "provider",    "Lnet/minecraft/world/WorldProvider;"),
 	WORLDPROVIDER_DIMID       ("aei", "i", "I",     "net/minecraft/world/WorldProvider", "dimensionId", "I");
 	
+	
+	private static Boolean isObfuscated = null;
+	private static Boolean isCauldron   = null;	
 	private String clazzNameN;
 	private String methodNameN;
 	private String descriptorN;
@@ -45,32 +54,65 @@ public enum ObfTable {
 	}
 	
 	public String getClazz(){
-		if (CoreTransformer.version == TargetVersion.ECLIPSE)
+		if (deobfuscatedEnvironment())
 			return this.clazzNameS;
 		else
 			return this.clazzNameN;
 	}
 
 	public String getName(){
-		if (CoreTransformer.version == TargetVersion.ECLIPSE)
+		if (deobfuscatedEnvironment())
 			return this.methodNameS;
 		else
 			return this.methodNameN;
 	}	
 
 	public String getDescriptor(){
-		if (CoreTransformer.version == TargetVersion.ECLIPSE)
+		if (deobfuscatedEnvironment())
 			return this.descriptorS;
 		else
 			return this.descriptorN;
 	}		
 	
 	public String getFullDescriptor(){
-		if (CoreTransformer.version == TargetVersion.ECLIPSE)
+		if (deobfuscatedEnvironment())
 			return this.methodNameS + " " + this.descriptorS;
 		else
 			return this.methodNameN + " " + this.descriptorN;
 	}
+	
+	public static Boolean deobfuscatedEnvironment(){
+		if (ObfTable.isObfuscated != null)
+			return ObfTable.isObfuscated;
+		
+		try{
+		// Are we in a 'decompiled' environment?
+			byte[] bs = ((LaunchClassLoader)CoreContainer.class.getClassLoader()).getClassBytes("net.minecraft.world.World");
+			if (bs != null){
+				System.out.printf("[MobiusCore] Current code is UNOBFUSCATED\n");
+				ObfTable.isObfuscated = true;
+			} else {
+				System.out.printf("[MobiusCore] Current code is OBFUSCATED\n");
+				ObfTable.isObfuscated = false;
+			}
+
+		}catch (IOException e1){}
+		
+		return ObfTable.isObfuscated;
+	}	
+	
+	public static Boolean isCauldron(){
+		if (ObfTable.isCauldron != null)
+			return ObfTable.isCauldron;		
+		
+		ObfTable.isCauldron = FMLCommonHandler.instance().getModName().contains("cauldron") || FMLCommonHandler.instance().getModName().contains("mcpc"); 
+		if (ObfTable.isCauldron)
+			System.out.printf("[MobiusCore] Switching injection mode to CAULDRON\n");
+		else
+			System.out.printf("[MobiusCore] Switching injection mode to FORGE\n");
+		
+		return ObfTable.isCauldron; 
+	}	
 	
 	/*
 	public FieldInsnNode getFieldNode(){
