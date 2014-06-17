@@ -46,7 +46,7 @@ public class CoreTransformer implements IClassTransformer {
 	public byte[] transform(String name, String srgname, byte[] bytes) {
 		try{
 		
-			TransformerBase.dumpChecksum(bytes, name, srgname);
+			//TransformerBase.dumpChecksum(bytes, name, srgname);
 			
 			if (srgname.equals("net.minecraft.world.World") && !ObfTable.isCauldron()){
 				bytes = new TransformerWorld().transform(name, srgname, bytes);
