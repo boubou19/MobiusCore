@@ -27,15 +27,13 @@ import mcp.mobius.mobiuscore.asm.transformers.common.TransformerASMEventHandler;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerFMLCommonHandler;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerFMLOutboundHandler;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerFMLProxyPacket;
-import mcp.mobius.mobiuscore.asm.transformers.common.TransformerMinecraftServer;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerTERenderer;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerRenderManager;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerMessageDeserializer;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerMessageSerializer;
-import mcp.mobius.mobiuscore.asm.transformers.common.TransformerVersionCheck;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerWorldServer;
 import mcp.mobius.mobiuscore.asm.transformers.forge.TransformerWorld;
-import mcp.mobius.mobiuscore.asm.transformers.mcpc.TransformerWorldMCPC;
+import mcp.mobius.mobiuscore.asm.transformers.mcpc.TransformerWorldCauldron;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class CoreTransformer implements IClassTransformer {
@@ -44,25 +42,18 @@ public class CoreTransformer implements IClassTransformer {
 		super();
 	}
 	
-	public static TargetVersion version = TargetVersion.NOTSET;
-	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
 		try{
 		
-			//TransformerBase.dumpChecksum(bytes, name, srgname);
-
-			if (srgname.equals("net.minecraft.server.MinecraftServer") || srgname.equals("net.minecraft.client.main.Main")){
-				TransformerBase.dumpChecksum(bytes, name, srgname);
-				new TransformerVersionCheck().transform(name, srgname, bytes);
-			}			
+			TransformerBase.dumpChecksum(bytes, name, srgname);
 			
-			if (srgname.equals("net.minecraft.world.World") && version != TargetVersion.MCPC){
+			if (srgname.equals("net.minecraft.world.World") && !ObfTable.isCauldron()){
 				bytes = new TransformerWorld().transform(name, srgname, bytes);
 			}
 
-			if (srgname.equals("net.minecraft.world.World") && version == TargetVersion.MCPC){
-				bytes = new TransformerWorldMCPC().transform(name, srgname, bytes);
+			if (srgname.equals("net.minecraft.world.World") && ObfTable.isCauldron()){
+				bytes = new TransformerWorldCauldron().transform(name, srgname, bytes);
 			}			
 			
 			if (srgname.equals("net.minecraft.world.WorldServer")){
@@ -76,12 +67,6 @@ public class CoreTransformer implements IClassTransformer {
 			if (srgname.equals("net.minecraft.util.MessageDeserializer")){
 				bytes = new TransformerMessageDeserializer().transform(name, srgname, bytes);
 			}		
-			
-			/*
-			if (srgname.equals("net.minecraft.network.NetworkManager")){
-				TransformerBase.dumpChecksum(bytes, name, srgname);
-			}
-			*/
 			
 			if (srgname.equals("net.minecraft.client.renderer.entity.RenderManager")){
 				bytes = new TransformerRenderManager().transform(name, srgname, bytes);
