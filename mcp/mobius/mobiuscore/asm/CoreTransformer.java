@@ -19,6 +19,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import mcp.mobius.mobiuscore.asm.transformers.TransformerBase;
+import mcp.mobius.mobiuscore.asm.transformers.cauldron.TransformerWorldCauldron;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerASMEventHandler;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerFMLCommonHandler;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerMemoryConnection;
@@ -28,7 +29,6 @@ import mcp.mobius.mobiuscore.asm.transformers.common.TransformerTERenderer;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerTcpConnection;
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerWorldServer;
 import mcp.mobius.mobiuscore.asm.transformers.forge.TransformerWorld;
-import mcp.mobius.mobiuscore.asm.transformers.mcpc.TransformerWorldMCPC;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class CoreTransformer implements IClassTransformer {
@@ -46,7 +46,7 @@ public class CoreTransformer implements IClassTransformer {
 		}
 
 		if (srgname.equals("net.minecraft.world.World") && ObfTable.isCauldron()){
-			return new TransformerWorldMCPC().transform(name, srgname, bytes);
+			return new TransformerWorldCauldron().transform(name, srgname, bytes);
 		}		
 		
 		if (srgname.equals("cpw.mods.fml.common.FMLCommonHandler")){

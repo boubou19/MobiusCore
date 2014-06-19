@@ -1,4 +1,4 @@
-package mcp.mobius.mobiuscore.asm.transformers.mcpc;
+package mcp.mobius.mobiuscore.asm.transformers.cauldron;
 
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 
-public class TransformerWorldMCPC extends TransformerBase{
+public class TransformerWorldCauldron extends TransformerBase{
 
 	private static String WORLD_UPDATEENTITIES;
 	
