@@ -72,6 +72,7 @@ public class TransformerWorldServer extends TransformerBase {
         classReader.accept(classNode, 0);
 		
         MethodNode tickNode  = this.getMethod(classNode, WORLDSERVER_TICK);
+        if (this.checkPreviousInjection(tickNode)) return bytes;        
         this.applyPayloadFirst(tickNode, WORLDSERVER_PAYLOAD_TICKSTART);
         this.applyPayloadLast (tickNode, WORLDSERVER_PAYLOAD_TICKEND);         
         

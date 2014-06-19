@@ -35,6 +35,7 @@ public class TransformerASMEventHandler extends TransformerBase {
 	private static AbstractInsnNode[] ASMEH_INVOKE_PAYLOAD_POST;	
 
 	private static AbstractInsnNode[] ASMEH_INIT_PAYLOAD_PRE;
+
 	
 	static{
 		String profilerClass =  ProfilerSection.getClassName();
@@ -88,13 +89,15 @@ public class TransformerASMEventHandler extends TransformerBase {
         ClassReader classReader = new ClassReader(bytes);		
 		
         classReader.accept(classNode, 0);
-		
+
+        MethodNode invokeNode = this.getMethod(classNode, ASMEH_INVOKE);
+        if (this.checkPreviousInjection(invokeNode)) return bytes;
+        
+		this.applyPayloadBefore(invokeNode, ASMEH_INVOKE_PATTERN, ASMEH_INVOKE_PAYLOAD_PRE);
+		this.applyPayloadAfter (invokeNode, ASMEH_INVOKE_PATTERN, ASMEH_INVOKE_PAYLOAD_POST);        
+        
         MethodNode initNode   = this.getMethod(classNode, ASMEH_INIT);
         this.applyPayloadFirst(initNode, ASMEH_INIT_PAYLOAD_PRE);
-        
-        MethodNode invokeNode = this.getMethod(classNode, ASMEH_INVOKE);
-		this.applyPayloadBefore(invokeNode, ASMEH_INVOKE_PATTERN, ASMEH_INVOKE_PAYLOAD_PRE);
-		this.applyPayloadAfter (invokeNode, ASMEH_INVOKE_PATTERN, ASMEH_INVOKE_PAYLOAD_POST);         
         
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);

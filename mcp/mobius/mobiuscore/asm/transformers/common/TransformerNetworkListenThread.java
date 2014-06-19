@@ -58,6 +58,7 @@ public class TransformerNetworkListenThread extends TransformerBase {
         classReader.accept(classNode, 0);
 
         MethodNode networkTickNode  = this.getMethod(classNode, NETWORKTICK);
+        if (this.checkPreviousInjection(networkTickNode)) return bytes; 
         this.applyPayloadFirst(networkTickNode, NETWORKTICK_PAYLOAD_TOP);
         this.applyPayloadLast (networkTickNode, NETWORKTICK_PAYLOAD_BOTTOM);        
         

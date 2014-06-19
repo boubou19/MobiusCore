@@ -41,21 +41,13 @@ public class CoreTransformer implements IClassTransformer {
 	public byte[] transform(String name, String srgname, byte[] bytes) {
 		//TransformerBase.dumpChecksum(bytes, name, srgname); 
 		
-		if (srgname.equals("net.minecraft.world.World") && !ObfTable.isCauldron()){
+		if (srgname.equals("net.minecraft.world.World")){
 			return new TransformerWorld().transform(name, srgname, bytes);
 		}
-
-		if (srgname.equals("net.minecraft.world.World") && ObfTable.isCauldron()){
-			return new TransformerWorldCauldron().transform(name, srgname, bytes);
-		}		
 		
 		if (srgname.equals("cpw.mods.fml.common.FMLCommonHandler")){
 			return new TransformerFMLCommonHandler().transform(name, srgname, bytes);		
 		}
-
-		//if (srgname.equals("net.minecraft.server.MinecraftServer")){
-		//	return new TransformerMinecraftServer().transform(name, srgname, bytes);
-		//}
 		
 		if (srgname.equals("net.minecraft.world.WorldServer")){
 			return new TransformerWorldServer().transform(name, srgname, bytes);

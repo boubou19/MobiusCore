@@ -79,6 +79,7 @@ public class TransformerTERenderer extends TransformerBase {
         classReader.accept(classNode, 0);
 		
         MethodNode renderEntNode  = this.getMethod(classNode, TER_RENDER);
+        if (this.checkPreviousInjection(renderEntNode)) return bytes;
         this.applyPayloadFirst(renderEntNode, TER_RENDER_PAYLOAD_TOP);
         this.applyPayloadLast (renderEntNode, TER_RENDER_PAYLOAD_BOTTOM); 
         

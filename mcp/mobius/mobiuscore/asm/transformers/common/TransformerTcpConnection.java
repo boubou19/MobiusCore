@@ -39,7 +39,7 @@ public class TransformerTcpConnection extends TransformerBase {
 		
 		TCPCON_READPACKET   = ObfTable.TCPCONN_READPACKET.getFullDescriptor();
 		TCPCON_SENDPACKET   = ObfTable.TCPCONN_SENDPACKET.getFullDescriptor();		
-		
+	
 		TCPCON_PATTERN_OUTPACKET =	new AbstractInsnNode[]{
 				Opcode.ALOAD(-1),
 				Opcode.ALOAD(-1),
@@ -80,6 +80,7 @@ public class TransformerTcpConnection extends TransformerBase {
         classReader.accept(classNode, 0);
 		
         MethodNode readPacketNode  = this.getMethod(classNode, TCPCON_READPACKET);
+        if (this.checkPreviousInjection(readPacketNode)) return bytes;           
         this.applyPayloadAfter(readPacketNode, TCPCON_PATTERN_INPACKET, TCPCON_PAYLOAD_INPACKET);
         
         MethodNode sendPacketNode  = this.getMethod(classNode, TCPCON_SENDPACKET);

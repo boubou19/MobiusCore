@@ -106,6 +106,7 @@ public class TransformerWorld extends TransformerBase{
 		
         MethodNode updateEntitiesNode = this.getMethod(classNode, WORLD_UPDATEENTITIES);
 		System.out.printf("[MobiusCore] Found World.updateEntities()... \n");
+        if (this.checkPreviousInjection(updateEntitiesNode)) return bytes;
 		
 		this.applyPayloadBefore(updateEntitiesNode, WORLD_UPDATE_PATTERN_TEUPDATE, WORLD_UPDATE_PAYLOAD_START_TEUPDATE);
 		this.applyPayloadAfter (updateEntitiesNode, WORLD_UPDATE_PATTERN_TEUPDATE, WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE);

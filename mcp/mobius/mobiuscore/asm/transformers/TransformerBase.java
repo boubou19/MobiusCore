@@ -12,6 +12,7 @@ import java.util.zip.ZipFile;
 
 import mcp.mobius.mobiuscore.asm.CoreDescription;
 import mcp.mobius.mobiuscore.asm.MethodDescriptor;
+import mcp.mobius.mobiuscore.asm.Opcode;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -25,6 +26,8 @@ import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+
+import mcp.mobius.mobiuscore.profiler.ProfilerSection;
 
 public abstract class TransformerBase {
 	
@@ -368,5 +371,27 @@ public abstract class TransformerBase {
         		return methodNode;
 
         throw new RuntimeException(String.format("Method %s not found in %s\n", methodName, classNode.name));
+	}
+	
+	protected boolean checkPreviousInjection(MethodNode methodNode){
+		String profilerClass =  ProfilerSection.getClassName();
+		boolean retVal = false;
+		
+		if (this.findPattern(methodNode, new AbstractInsnNode[]{ Opcode.INVOKEVIRTUAL(profilerClass, "start", "()V")}).size() > 0) retVal = true;
+		if (this.findPattern(methodNode, new AbstractInsnNode[]{ Opcode.INVOKEVIRTUAL(profilerClass, "start", "(Ljava/lang/Object;)V")}).size() > 0) retVal = true;
+		if (this.findPattern(methodNode, new AbstractInsnNode[]{ Opcode.INVOKEVIRTUAL(profilerClass, "start", "(Ljava/lang/Object;Ljava/lang/Object;)V")}).size() > 0) retVal = true;
+		if (this.findPattern(methodNode, new AbstractInsnNode[]{ Opcode.INVOKEVIRTUAL(profilerClass, "start", "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V")}).size() > 0) retVal = true;		
+		if (this.findPattern(methodNode, new AbstractInsnNode[]{ Opcode.INVOKEVIRTUAL(profilerClass, "start", "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V")}).size() > 0) retVal = true;
+		
+		if (this.findPattern(methodNode, new AbstractInsnNode[]{ Opcode.INVOKEVIRTUAL(profilerClass, "stop", "()V")}).size() > 0) retVal = true;
+		if (this.findPattern(methodNode, new AbstractInsnNode[]{ Opcode.INVOKEVIRTUAL(profilerClass, "stop", "(Ljava/lang/Object;)V")}).size() > 0) retVal = true;
+		if (this.findPattern(methodNode, new AbstractInsnNode[]{ Opcode.INVOKEVIRTUAL(profilerClass, "stop", "(Ljava/lang/Object;Ljava/lang/Object;)V")}).size() > 0) retVal = true;
+		if (this.findPattern(methodNode, new AbstractInsnNode[]{ Opcode.INVOKEVIRTUAL(profilerClass, "stop", "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V")}).size() > 0) retVal = true;		
+		if (this.findPattern(methodNode, new AbstractInsnNode[]{ Opcode.INVOKEVIRTUAL(profilerClass, "stop", "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V")}).size() > 0) retVal = true;
+		
+		if (retVal)
+			System.out.printf("[MobiusCore] Injection markers found. All clear.\n");
+		
+		return retVal;
 	}
 }

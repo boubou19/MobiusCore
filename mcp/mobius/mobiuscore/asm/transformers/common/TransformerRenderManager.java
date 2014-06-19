@@ -56,6 +56,7 @@ public class TransformerRenderManager extends TransformerBase {
         classReader.accept(classNode, 0);
 		
         MethodNode renderEntNode  = this.getMethod(classNode, RM_RENDERENT);
+        if (this.checkPreviousInjection(renderEntNode)) return bytes;
         this.applyPayloadFirst(renderEntNode, RM_RENDER_PAYLOAD_TOP);
         this.applyPayloadLast (renderEntNode, RM_RENDER_PAYLOAD_BOTTOM);        
         

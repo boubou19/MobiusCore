@@ -46,7 +46,6 @@ public class TransformerFMLCommonHandler extends TransformerBase {
 	private static AbstractInsnNode[] FMLCH_PAYLOAD_PREWORLDTICK;
 	private static AbstractInsnNode[] FMLCH_PAYLOAD_POSTWORLDTICK;		
 	
-	
 	private static boolean isEclipse;
 	
 	static{
@@ -138,6 +137,7 @@ public class TransformerFMLCommonHandler extends TransformerBase {
         classReader.accept(classNode, 0);
 		
         MethodNode tickStartNode = this.getMethod(classNode, FMLCH_TICKSTART);
+        if (this.checkPreviousInjection(tickStartNode)) return bytes;       
 		this.applyPayloadBefore(tickStartNode, FMLCH_PATTERN_TICKSTART, FMLCH_PAYLOAD_TICKSTART_PRE);
 		this.applyPayloadAfter (tickStartNode, FMLCH_PATTERN_TICKSTART, FMLCH_PAYLOAD_TICKSTART_POST);
         

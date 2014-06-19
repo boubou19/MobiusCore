@@ -74,6 +74,7 @@ public class TransformerMemoryConnection extends TransformerBase {
         classReader.accept(classNode, 0);
 		
         MethodNode readPacketNode  = this.getMethod(classNode, MEMCON_READPACKET);
+        if (this.checkPreviousInjection(readPacketNode)) return bytes;      
         this.applyPayloadBefore(readPacketNode, MEMCON_PATTERN_PROCESSPACKET, MEMCON_PAYLOAD_INPACKET);
         
         MethodNode sendPacketNode  = this.getMethod(classNode, MEMCON_SENDPACKET);
