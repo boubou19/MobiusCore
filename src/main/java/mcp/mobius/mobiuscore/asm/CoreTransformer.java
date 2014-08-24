@@ -84,9 +84,9 @@ public class CoreTransformer implements IClassTransformer {
 				bytes = new TransformerFMLOutboundHandler().transform(name, srgname, bytes);
 			}					
 			
-			if (srgname.equals("cpw.mods.fml.common.network.internal.FMLProxyPacket")){
-				bytes = new TransformerFMLProxyPacket().transform(name, srgname, bytes);
-			}			
+			//if (srgname.equals("cpw.mods.fml.common.network.internal.FMLProxyPacket")){
+			//	bytes = new TransformerFMLProxyPacket().transform(name, srgname, bytes);
+			//}			
 	
 			if (srgname.equals("cpw.mods.fml.common.eventhandler.ASMEventHandler")){
 				bytes = new TransformerASMEventHandler().transform(name, srgname, bytes);
