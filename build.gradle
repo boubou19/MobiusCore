@@ -36,7 +36,7 @@ apply plugin: 'java'
 apply plugin: 'forge'
 
 
-version = "1.2.2"
+version = "1.2.2_1.7.10"
 group= "mcp.mobius.mobiuscore" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "MobiusCore"
 
@@ -74,7 +74,7 @@ dependencies {
 }
 
 minecraft {
-    version = "1.7.2-10.12.1.1112"
+    version = "1.7.10-10.13.0.1208"
     assetDir = "eclipse/assets"
 }
 
