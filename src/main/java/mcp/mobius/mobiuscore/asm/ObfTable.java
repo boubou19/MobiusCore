@@ -19,8 +19,8 @@ public enum ObfTable {
 	WORLD_PROVIDER            ("mt",  "t", "Laqo;", "net/minecraft/world/WorldServer",   "provider",    "Lnet/minecraft/world/WorldProvider;"),
 	WORLDPROVIDER_DIMID       ("aqo", "i", "I",     "net/minecraft/world/WorldProvider", "dimensionId", "I"),	
 	
-	SERIALIZER_ENCODE         ("er",  "a", "(Lio/netty/channel/ChannelHandlerContext;Lfk;Lio/netty/buffer/ByteBuf;)V", "net/minecraft/util/MessageSerializer", "encode", "(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/Packet;Lio/netty/buffer/ByteBuf;)V"),
-	DESERIALIZER_DECODE       ("eq",  "decode", "(Lio/netty/channel/ChannelHandlerContext;Lio/netty/buffer/ByteBuf;Ljava/util/List;)V", "net/minecraft/util/MessageDeserializer", "decode", "(Lio/netty/channel/ChannelHandlerContext;Lio/netty/buffer/ByteBuf;Ljava/util/List;)V"),
+	SERIALIZER_ENCODE         ("fa",  "a", "(Lio/netty/channel/ChannelHandlerContext;Lft;Lio/netty/buffer/ByteBuf;)V", "net/minecraft/util/MessageSerializer", "encode", "(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/Packet;Lio/netty/buffer/ByteBuf;)V"),
+	DESERIALIZER_DECODE       ("ez",  "decode", "(Lio/netty/channel/ChannelHandlerContext;Lio/netty/buffer/ByteBuf;Ljava/util/List;)V", "net/minecraft/util/MessageDeserializer", "decode", "(Lio/netty/channel/ChannelHandlerContext;Lio/netty/buffer/ByteBuf;Ljava/util/List;)V"),
 
 	PACKET_WRITEPACKETDATA    ("ft", "b", "(Let;)V", "net/minecraft/network/Packet","writePacketData","(Lnet/minecraft/network/PacketBuffer;)V"),	
 	PACKET_READPACKETDATA     ("ft", "a", "(Let;)V", "net/minecraft/network/Packet","readPacketData", "(Lnet/minecraft/network/PacketBuffer;)V"),

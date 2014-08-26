@@ -61,14 +61,14 @@ public class TransformerWorldCauldron extends TransformerBase{
 		WORLD_UPDATE_PAYLOAD_START_TEUPDATE = new AbstractInsnNode[]
 			{
 			Opcode.GETSTATIC(profilerClass, ProfilerSection.TILEENT_UPDATETIME.name(), profilerType),
-			Opcode.ALOAD(10), 
+			Opcode.ALOAD(8), 
 			Opcode.INVOKEVIRTUAL(profilerClass, "start", "(Ljava/lang/Object;)V")
 			};	
 
 		WORLD_UPDATE_PAYLOAD_STOP_TEUPDATE = new AbstractInsnNode[]
 			{
 			Opcode.GETSTATIC(profilerClass, ProfilerSection.TILEENT_UPDATETIME.name(), profilerType),
-			Opcode.ALOAD(10), 
+			Opcode.ALOAD(8), 
 			Opcode.INVOKEVIRTUAL(profilerClass, "stop", "(Ljava/lang/Object;)V")
 			};		
 		

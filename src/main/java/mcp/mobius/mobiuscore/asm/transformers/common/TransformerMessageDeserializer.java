@@ -42,8 +42,8 @@ public class TransformerMessageDeserializer extends TransformerBase {
 		DESERIALIZER_PAYLOAD =	new AbstractInsnNode[] 
 				{
 				 new FieldInsnNode (Opcodes.GETSTATIC,       profilerClass, ProfilerSection.PACKET_INBOUND.name(), profilerType),
-				 new VarInsnNode   (Opcodes.ALOAD, 6),
-				 new VarInsnNode   (Opcodes.ALOAD, 4),
+				 new VarInsnNode   (Opcodes.ALOAD, 7),
+				 new VarInsnNode   (Opcodes.ALOAD, 5),
 				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, ObfTable.PACKETBUFFER_CAPACITY.getClazz(), ObfTable.PACKETBUFFER_CAPACITY.getName(), ObfTable.PACKETBUFFER_CAPACITY.getDescriptor()),
 				 new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;"),
 				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;Ljava/lang/Object;)V"),					
