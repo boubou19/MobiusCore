@@ -1,9 +1,5 @@
 package mcp.mobius.mobiuscore.asm.transformers.common;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -13,7 +9,6 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
-import org.objectweb.asm.util.TraceClassVisitor;
 
 import mcp.mobius.mobiuscore.asm.ObfTable;
 import mcp.mobius.mobiuscore.asm.transformers.TransformerBase;
@@ -52,7 +47,7 @@ public class TransformerMessageDeserializer extends TransformerBase {
 	
 	@Override
 	public byte[] transform(String name, String srgname, byte[] bytes) {
-		this.dumpChecksum(bytes, name, srgname);
+		dumpChecksum(bytes, name, srgname);
 		
 		ClassNode   classNode   = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);		

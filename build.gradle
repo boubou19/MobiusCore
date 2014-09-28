@@ -21,16 +21,6 @@ configurations {
     compile.extendsFrom packed    
 }
 
-//add dependency repositories
-repositories {
-    mavenCentral()
-
-    maven {
-        name = "chickenbones"
-        url = "http://chickenbones.net/maven/"
-    }
-}
-
 apply plugin: 'maven'
 apply plugin: 'java'
 apply plugin: 'forge'
@@ -42,7 +32,6 @@ archivesBaseName = "MobiusCore"
 
 def commonManifest = {
     attributes 'FMLCorePlugin': 'mcp.mobius.mobiuscore.asm.CoreDescription'
-    attributes 'AccessTransformer': 'mobius_at.cfg'
 }
 
 jar {
@@ -78,18 +67,6 @@ minecraft {
     assetDir = "eclipse/assets"
 }
 
-def root = project.projectDir.parentFile
-sourceSets {
-    main {
-        java {
-            srcDir new File(root, "src")
-        }
-        resources {
-            srcDir new File(root, "resources")
-        }
-    }
-}
-
 processResources
 {
     // this will ensure that this task is redone when the versions change.
@@ -110,10 +87,8 @@ processResources
 }
 
 task sourceJar(type: Jar) {
-    from sourceSets.main.java
-    from new File(root, "dev")
+    from sourceSets.main.allJava
     classifier = 'sources'
-    manifest commonManifest
 }
 
 task devJar(type: Jar) {
