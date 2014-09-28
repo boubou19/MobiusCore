@@ -3,10 +3,15 @@ package mcp.mobius.mobiuscore.asm;
 import java.io.File;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.TransformerExclusions("mcp.mobius.mobiuscore.asm")
 public class CoreDescription implements IFMLLoadingPlugin {
+
+    public static final Logger log = LogManager.getLogger("MobiusCore");
 
 	@Override
 	public String[] getASMTransformerClass() {
@@ -32,6 +37,7 @@ public class CoreDescription implements IFMLLoadingPlugin {
 	public static File location;
 
 	@Override
-	public String getAccessTransformerClass() {	return null; }
-	
+	public String getAccessTransformerClass() {
+        return "mcp.mobius.mobiuscore.asm.CoreAccessTransformer";
+    }
 }

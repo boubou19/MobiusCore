@@ -124,19 +124,19 @@ public abstract class TransformerBase {
 	protected void printInsnNode (AbstractInsnNode insnNode){
 		switch(insnNode.getType()){
 		case AbstractInsnNode.LINE:
-			System.out.printf("LINE : %s %s\n", ((LineNumberNode)insnNode).getOpcode(), ((LineNumberNode)insnNode).line);
+			CoreDescription.log.info(String.format("LINE : %s %s", insnNode.getOpcode(), ((LineNumberNode)insnNode).line));
 			break;
 			
 		case AbstractInsnNode.VAR_INSN:
-			System.out.printf("VAR_INSN : %s %s\n", ((VarInsnNode)insnNode).getOpcode(), ((VarInsnNode)insnNode).var);
+			CoreDescription.log.info(String.format("VAR_INSN : %s %s", insnNode.getOpcode(), ((VarInsnNode)insnNode).var));
 			break;
 
 		case AbstractInsnNode.METHOD_INSN:
-			System.out.printf("METHOD_INSN : %s %s %s %s\n", ((MethodInsnNode)insnNode).getOpcode(),  ((MethodInsnNode)insnNode).owner, ((MethodInsnNode)insnNode).name, ((MethodInsnNode)insnNode).desc);
+			CoreDescription.log.info(String.format("METHOD_INSN : %s %s %s %s", insnNode.getOpcode(), ((MethodInsnNode)insnNode).owner, ((MethodInsnNode)insnNode).name, ((MethodInsnNode)insnNode).desc));
 			break;        					
 			
 		default:
-			System.out.printf("[ %s ] %s\n", insnNode.getOpcode(), insnNode);
+			CoreDescription.log.info(String.format("[ %s ] %s", insnNode.getOpcode(), insnNode));
 			break;
 		}		
 	}
@@ -165,7 +165,7 @@ public abstract class TransformerBase {
 			for (ArrayList<AbstractInsnNode> sublist : match){
     			this.applyPayloadBefore(methodNode.instructions, sublist, payload);
 			}
-			System.out.printf("[MobiusCore] Successful injection in %s %s\n", methodNode.name, methodNode.desc);
+			CoreDescription.log.info(String.format("Successful injection in %s %s", methodNode.name, methodNode.desc));
 			return;
 		}
 		
@@ -180,7 +180,7 @@ public abstract class TransformerBase {
 			for (ArrayList<AbstractInsnNode> sublist : match){
     			this.applyPayloadAfter(methodNode.instructions, sublist, payload);
 			}
-			System.out.printf("[MobiusCore] Successful injection in %s %s\n", methodNode.name, methodNode.desc);			
+			CoreDescription.log.info(String.format("Successful injection in %s %s", methodNode.name, methodNode.desc));
 			return;			
 		}	
 		
@@ -195,7 +195,7 @@ public abstract class TransformerBase {
 	
 		instructions.insertBefore(instructions.getFirst(), payload);
 		
-		System.out.printf("[MobiusCore] Successful injection in %s %s\n", methodNode.name, methodNode.desc);		
+		CoreDescription.log.info(String.format("Successful injection in %s %s", methodNode.name, methodNode.desc));
 	}		
 	
 	protected void applyPayloadLast(MethodNode methodNode, AbstractInsnNode[] payload_pattern){
@@ -210,7 +210,7 @@ public abstract class TransformerBase {
 			}
 		}
 
-		System.out.printf("[MobiusCore] Successful injection in %s %s\n", methodNode.name, methodNode.desc);		
+		CoreDescription.log.info(String.format("Successful injection in %s %s", methodNode.name, methodNode.desc));
 	}		
 	
 	/*
@@ -225,7 +225,7 @@ public abstract class TransformerBase {
 			ZipEntry entry = zip.getEntry(transformedName.replace('.', '/')+".class");
 			//ZipEntry entry = zip.getEntry(name.replace('.', '/')+".class");
 			if(entry == null)
-				System.out.println(transformedName+" not found in "+CoreDescription.location.getName());
+				CoreDescription.log.error(transformedName + " not found in " + CoreDescription.location.getName());
 			else
 			{
 				InputStream zin = zip.getInputStream(entry);
@@ -262,7 +262,7 @@ public abstract class TransformerBase {
         for (MethodNode node: vanillaNode.methods){
         	try{
         		if (node != null && node.desc.equals(methodDesc.getDescriptor()) && (node.name.equals(methodDesc.getMethodName()))){
-        			System.out.printf("Found method node %s.%s %s in Vanilla.\n", className, methodDesc.getMethodName(), methodDesc.getDescriptor());
+        			CoreDescription.log.info(String.format("Found method node %s.%s %s in Vanilla.", className, methodDesc.getMethodName(), methodDesc.getDescriptor()));
         			vanillaMethodNode = node;        		
         		}
         	} catch (Exception e){
@@ -274,7 +274,7 @@ public abstract class TransformerBase {
         for (MethodNode node: coremodNode.methods){
         	try{
         		if (node != null && node.desc.equals(methodDesc.getDescriptor()) && (node.name.equals(methodDesc.getMethodName()))){
-        			System.out.printf("Found method node %s.%s %s in Coremod.\n", className, methodDesc.getMethodName(), methodDesc.getDescriptor());
+        			CoreDescription.log.info(String.format("Found method node %s.%s %s in Coremod.", className, methodDesc.getMethodName(), methodDesc.getDescriptor()));
         			coremodMethodNode = node;
         		}
         	} catch (Exception e){
@@ -283,10 +283,10 @@ public abstract class TransformerBase {
         }
         
         if (vanillaMethodNode == null){
-        	System.out.printf("Method node %s.%s %s not found in Vanilla ! This is going to crash !.\n", className, methodDesc.getMethodName(), methodDesc.getDescriptor());
+        	CoreDescription.log.fatal(String.format("Method node %s.%s %s not found in Vanilla ! This is going to crash !.", className, methodDesc.getMethodName(), methodDesc.getDescriptor()));
         }
         if (coremodMethodNode == null){
-        	System.out.printf("Method node %s.%s %s not found in Coremod ! This is going to crash !.\n", className, methodDesc.getMethodName(), methodDesc.getDescriptor());
+        	CoreDescription.log.fatal(String.format("Method node %s.%s %s not found in Coremod ! This is going to crash !.", className, methodDesc.getMethodName(), methodDesc.getDescriptor()));
         }
         
         vanillaNode.methods.remove(vanillaMethodNode);
@@ -318,7 +318,7 @@ public abstract class TransformerBase {
 	        for (MethodNode node: coremodNode.methods){
 	        	try{
 	        		if (node != null && node.desc.equals(methodDesc.getDescriptor()) && (node.name.equals(methodDesc.getMethodName()))){
-	        			System.out.printf("Found method node %s.%s %s in Coremod. Injecting !\n", className, methodDesc.getMethodName(), methodDesc.getDescriptor());
+	        			CoreDescription.log.info(String.format("Found method node %s.%s %s in Coremod. Injecting !", className, methodDesc.getMethodName(), methodDesc.getDescriptor()));
 	        			coremodMethodNode = node;
 	        		}
 	        	} catch (Exception e){
@@ -327,7 +327,7 @@ public abstract class TransformerBase {
 	        }        
 	
 	        if (coremodMethodNode == null){
-	        	System.out.printf("Method node %s.%s %s not found in Coremod ! This is going to crash !.\n", className, methodDesc.getMethodName(), methodDesc.getDescriptor());
+	        	CoreDescription.log.fatal(String.format("Method node %s.%s %s not found in Coremod ! This is going to crash !.", className, methodDesc.getMethodName(), methodDesc.getDescriptor()));
 	        }        
 	        
 	        coremodMethodNode.accept(vanillaNode);
@@ -337,7 +337,7 @@ public abstract class TransformerBase {
 	        vanillaNode.accept(writer);
 	        return writer.toByteArray();
 		} catch (ClassFormatError e){
-			System.out.printf("Class already injected.");
+			CoreDescription.log.warn("Class already injected.");
 			return vanillaBytes;
 		}		
 	}	
@@ -358,14 +358,14 @@ public abstract class TransformerBase {
 			}	
 			
 			if (obf.equals(searge))
-				System.out.printf("[MobiusCore] Found %s with checksum %s\n", searge, hashtext.toUpperCase());
+				CoreDescription.log.info(String.format("Found %s with checksum %s", searge, hashtext.toUpperCase()));
 			else
-				System.out.printf("[MobiusCore] Found %s [ %s ] with checksum %s\n", searge, obf, hashtext.toUpperCase());
+				CoreDescription.log.info(String.format("[MobiusCore] Found %s [ %s ] with checksum %s", searge, obf, hashtext.toUpperCase()));
 			
 			return hashtext.toUpperCase();
 		}
 		catch (Exception e) {
-		}			
+		}
 		
 		return "00000000000000000000000000000000";
 	}
