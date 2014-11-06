@@ -36,6 +36,8 @@ public enum ObfTable {
 
 	FMLPP_PROCESSPACKET       ("cpw/mods/fml/common/network/internal/FMLProxyPacket", "a", "(Lfb;)V", "cpw/mods/fml/common/network/internal/FMLProxyPacket", "processPacket", "(Lnet/minecraft/network/INetHandler;)V"),
 
+	WORLD_LOADEDENTS          ("ahb", "e", "Ljava/util/List;", "net/minecraft/world/World", "loadedEntityList", "Ljava/util/List;"),
+	WORLD_LOADEDTILES         ("ahb", "g", "Ljava/util/List;", "net/minecraft/world/World", "loadedTileEntityList", "Ljava/util/List;"),
 	/*
 	NETWORKLISTEN_NETWORKTICK ("nc",  "c", "()V",      "net/minecraft/network/NetworkSystem",          "networkTick",   "()V"),
 	TCPCONN_READPACKET		  ("co",  "i", "()Z",	   "net/minecraft/network/TcpConnection",                "readPacket",    "()Z"),

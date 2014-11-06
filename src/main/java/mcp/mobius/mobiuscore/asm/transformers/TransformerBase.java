@@ -15,6 +15,7 @@ import java.util.zip.ZipFile;
 
 import mcp.mobius.mobiuscore.asm.CoreDescription;
 import mcp.mobius.mobiuscore.asm.MethodDescriptor;
+import mcp.mobius.mobiuscore.asm.Opcode;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -27,11 +28,18 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.util.Printer;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceClassVisitor;
 import org.objectweb.asm.util.TraceMethodVisitor;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 
 public abstract class TransformerBase {
 	
@@ -117,6 +125,11 @@ public abstract class TransformerBase {
 				return true;
 		}		
 		
+		if (insn1 instanceof TypeInsnNode){
+			if (((TypeInsnNode)insn1).desc.equals(((TypeInsnNode)insn2).desc))
+				return true;
+		}
+		
 		return false;
 		
 	}
@@ -124,21 +137,45 @@ public abstract class TransformerBase {
 	protected void printInsnNode (AbstractInsnNode insnNode){
 		switch(insnNode.getType()){
 		case AbstractInsnNode.LINE:
-			CoreDescription.log.info(String.format("LINE : %s %s", insnNode.getOpcode(), ((LineNumberNode)insnNode).line));
+			CoreDescription.log.info(String.format("LINE        : %s", ((LineNumberNode)insnNode).line));
 			break;
 			
+		case AbstractInsnNode.LABEL:
+			CoreDescription.log.info(String.format("LINE        : %s", ((LabelNode)insnNode).getLabel()));
+			break;			
+			
 		case AbstractInsnNode.VAR_INSN:
-			CoreDescription.log.info(String.format("VAR_INSN : %s %s", insnNode.getOpcode(), ((VarInsnNode)insnNode).var));
+			CoreDescription.log.info(String.format("VAR_INSN    : %s %s", Opcode.Instructions.inverse().get(insnNode.getOpcode()), ((VarInsnNode)insnNode).var));
 			break;
 
 		case AbstractInsnNode.METHOD_INSN:
-			CoreDescription.log.info(String.format("METHOD_INSN : %s %s %s %s", insnNode.getOpcode(), ((MethodInsnNode)insnNode).owner, ((MethodInsnNode)insnNode).name, ((MethodInsnNode)insnNode).desc));
+			CoreDescription.log.info(String.format("METHOD_INSN : %s %s %s %s", Opcode.Instructions.inverse().get(insnNode.getOpcode()), ((MethodInsnNode)insnNode).owner, ((MethodInsnNode)insnNode).name, ((MethodInsnNode)insnNode).desc));
 			break;        					
 			
+		case AbstractInsnNode.INSN:
+			CoreDescription.log.info(String.format("INSN        : %s", Opcode.Instructions.inverse().get(insnNode.getOpcode())));
+			break;
+
+		case AbstractInsnNode.TYPE_INSN:
+			CoreDescription.log.info(String.format("TYPE_INSN   : %s %s", Opcode.Instructions.inverse().get(insnNode.getOpcode()), ((TypeInsnNode)insnNode).desc ));
+			break;			
+			
+		case AbstractInsnNode.FIELD_INSN:
+			CoreDescription.log.info(String.format("FIELD_INSN  : %s %s %s %s", Opcode.Instructions.inverse().get(insnNode.getOpcode()), ((FieldInsnNode)insnNode).owner, ((FieldInsnNode)insnNode).name, ((FieldInsnNode)insnNode).desc));
+			break; 			
+			
 		default:
-			CoreDescription.log.info(String.format("[ %s ] %s", insnNode.getOpcode(), insnNode));
+			CoreDescription.log.info(String.format("              %s %s", Opcode.Instructions.inverse().get(insnNode.getOpcode()), insnNode));
 			break;
 		}		
+	}
+	
+	protected void printMethod(MethodNode methodNode){
+		InsnList instructions = methodNode.instructions;
+		for (int indexFirstInst = 0; indexFirstInst < instructions.size(); indexFirstInst++){	
+			AbstractInsnNode currNode = instructions.get(indexFirstInst);
+			printInsnNode(currNode);
+		}
 	}
 	
 	private void applyPayloadAfter(InsnList instructions, ArrayList<AbstractInsnNode> match,  AbstractInsnNode[] payload_pattern){
@@ -183,7 +220,7 @@ public abstract class TransformerBase {
 			CoreDescription.log.info(String.format("Successful injection in %s %s", methodNode.name, methodNode.desc));
 			return;			
 		}	
-		
+		this.printMethod(methodNode);
 		throw new RuntimeException(String.format("Pattern not found while trying to inject into %s", methodNode.name));
 	}	
 	
@@ -377,4 +414,16 @@ public abstract class TransformerBase {
 
         throw new RuntimeException(String.format("Method %s not found in %s\n", methodName, classNode.name));
 	}
+	
+	protected List<MethodNode> getMethods(ClassNode classNode, String methodName){
+		List<MethodNode> methods = new ArrayList<MethodNode>();
+        for (MethodNode methodNode : classNode.methods)
+        	if (methodNode.name.equals(methodName))
+        		methods.add(methodNode);
+        
+        if (methods.size() > 0)
+        	return methods;
+        else
+        	throw new RuntimeException(String.format("Method %s not found in %s\n", methodName, classNode.name));
+	}	
 }
