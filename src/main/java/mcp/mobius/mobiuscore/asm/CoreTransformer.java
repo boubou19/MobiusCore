@@ -39,7 +39,7 @@ public class CoreTransformer implements IClassTransformer {
 
 			if (srgname.equals("net.minecraft.world.World") && ObfTable.isCauldron()){
 				bytes = new TransformerWorldCauldron().transform(name, srgname, bytes);
-			}			
+			}
 			
 			if (srgname.equals("net.minecraft.world.WorldServer")){
 				bytes = new TransformerWorldServer().transform(name, srgname, bytes);

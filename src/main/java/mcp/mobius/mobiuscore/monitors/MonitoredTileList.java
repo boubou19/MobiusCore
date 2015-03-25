@@ -20,6 +20,8 @@ public class MonitoredTileList <E> extends MonitoredList<E>{
 	@Override
 	protected void addCount(E e){
 		TileEntity te = ((TileEntity)e);
+		if (te == null || te.getWorldObj() == null) return;
+		
 		Block block = te.getWorldObj().getBlock(te.xCoord, te.yCoord, te.zCoord);
 		int   meta  = te.getWorldObj().getBlockMetadata(te.xCoord, te.yCoord, te.zCoord);
 		
@@ -42,10 +44,16 @@ public class MonitoredTileList <E> extends MonitoredList<E>{
 	@Override
 	protected void removeCount(Object o){
 		TileEntity te = ((TileEntity)o);
+		if (te == null || te.getWorldObj() == null) return;		
+		
 		Block block = te.getWorldObj().getBlock(te.xCoord, te.yCoord, te.zCoord);
 		int   meta  = te.getWorldObj().getBlockMetadata(te.xCoord, te.yCoord, te.zCoord);
 		
-		this.count.put(block, meta, this.count.get(block, meta) - 1);			
+		try{
+			this.count.put(block, meta, this.count.get(block, meta) - 1);
+		} catch (NullPointerException e){
+			this.count.put(block, meta, 0);
+		}
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import org.objectweb.asm.tree.LineNumberNode;
 public class TransformerWorld extends TransformerBase{
 
 	private static String WORLD_UPDATEENTITIES;
+	private static String WORLD_INIT;
 	
 	//tileentity.updateEntity(); World:2215
 	private static AbstractInsnNode[] WORLD_UPDATE_PATTERN_TEUPDATE;
@@ -56,6 +57,7 @@ public class TransformerWorld extends TransformerBase{
 		String profilerType  =  ProfilerSection.getTypeName();
 		
 		WORLD_UPDATEENTITIES = ObfTable.WORLD_UPDATEENTITIES.getFullDescriptor(); //updateEntities.getFullDescriptor();
+		WORLD_INIT           = ObfTable.WORLD_INIT.getFullDescriptor();
 		
 		WORLD_UPDATE_PATTERN_TEUPDATE =	new AbstractInsnNode[] 
 			{
@@ -157,12 +159,12 @@ public class TransformerWorld extends TransformerBase{
 		this.applyPayloadBefore(updateEntitiesNode, WORLD_UPDATE_PATTERN_ENTUPDATE, WORLD_UPDATE_PAYLOAD_START_ENTUPDATE);
 		this.applyPayloadAfter (updateEntitiesNode, WORLD_UPDATE_PATTERN_ENTUPDATE, WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE);		
         
-		for (MethodNode init : this.getMethods(classNode, "<init>")){
-			CoreDescription.log.info(String.format("Found World.%s %s", init.name, init.desc));
-			this.applyPayloadAfter (init, WORLD_PATTERN_LOADEDENTS,  WORLD_PAYLOAD_LOADEDENTS);
-			this.applyPayloadAfter (init, WORLD_PATTERN_LOADEDTILES, WORLD_PAYLOAD_LOADEDTILES);			
+		MethodNode initNode =  this.getMethod(classNode, WORLD_INIT);
+		CoreDescription.log.info(String.format("Found World.%s %s", initNode.name, initNode.desc));
+		
+		this.applyPayloadAfter (initNode, WORLD_PATTERN_LOADEDENTS,  WORLD_PAYLOAD_LOADEDENTS);
+		this.applyPayloadAfter (initNode, WORLD_PATTERN_LOADEDTILES, WORLD_PAYLOAD_LOADEDTILES);			
 			
-		}
 		
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);

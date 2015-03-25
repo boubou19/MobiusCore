@@ -12,6 +12,7 @@ public class MonitoredEntityList<E> extends MonitoredList<E>{
 	
 	@Override
 	protected void addCount(E e){
+		if (e == null) return;		
 		String name = this.getName(e);
 		try{
 			count.put(name, count.get(name) + 1);
@@ -30,8 +31,14 @@ public class MonitoredEntityList<E> extends MonitoredList<E>{
 	
 	@Override
 	protected void removeCount(Object o){
+		if (o == null) return;
 		String name = this.getName(o);
-		this.count.put(name, this.count.get(name) - 1);			
+		
+		try{
+			this.count.put(name, this.count.get(name) - 1);
+		} catch (NullPointerException e){
+			this.count.put(name, 0);
+		}
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import org.objectweb.asm.tree.LineNumberNode;
 public class TransformerWorldCauldron extends TransformerBase{
 
 	private static String WORLD_UPDATEENTITIES;
+	private static String WORLD_INIT;
 	
 	//tileentity.updateEntity(); World:2215
 	private static AbstractInsnNode[] WORLD_UPDATE_PATTERN_TEUPDATE;
@@ -36,11 +37,24 @@ public class TransformerWorldCauldron extends TransformerBase{
 	//ProfilerRegistrar.profilerEntity.Stop(entity);
 	private static AbstractInsnNode[] WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE;
 	
+	//World.loadedEntityList
+	private static AbstractInsnNode[] WORLD_PATTERN_LOADEDENTS;
+
+	//World.loadedTileEntityList
+	private static AbstractInsnNode[] WORLD_PATTERN_LOADEDTILES;	
+
+	//World.loadedEntityList
+	private static AbstractInsnNode[] WORLD_PAYLOAD_LOADEDENTS;
+
+	//World.loadedTileEntityList
+	private static AbstractInsnNode[] WORLD_PAYLOAD_LOADEDTILES;	
+	
 	static{
 		String profilerClass =  ProfilerSection.getClassName();
 		String profilerType  =  ProfilerSection.getTypeName();
 		
 		WORLD_UPDATEENTITIES = ObfTable.WORLD_UPDATEENTITIES.getFullDescriptor(); //updateEntities.getFullDescriptor();
+		WORLD_INIT           = ObfTable.WORLD_INIT.getFullDescriptor();
 		
 		WORLD_UPDATE_PATTERN_TEUPDATE =	new AbstractInsnNode[] 
 			{
@@ -83,7 +97,43 @@ public class TransformerWorldCauldron extends TransformerBase{
 			Opcode.GETSTATIC(profilerClass, ProfilerSection.ENTITY_UPDATETIME.name(), profilerType),
 			Opcode.ALOAD(2), 
 			Opcode.INVOKEVIRTUAL(profilerClass, "stop", "(Ljava/lang/Object;)V")
-			};			
+			};		
+		
+		WORLD_PATTERN_LOADEDENTS = new  AbstractInsnNode[]
+			{
+				Opcode.ALOAD(0),
+				Opcode.NEW("java/util/ArrayList"),
+				Opcode.DUP(),
+				Opcode.INVOKESPECIAL("java/util/ArrayList", "<init>", "()V"),
+				Opcode.PUTFIELD(ObfTable.WORLD_LOADEDENTS.getClazz(), ObfTable.WORLD_LOADEDENTS.getName(), ObfTable.WORLD_LOADEDENTS.getDescriptor())
+			};
+		
+		WORLD_PATTERN_LOADEDTILES = new  AbstractInsnNode[]
+			{
+				Opcode.ALOAD(0),
+				Opcode.NEW("java/util/ArrayList"),
+				Opcode.DUP(),
+				Opcode.INVOKESPECIAL("java/util/ArrayList", "<init>", "()V"),
+				Opcode.PUTFIELD(ObfTable.WORLD_LOADEDTILES.getClazz(), ObfTable.WORLD_LOADEDTILES.getName(), ObfTable.WORLD_LOADEDTILES.getDescriptor())
+			};
+		
+		WORLD_PAYLOAD_LOADEDENTS = new  AbstractInsnNode[]
+			{
+				Opcode.ALOAD(0),
+				Opcode.NEW("mcp/mobius/mobiuscore/monitors/MonitoredEntityList"),
+				Opcode.DUP(),
+				Opcode.INVOKESPECIAL("mcp/mobius/mobiuscore/monitors/MonitoredEntityList", "<init>", "()V"),
+				Opcode.PUTFIELD(ObfTable.WORLD_LOADEDENTS.getClazz(), ObfTable.WORLD_LOADEDENTS.getName(), ObfTable.WORLD_LOADEDENTS.getDescriptor())				
+			};
+		
+		WORLD_PAYLOAD_LOADEDTILES = new  AbstractInsnNode[]
+			{
+				Opcode.ALOAD(0),
+				Opcode.NEW("mcp/mobius/mobiuscore/monitors/MonitoredTileList"),
+				Opcode.DUP(),
+				Opcode.INVOKESPECIAL("mcp/mobius/mobiuscore/monitors/MonitoredTileList", "<init>", "()V"),
+				Opcode.PUTFIELD(ObfTable.WORLD_LOADEDTILES.getClazz(), ObfTable.WORLD_LOADEDTILES.getName(), ObfTable.WORLD_LOADEDTILES.getDescriptor())					
+			};		
 	}
 	
 	@Override
@@ -104,6 +154,12 @@ public class TransformerWorldCauldron extends TransformerBase{
 		this.applyPayloadBefore(updateEntitiesNode, WORLD_UPDATE_PATTERN_ENTUPDATE, WORLD_UPDATE_PAYLOAD_START_ENTUPDATE);
 		this.applyPayloadAfter (updateEntitiesNode, WORLD_UPDATE_PATTERN_ENTUPDATE, WORLD_UPDATE_PAYLOAD_STOP_ENTUPDATE);		
         
+		MethodNode initNode =  this.getMethod(classNode, WORLD_INIT);
+		CoreDescription.log.info(String.format("Found World.%s %s", initNode.name, initNode.desc));
+		
+		this.applyPayloadAfter (initNode, WORLD_PATTERN_LOADEDENTS,  WORLD_PAYLOAD_LOADEDENTS);
+		this.applyPayloadAfter (initNode, WORLD_PATTERN_LOADEDTILES, WORLD_PAYLOAD_LOADEDTILES);		
+		
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);
         
