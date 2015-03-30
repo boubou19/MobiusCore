@@ -2,6 +2,7 @@ package mcp.mobius.mobiuscore.monitors;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -16,6 +17,17 @@ public class MonitoredTileList <E> extends MonitoredList<E>{
 	
 	//private Map<String, Integer> count = new HashMap<String, Integer>();
 	private Table<Block, Integer, Integer> count = HashBasedTable.create();
+	private Map<Object, BlockData> blockdata = new WeakHashMap();
+	
+	private class BlockData{
+		public final Block block;
+		public final int   meta;
+		
+		public BlockData(Block b, int m){
+			this.block = b;
+			this.meta  = m;
+		}
+	}
 	
 	@Override
 	protected void addCount(E e){
@@ -25,6 +37,7 @@ public class MonitoredTileList <E> extends MonitoredList<E>{
 		Block block = te.getWorldObj().getBlock(te.xCoord, te.yCoord, te.zCoord);
 		int   meta  = te.getWorldObj().getBlockMetadata(te.xCoord, te.yCoord, te.zCoord);
 		
+		blockdata.put(te, new BlockData(block, meta));
 		
 		try{
 			count.put(block, meta, count.get(block, meta) + 1);
@@ -43,16 +56,25 @@ public class MonitoredTileList <E> extends MonitoredList<E>{
 	
 	@Override
 	protected void removeCount(Object o){
+		//TODO THIS IS WHERE THE CHUNK KEEP GETTING LOADED.
+		//TODO SHOULD STORE BLOCK/META IN A TABLE ALONG WITH THE TE IN ORDER TO DECREASE THOSE
+		//WITHOUT ACCESSING THE WORLD !!!!
+		
+		/*
 		TileEntity te = ((TileEntity)o);
 		if (te == null || te.getWorldObj() == null) return;		
 		
 		Block block = te.getWorldObj().getBlock(te.xCoord, te.yCoord, te.zCoord);
 		int   meta  = te.getWorldObj().getBlockMetadata(te.xCoord, te.yCoord, te.zCoord);
+		*/
 		
-		try{
-			this.count.put(block, meta, this.count.get(block, meta) - 1);
-		} catch (NullPointerException e){
-			this.count.put(block, meta, 0);
+		if (blockdata.containsKey(o)){
+			BlockData d = blockdata.get(o);
+			try{
+				this.count.put(d.block, d.meta, this.count.get(d.block, d.meta) - 1);
+			} catch (NullPointerException e){
+				this.count.put(d.block, d.meta, 0);
+			}			
 		}
 	}
 
