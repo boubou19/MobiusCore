@@ -44,8 +44,8 @@ public class TransformerWorldServer extends TransformerBase {
 				 new VarInsnNode   (Opcodes.ALOAD, 0),	
 				 new FieldInsnNode (Opcodes.GETFIELD, ObfTable.WORLD_PROVIDER.getClazz(),      ObfTable.WORLD_PROVIDER.getName(),      ObfTable.WORLD_PROVIDER.getDescriptor()),
 				 new FieldInsnNode (Opcodes.GETFIELD, ObfTable.WORLDPROVIDER_DIMID.getClazz(), ObfTable.WORLDPROVIDER_DIMID.getName(), ObfTable.WORLDPROVIDER_DIMID.getDescriptor()),
-				 new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;"),
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V"),				 
+				 new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false),
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V", false),
 				};		
 
 		WORLDSERVER_PAYLOAD_TICKEND =	new AbstractInsnNode[] 
@@ -54,8 +54,8 @@ public class TransformerWorldServer extends TransformerBase {
 				 new VarInsnNode   (Opcodes.ALOAD, 0),	
 				 new FieldInsnNode (Opcodes.GETFIELD, ObfTable.WORLD_PROVIDER.getClazz(),      ObfTable.WORLD_PROVIDER.getName(),      ObfTable.WORLD_PROVIDER.getDescriptor()),
 				 new FieldInsnNode (Opcodes.GETFIELD, ObfTable.WORLDPROVIDER_DIMID.getClazz(), ObfTable.WORLDPROVIDER_DIMID.getName(), ObfTable.WORLDPROVIDER_DIMID.getDescriptor()),
-				 new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;"),
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;)V"),				 
+				 new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false),
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;)V", false),
 				};			
 	}
 	

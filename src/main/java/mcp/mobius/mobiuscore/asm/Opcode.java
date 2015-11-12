@@ -63,33 +63,33 @@ public class Opcode {
 		String clazz = name.split("\\.")[0];
 		String field = name.split("\\.")[1].split(" ")[0];
 		String sig   = name.split("\\.")[1].split(" ")[1];
-		return new MethodInsnNode(Opcodes.INVOKEINTERFACE, clazz, field, sig);		
+		return new MethodInsnNode(Opcodes.INVOKEINTERFACE, clazz, field, sig, true);
 	}
 	
 	public static MethodInsnNode INVOKEINTERFACE(String clazz, String field, String sig){
-		return new MethodInsnNode(Opcodes.INVOKEINTERFACE, clazz, field, sig);
+		return new MethodInsnNode(Opcodes.INVOKEINTERFACE, clazz, field, sig, true);
 	}
 	
 	public static MethodInsnNode INVOKEVIRTUAL(String name){
 		String clazz = name.split("\\.")[0];
 		String field = name.split("\\.")[1].split(" ")[0];
 		String sig   = name.split("\\.")[1].split(" ")[1];
-		return new MethodInsnNode(Opcodes.INVOKEVIRTUAL, clazz, field, sig);		
+		return new MethodInsnNode(Opcodes.INVOKEVIRTUAL, clazz, field, sig, false);
 	}
 	
 	public static MethodInsnNode INVOKEVIRTUAL(String clazz, String field, String sig){
-		return new MethodInsnNode(Opcodes.INVOKEVIRTUAL, clazz, field, sig);
+		return new MethodInsnNode(Opcodes.INVOKEVIRTUAL, clazz, field, sig, false);
 	}
 	
 	public static MethodInsnNode INVOKESPECIAL(String name){
 		String clazz = name.split("\\.")[0];
 		String field = name.split("\\.")[1].split(" ")[0];
 		String sig   = name.split("\\.")[1].split(" ")[1];
-		return new MethodInsnNode(Opcodes.INVOKESPECIAL, clazz, field, sig);		
+		return new MethodInsnNode(Opcodes.INVOKESPECIAL, clazz, field, sig, false);
 	}	
 	
 	public static MethodInsnNode INVOKESPECIAL(String clazz, String field, String sig){
-		return new MethodInsnNode(Opcodes.INVOKESPECIAL, clazz, field, sig);
+		return new MethodInsnNode(Opcodes.INVOKESPECIAL, clazz, field, sig, false);
 	}
 	
 	public static BiMap<String, Integer> Instructions;

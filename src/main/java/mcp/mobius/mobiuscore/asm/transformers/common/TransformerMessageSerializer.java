@@ -31,7 +31,7 @@ public class TransformerMessageSerializer extends TransformerBase {
 				{
 				new VarInsnNode   (Opcodes.ALOAD, -1),
 				new VarInsnNode   (Opcodes.ALOAD, -1),
-				new MethodInsnNode(Opcodes.INVOKEVIRTUAL, ObfTable.PACKET_WRITEPACKETDATA.getClazz(), ObfTable.PACKET_WRITEPACKETDATA.getName(), ObfTable.PACKET_WRITEPACKETDATA.getDescriptor())
+				new MethodInsnNode(Opcodes.INVOKEVIRTUAL, ObfTable.PACKET_WRITEPACKETDATA.getClazz(), ObfTable.PACKET_WRITEPACKETDATA.getName(), ObfTable.PACKET_WRITEPACKETDATA.getDescriptor(), false)
 				};
 
 		SERIALIZER_PAYLOAD =	new AbstractInsnNode[] 
@@ -39,9 +39,9 @@ public class TransformerMessageSerializer extends TransformerBase {
 				 new FieldInsnNode (Opcodes.GETSTATIC,       profilerClass, ProfilerSection.PACKET_OUTBOUND.name(), profilerType),
 				 new VarInsnNode   (Opcodes.ALOAD, 2),
 				 new VarInsnNode   (Opcodes.ALOAD, 5),
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, ObfTable.PACKETBUFFER_READABLE.getClazz(), ObfTable.PACKETBUFFER_READABLE.getName(), ObfTable.PACKETBUFFER_READABLE.getDescriptor()),
-				 new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;"),
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;Ljava/lang/Object;)V"),					
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, ObfTable.PACKETBUFFER_READABLE.getClazz(), ObfTable.PACKETBUFFER_READABLE.getName(), ObfTable.PACKETBUFFER_READABLE.getDescriptor(), false),
+				 new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false),
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;Ljava/lang/Object;)V", false),
 				};
 	}
 	

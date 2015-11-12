@@ -36,12 +36,12 @@ public class TransformerRenderManager extends TransformerBase {
 		RM_RENDER_PAYLOAD_TOP = new AbstractInsnNode[]
 				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.RENDER_ENTITY.name(), profilerType),
 				 new VarInsnNode(Opcodes.ALOAD, 1),
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V")};				
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "start", "(Ljava/lang/Object;)V", false)};
 		
 		RM_RENDER_PAYLOAD_BOTTOM = new AbstractInsnNode[]
 				{new FieldInsnNode(Opcodes.GETSTATIC, profilerClass, ProfilerSection.RENDER_ENTITY.name(), profilerType),
 				 new VarInsnNode(Opcodes.ALOAD, 1),
-				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;)V")};			
+				 new MethodInsnNode(Opcodes.INVOKEVIRTUAL, profilerClass, "stop", "(Ljava/lang/Object;)V", false)};
 		
 	}
 	
