@@ -1,12 +1,11 @@
 package mcp.mobius.mobiuscore.asm;
 
-import java.util.Arrays;
-
 import com.google.common.eventbus.EventBus;
-
 import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.ModMetadata;
+
+import java.util.Arrays;
 
 public class CoreContainer extends DummyModContainer {
 
@@ -17,7 +16,7 @@ public class CoreContainer extends DummyModContainer {
 		ModMetadata md = getMetadata();
 		md.modId   = "MobiusCore";
 		md.name    = "MobiusCore";
-		md.version = "1.2.4";
+		md.version = "@MOD_VERSION@";
 		md.credits = "ProfMobius";
 		md.authorList = Arrays.asList("ProfMobius");
 		md.description = "";
