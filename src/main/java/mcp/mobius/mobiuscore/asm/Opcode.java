@@ -92,6 +92,10 @@ public class Opcode {
 		return new MethodInsnNode(Opcodes.INVOKESPECIAL, clazz, field, sig, false);
 	}
 	
+    public static TypeInsnNode CHECKCAST(String desc) {
+        return new TypeInsnNode(Opcodes.CHECKCAST, desc);
+    }
+    
 	public static BiMap<String, Integer> Instructions;
 		
 	static{

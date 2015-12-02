@@ -11,7 +11,7 @@ public class MonitoredEntityList<E> extends MonitoredList<E>{
 	private Map<String, Integer> count = new HashMap<String, Integer>();
 	
 	@Override
-	protected void addCount(E e){
+    public void addCount(E e){
 		if (e == null) return;		
 		String name = this.getName(e);
 		try{
@@ -25,12 +25,7 @@ public class MonitoredEntityList<E> extends MonitoredList<E>{
 	}
 	
 	@Override
-	protected void removeCount(int index){
-		this.removeCount(this.get(index));
-	}
-	
-	@Override
-	protected void removeCount(Object o){
+    public void removeCount(Object o){
 		if (o == null) return;
 		String name = this.getName(o);
 		
@@ -42,7 +37,7 @@ public class MonitoredEntityList<E> extends MonitoredList<E>{
 	}
 
 	@Override
-	protected void clearCount(){
+    public void clearCount(){
 		this.count.clear();
 	}	
 	

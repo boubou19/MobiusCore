@@ -39,6 +39,8 @@ public enum ObfTable {
 	WORLD_INIT                ("ahb", "<init>", "(Lazc;Ljava/lang/String;Lahj;Laqo;Lqi;)V", "net/minecraft/world/World", "<init>", "(Lnet/minecraft/world/storage/ISaveHandler;Ljava/lang/String;Lnet/minecraft/world/WorldSettings;Lnet/minecraft/world/WorldProvider;Lnet/minecraft/profiler/Profiler;)V"),
 	WORLD_LOADEDENTS          ("ahb", "e", "Ljava/util/List;", "net/minecraft/world/World", "loadedEntityList", "Ljava/util/List;"),
 	WORLD_LOADEDTILES         ("ahb", "g", "Ljava/util/List;", "net/minecraft/world/World", "loadedTileEntityList", "Ljava/util/List;"),
+    WORLD_LOADEDENTS_KC       ("ahb", "loadedEntityList_KC", "Ljava/util/Queue;", "net/minecraft/world/World", "loadedEntityList_KC", "Ljava/util/Queue;"),
+    WORLD_LOADEDTILES_KC      ("ahb", "loadedTileEntityList_KC", "Ljava/util/Queue;", "net/minecraft/world/World", "loadedTileEntityList_KC", "Ljava/util/Queue;"),
 	/*
 	NETWORKLISTEN_NETWORKTICK ("nc",  "c", "()V",      "net/minecraft/network/NetworkSystem",          "networkTick",   "()V"),
 	TCPCONN_READPACKET		  ("co",  "i", "()Z",	   "net/minecraft/network/TcpConnection",                "readPacket",    "()Z"),
@@ -58,7 +60,7 @@ public enum ObfTable {
 
 
 	private static Boolean isObfuscated = null;
-	private static Boolean isCauldron   = null;
+    private static ServerType serverType;
 	private String clazzNameN;
 	private String methodNameN;
 	private String descriptorN;
@@ -123,17 +125,23 @@ public enum ObfTable {
 		return ObfTable.isObfuscated;
 	}	
 	
-	public static Boolean isCauldron(){
-		if (ObfTable.isCauldron != null)
-			return ObfTable.isCauldron;		
-		
-		ObfTable.isCauldron = FMLCommonHandler.instance().getModName().contains("cauldron") || FMLCommonHandler.instance().getModName().contains("mcpc"); 
-		if (ObfTable.isCauldron)
+    public static ServerType getServerType() {
+        if (serverType != null) return serverType;
+        if (FMLCommonHandler.instance().getModName().contains("kcauldron")) {
+            serverType = ServerType.KCauldron;
+            CoreDescription.log.info("Switching injection mode to KCAULDRON");
+        } else if(FMLCommonHandler.instance().getModName().contains("cauldron") || FMLCommonHandler.instance().getModName().contains("mcpc")) {
+            serverType = ServerType.Cauldron;
 			CoreDescription.log.info("Switching injection mode to CAULDRON");
-		else
+        } else{
+            serverType = ServerType.Forge;
 			CoreDescription.log.info("Switching injection mode to FORGE");
+        }
+        return serverType;
+    }
 		
-		return ObfTable.isCauldron; 
+    public enum ServerType {
+        Forge, Cauldron, KCauldron;
 	}
 	
 	/*

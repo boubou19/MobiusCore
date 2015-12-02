@@ -30,7 +30,7 @@ public class MonitoredTileList <E> extends MonitoredList<E>{
 	}
 	
 	@Override
-	protected void addCount(E e){
+    public void addCount(E e){
 		TileEntity te = ((TileEntity)e);
 		if (te == null || te.getWorldObj() == null) return;
 		
@@ -50,12 +50,7 @@ public class MonitoredTileList <E> extends MonitoredList<E>{
 	}
 	
 	@Override
-	protected void removeCount(int index){
-		this.removeCount(this.get(index));
-	}
-	
-	@Override
-	protected void removeCount(Object o){
+    public void removeCount(Object o){
 		//TODO THIS IS WHERE THE CHUNK KEEP GETTING LOADED.
 		//TODO SHOULD STORE BLOCK/META IN A TABLE ALONG WITH THE TE IN ORDER TO DECREASE THOSE
 		//WITHOUT ACCESSING THE WORLD !!!!
@@ -79,7 +74,7 @@ public class MonitoredTileList <E> extends MonitoredList<E>{
 	}
 
 	@Override
-	protected void clearCount(){
+    public void clearCount(){
 		this.count.clear();
 	}	
 	

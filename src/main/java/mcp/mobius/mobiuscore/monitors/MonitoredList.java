@@ -3,14 +3,7 @@ package mcp.mobius.mobiuscore.monitors;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public abstract class MonitoredList<E> extends ArrayList<E>{
-	
-	abstract void addCount(E e);
-	abstract void removeCount(int index);
-	abstract void removeCount(Object o);
-	abstract void printCount();
-	abstract void clearCount();
-	
+public abstract class MonitoredList<E> extends ArrayList<E> implements Monitored<E> {
 	@Override
 	public boolean add(E e){
 		this.addCount(e);
@@ -47,8 +40,9 @@ public abstract class MonitoredList<E> extends ArrayList<E>{
 	
 	@Override
 	public E remove(int index){
-		this.removeCount(index);
-		return super.remove(index);
+        E oldValue = super.remove(index);
+        this.removeCount(oldValue);
+        return oldValue;
 	}
 	
 	@Override
