@@ -58,7 +58,7 @@ public enum ObfTable {
 
 
 	private static Boolean isObfuscated = null;
-	private static Boolean isCauldron   = null;
+	private static ServerType serverType;
 	private String clazzNameN;
 	private String methodNameN;
 	private String descriptorN;
@@ -123,17 +123,23 @@ public enum ObfTable {
 		return ObfTable.isObfuscated;
 	}	
 	
-	public static Boolean isCauldron(){
-		if (ObfTable.isCauldron != null)
-			return ObfTable.isCauldron;		
-		
-		ObfTable.isCauldron = FMLCommonHandler.instance().getModName().contains("cauldron") || FMLCommonHandler.instance().getModName().contains("mcpc"); 
-		if (ObfTable.isCauldron)
+	public static ServerType getServerType() {
+		if (serverType != null) return serverType;
+		if (FMLCommonHandler.instance().getModName().contains("kcauldron")) {
+			serverType = ServerType.KCauldron;
+			CoreDescription.log.info("Switching injection mode to KCAULDRON");
+		} else if(FMLCommonHandler.instance().getModName().contains("cauldron") || FMLCommonHandler.instance().getModName().contains("mcpc")) {
+			serverType = ServerType.Cauldron;
 			CoreDescription.log.info("Switching injection mode to CAULDRON");
-		else
+		} else{
+			serverType = ServerType.Forge;
 			CoreDescription.log.info("Switching injection mode to FORGE");
+		}
+		return serverType;
+	}
 		
-		return ObfTable.isCauldron; 
+	public enum ServerType {
+		Forge, Cauldron, KCauldron;
 	}
 	
 	/*

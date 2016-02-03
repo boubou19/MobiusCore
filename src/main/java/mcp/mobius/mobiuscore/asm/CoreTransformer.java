@@ -19,6 +19,7 @@ import mcp.mobius.mobiuscore.asm.transformers.common.TransformerMessageSerialize
 import mcp.mobius.mobiuscore.asm.transformers.common.TransformerWorldServer;
 import mcp.mobius.mobiuscore.asm.transformers.forge.TransformerWorld;
 import mcp.mobius.mobiuscore.asm.transformers.mcpc.TransformerWorldCauldron;
+import mcp.mobius.mobiuscore.asm.transformers.kcauldron.TransformerWorldKCauldron;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class CoreTransformer implements IClassTransformer {
@@ -33,12 +34,18 @@ public class CoreTransformer implements IClassTransformer {
 		
 			//TransformerBase.dumpChecksum(bytes, name, srgname);
 			
-			if (srgname.equals("net.minecraft.world.World") && !ObfTable.isCauldron()){
+			if (srgname.equals("net.minecraft.world.World")) {
+				switch (ObfTable.getServerType()) {
+					case Forge:
 				bytes = new TransformerWorld().transform(name, srgname, bytes);
-			}
-
-			if (srgname.equals("net.minecraft.world.World") && ObfTable.isCauldron()){
+						break;
+					case Cauldron:
 				bytes = new TransformerWorldCauldron().transform(name, srgname, bytes);
+						break;
+					case KCauldron:
+						bytes = new TransformerWorldKCauldron().transform(name, srgname, bytes);
+						break;
+				}
 			}
 			
 			if (srgname.equals("net.minecraft.world.WorldServer")){
