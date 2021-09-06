@@ -1,10 +1,9 @@
 package mcp.mobius.mobiuscore.asm;
 
-import java.io.IOException;
-
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.io.IOException;
 
 public enum ObfTable {
 	WORLD_UPDATEENTITIES      ("ahb", "h", "()V",      "net/minecraft/world/World",           "updateEntities", "()V"),
@@ -125,13 +124,17 @@ public enum ObfTable {
 	
 	public static ServerType getServerType() {
 		if (serverType != null) return serverType;
-		if (FMLCommonHandler.instance().getModName().contains("kcauldron")) {
+
+		if (FMLCommonHandler.instance().getModName().contains("thermos")) {
+			serverType = ServerType.Thermos;
+			CoreDescription.log.info("Switching injection mode to Thermos");
+		} else if (FMLCommonHandler.instance().getModName().contains("kcauldron")) {
 			serverType = ServerType.KCauldron;
 			CoreDescription.log.info("Switching injection mode to KCAULDRON");
-		} else if(FMLCommonHandler.instance().getModName().contains("cauldron") || FMLCommonHandler.instance().getModName().contains("mcpc")) {
+		} else if (FMLCommonHandler.instance().getModName().contains("cauldron") || FMLCommonHandler.instance().getModName().contains("mcpc")) {
 			serverType = ServerType.Cauldron;
 			CoreDescription.log.info("Switching injection mode to CAULDRON");
-		} else{
+		} else {
 			serverType = ServerType.Forge;
 			CoreDescription.log.info("Switching injection mode to FORGE");
 		}
@@ -139,7 +142,7 @@ public enum ObfTable {
 	}
 		
 	public enum ServerType {
-		Forge, Cauldron, KCauldron;
+		Forge, Cauldron, KCauldron, Thermos
 	}
 	
 	/*
