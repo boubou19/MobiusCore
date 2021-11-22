@@ -44,11 +44,15 @@ public class MonitoredEntityList<E> extends MonitoredList<E>{
 	@Override
 	protected void clearCount(){
 		this.count.clear();
-	}	
-	
+	}
+
 	protected String getName(Object o){
-		return ((Entity)o).getCommandSenderName();
-		//return o.getClass().getName();
+		try {
+			return ((Entity) o).getCommandSenderName()
+		}
+		catch (ClassCastException|NullPointerException suppressed) {
+			return "<bad object>";
+		}
 	}
 
 	@Override
