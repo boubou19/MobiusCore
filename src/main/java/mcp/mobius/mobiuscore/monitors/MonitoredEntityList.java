@@ -48,7 +48,7 @@ public class MonitoredEntityList<E> extends MonitoredList<E>{
 
 	protected String getName(Object o){
 		try {
-			return ((Entity) o).getCommandSenderName()
+			return ((Entity) o).getCommandSenderName();
 		}
 		catch (ClassCastException|NullPointerException suppressed) {
 			return "<bad object>";
