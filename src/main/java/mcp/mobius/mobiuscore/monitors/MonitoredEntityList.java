@@ -31,7 +31,7 @@ public class MonitoredEntityList<E> extends MonitoredList<E>{
 	
 	@Override
 	protected void removeCount(Object o){
-		if (o == null) return;
+		if (!(o instanceof E)) return;
 		String name = this.getName(o);
 		
 		try{
